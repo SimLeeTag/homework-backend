@@ -1,0 +1,76 @@
+name: Build and Deploy to Web Application Server of Develop
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master, dev branch
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "install-dependencies"
+  install-dependencies:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checks-out your current commit
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin' # Adopt OpenJDK got moved to Eclipse Temurin and won't be updated anymore
+          java-version: 11
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache # cache files are sotred in ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: view the PR Information
+        run: |
+          echo "GITHUB_REPOSITORY = ${{ github.event.repository.full_name }}"
+          echo "PR number = ${{ github.event.pull_request.number }}"
+          echo "Base Branch = ${{ github.event.pull_request.base.ref }}"
+          echo "Head Branch = ${{ github.event.pull_request.head.ref }}"
+
+      - name: Build and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.event.repository.full_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          ./gradlew --info testCoverage \
+            sonarqube -Dsonar.login=$SONAR_TOKEN \
+          -Dsonar.projectKey=hsik0225_notion-adapter \
+          -Dsonar.organization=seed \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.pullrequest.provider=GitHub \
+          -Dsonar.pullrequest.github.repository=$GITHUB_REPOSITORY \
+          -Dsonar.pullrequest.key=$PR_NUMBER \
+          -Dsonar.pullrequest.base=$BASE_BRANCH \
+          -Dsonar.pullrequest.branch=$HEAD_BRANCH

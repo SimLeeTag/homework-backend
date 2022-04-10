@@ -10,7 +10,7 @@ public abstract class DeletableEntity extends BaseEntity {
     @PastOrPresent
     protected LocalDateTime deletedAt;
 
-    public DeletableEntity(Long id, LocalDateTime createdAt, LocalDateTime deletedAt) {
+    protected DeletableEntity(Long id, LocalDateTime createdAt, LocalDateTime deletedAt) {
         super(id, createdAt);
         this.deletedAt = deletedAt;
     }

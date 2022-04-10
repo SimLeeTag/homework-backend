@@ -24,7 +24,7 @@ public abstract class BaseEntity {
     @Column(nullable = false)
     protected LocalDateTime createdAt;
 
-    public BaseEntity(Long id, LocalDateTime createdAt) {
+    protected BaseEntity(Long id, LocalDateTime createdAt) {
         this.id = id;
         this.createdAt = createdAt;
     }

@@ -49,7 +49,6 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt"
 
     // querydsl JPAAnnotationProcessor 사용 지정
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.0.0'
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
     // log

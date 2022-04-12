@@ -1,4 +1,4 @@
-package com.simleetag.homework.common;
+package com.simleetag.homework.domain;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;

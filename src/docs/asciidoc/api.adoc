@@ -1,0 +1,52 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+= REST API Document
+
+[[introduction]]
+== Introduction
+
+==== Homework 🏠
+
+가사 분담 서비스
+
+[[common]]
+== Common
+
+=== Domain
+
+|===
+| 환경 | Domain
+| 운영 서버
+| `https://www.dropthecode.p-e.kr/`
+
+| 개발 서버
+| `https://www.dropthecode.p-e.kr/`
+|===
+
+=== Exception
+
+|===
+| 상태 코드 | 설명
+
+| 400
+| `API 스펙에 맞지 않는 요청`
+
+| 401
+| `로그인 실패`
+
+| 403
+| `권한 없음`
+|===
+
+== Login API
+
+include::{snippets}/user-controller-test/login-test/auto-section.adoc[]

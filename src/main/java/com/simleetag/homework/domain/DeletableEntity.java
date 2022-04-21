@@ -5,8 +5,10 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.PastOrPresent;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class DeletableEntity extends BaseEntity {

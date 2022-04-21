@@ -21,7 +21,6 @@ public abstract class BaseEntity {
     protected Long id;
 
     @CreatedDate
-    @Column(nullable = false)
     protected LocalDateTime createdAt;
 
     protected BaseEntity(Long id, LocalDateTime createdAt) {

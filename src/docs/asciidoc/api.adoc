@@ -12,9 +12,7 @@ endif::[]
 = REST API Document
 
 [[introduction]]
-== Introduction
-
-==== Homework 🏠
+== Homework 🏠
 
 가사 분담 서비스
 
@@ -26,10 +24,10 @@ endif::[]
 |===
 | 환경 | Domain
 | 운영 서버
-| `https://www.dropthecode.p-e.kr/`
+| `https://www.homework.co.kr/`
 
 | 개발 서버
-| `https://www.dropthecode.p-e.kr/`
+| `https://www.dev.homework.co.kr/`
 |===
 
 === Exception

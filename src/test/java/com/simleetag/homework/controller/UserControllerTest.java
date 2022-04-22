@@ -37,7 +37,7 @@ class UserControllerTest extends ControllerTest {
                 get("/oauth")
                         .param("code", "test-code")
                         .param("providerType", "kakao")
-        ).andDo(print());
+        );
 
         // then
         resultActions.andExpect(status().isOk())

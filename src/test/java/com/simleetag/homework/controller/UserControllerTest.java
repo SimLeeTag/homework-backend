@@ -1,6 +1,7 @@
 package com.simleetag.homework.controller;
 
 import com.simleetag.homework.dto.TokenRequest;
+import com.simleetag.homework.dto.TokenResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
@@ -20,12 +21,13 @@ class UserControllerTest extends ControllerTest {
     private UserController userController;
 
     @Test
-    @DisplayName("")
+    @DisplayName("OAuth 로그인 테스트")
     void loginTest() throws Exception {
 
         // given
         final String accessToken = "aaa.bbb.ccc";
-        given(oAuthService.signUpOrLogin(any(TokenRequest.class))).willReturn(accessToken);
+        final TokenResponse tokenResponse = new TokenResponse(accessToken);
+        given(oAuthService.signUpOrLogin(any(TokenRequest.class))).willReturn(tokenResponse);
 
         // when
         ResultActions resultActions = this.successMockMvc.perform(

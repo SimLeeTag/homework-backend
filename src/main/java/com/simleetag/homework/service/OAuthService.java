@@ -7,7 +7,6 @@ import com.simleetag.homework.domain.oauth.OAuthJwt;
 import com.simleetag.homework.domain.oauth.OAuthProvider;
 import com.simleetag.homework.domain.oauth.OAuthProviderFactory;
 import com.simleetag.homework.dto.TokenRequest;
-import com.simleetag.homework.dto.TokenResponse;
 import com.simleetag.homework.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
@@ -21,11 +20,11 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final OAuthJwt oauthJwt;
 
-    public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
+    public String signUpOrLogin(final TokenRequest tokenRequest) {
         final OAuthProvider oauthProvider = oauthProviderFactory.create(tokenRequest.getProviderType());
-        final User user = new User().login(oauthProvider, tokenRequest.getCode());
-        final User savedUser = findOrSave(user);
-        return oauthJwt.createWithUserId(savedUser.getId());
+        final User user = new User().login(oauthProvider, tokenRequest.getCode(), oauthJwt);
+        final User loggedInUser = findOrSave(user);
+        return loggedInUser.getAccessToken();
     }
 
     private User findOrSave(User user) {

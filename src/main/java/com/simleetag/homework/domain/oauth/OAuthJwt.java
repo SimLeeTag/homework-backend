@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.simleetag.homework.dto.TokenResponse;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -15,30 +14,17 @@ public class OAuthJwt {
 
     private final Algorithm algorithm;
     private final long accessTokenExpiration;
-    private final long refreshTokenExpiration;
 
-    public OAuthJwt(String secret, long accessTokenExpiration, long refreshTokenExpiration) {
+    public OAuthJwt(String secret, long accessTokenExpiration) {
         this.accessTokenExpiration = accessTokenExpiration;
-        this.refreshTokenExpiration = refreshTokenExpiration;
         algorithm = Algorithm.HMAC256(secret);
     }
 
-    public TokenResponse createWithUserId(Long id) {
-        return new TokenResponse(createAccessToken(id), createRefreshToken());
-    }
-
-    private String createAccessToken(Long id) {
+    public String createAccessToken(Long id) {
         return JWT.create()
                   .withClaim("id", id)
                   .withIssuedAt(new Date())
                   .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                  .sign(algorithm);
-    }
-
-    private String createRefreshToken() {
-        return JWT.create()
-                  .withIssuedAt(new Date())
-                  .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                   .sign(algorithm);
     }
 

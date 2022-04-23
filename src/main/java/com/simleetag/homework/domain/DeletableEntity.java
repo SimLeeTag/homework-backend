@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@MappedSuperclass
 public abstract class DeletableEntity extends BaseEntity {
 
     @PastOrPresent
@@ -21,3 +21,4 @@ public abstract class DeletableEntity extends BaseEntity {
         this.deletedAt = deletedAt;
     }
 }
+

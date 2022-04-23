@@ -24,10 +24,10 @@ endif::[]
 |===
 | 환경 | Domain
 | 운영 서버
-| `https://www.homework.co.kr/`
+| `http://prod.homework.hyeonsik.com/`
 
 | 개발 서버
-| `https://www.dev.homework.co.kr/`
+| `http://dev.homework.hyeonsik.com/`
 |===
 
 === Exception

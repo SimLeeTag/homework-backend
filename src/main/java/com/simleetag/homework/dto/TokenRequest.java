@@ -2,6 +2,8 @@ package com.simleetag.homework.dto;
 
 import javax.validation.constraints.NotBlank;
 
+import com.simleetag.homework.domain.oauth.ProviderType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,5 +21,5 @@ public class TokenRequest {
      * Authorization Server 이름
      */
     @NotBlank
-    private String providerType;
+    private ProviderType providerType;
 }

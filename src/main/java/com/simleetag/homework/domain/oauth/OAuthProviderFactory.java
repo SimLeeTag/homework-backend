@@ -16,13 +16,12 @@ public class OAuthProviderFactory {
 
     private final Map<String, OAuthAttributes> attribute;
 
-    public OAuthProvider create(String providerName) {
-        final ProviderType providerType = ProviderType.from(providerName);
-        final OAuthAttributes oauthAttributes = attribute.getOrDefault(providerName, new OAuthAttributes());
+    public OAuthProvider create(ProviderType providerType) {
+        final OAuthAttributes oauthAttributes = attribute.getOrDefault(providerType.name(), new OAuthAttributes());
         if (providerType == ProviderType.KAKAO) {
             return new KakaoOAuthProvider(oauthAttributes);
         }
 
-        throw new OAuthException(providerName + "의 OAuth 기능은 제공하지 않습니다.");
+        throw new OAuthException(providerType.name() + "의 OAuth 기능은 제공하지 않습니다.");
     }
 }

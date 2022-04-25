@@ -33,7 +33,7 @@ class UserControllerTest extends ControllerTest {
         ResultActions resultActions = this.successMockMvc.perform(
                 get("/oauth")
                         .param("code", "test-code")
-                        .param("providerType", "kakao")
+                        .param("providerType", "KAKAO")
         );
 
         // then

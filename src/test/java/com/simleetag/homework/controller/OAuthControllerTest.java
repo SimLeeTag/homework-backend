@@ -15,10 +15,10 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserControllerTest extends ControllerTest {
+class OAuthControllerTest extends ControllerTest {
 
     @Autowired
-    private UserController userController;
+    private OAuthController OAuthController;
 
     @Test
     @DisplayName("OAuth 로그인 테스트")

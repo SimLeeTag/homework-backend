@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-public class UserController {
+public class OAuthController {
 
     private final OAuthService oauthService;
 

@@ -3,7 +3,7 @@ package com.simleetag.homework.domain.oauth;
 abstract class AbstractOAuthProvider implements OAuthProvider {
     protected OAuthAttributes oauthAttributes;
 
-    public AbstractOAuthProvider() {
+    protected AbstractOAuthProvider() {
         this(new OAuthAttributes());
     }
 

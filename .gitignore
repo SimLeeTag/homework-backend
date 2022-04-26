@@ -5,8 +5,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-src/main/resources/static/docs/api.html
-
 ### IntelliJ IDEA ###
 .idea/**
 *.iws
@@ -142,3 +140,7 @@ gradle-app.setting
 
 ### envFile
 .env
+
+### Auth file
+src/main/resources/static/docs/api.html
+src/main/resources/static/AuthKey_9N74MH6N25.p8

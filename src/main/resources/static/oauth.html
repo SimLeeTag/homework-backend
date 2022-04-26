@@ -1,9 +1,27 @@
-<h1>Login Test</h1>
-<div class="col-md-12">
-    <div class="row">
-        <div class="col-md-6">
-            <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1739195ec8bcc63b5af2b1675db74d98&redirect_uri=http://localhost:8080/oauth?providerType=kakao
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+        <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
+        <h1>Login Test</h1>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1739195ec8bcc63b5af2b1675db74d98&redirect_uri=http://localhost:8080/oauth?providerType=kakao
 " class="btn btn-third active" role="button">Kakao Login</a>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+        <script type="text/javascript">
+            AppleID.auth.init({
+                clientId : 'homework.simleetag.com',
+                scope : 'name email',
+                redirectURI : 'https://homework.simleetag.pw/redirect',
+                state : 'test',
+                nonce : '20B20D-0S8-1K8',
+                usePopup : false
+            });
+
+        </script>
+    </body>
+</html>

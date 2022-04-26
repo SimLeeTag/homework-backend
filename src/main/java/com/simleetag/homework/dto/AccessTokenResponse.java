@@ -19,6 +19,9 @@ public class AccessTokenResponse {
     @JsonProperty("token_type")
     private String tokenType;
 
+    @JsonProperty("id_token")
+    private String idToken;
+
     @JsonProperty("error")
     private String error;
 

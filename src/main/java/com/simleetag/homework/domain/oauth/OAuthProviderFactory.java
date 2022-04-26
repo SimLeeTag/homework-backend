@@ -20,6 +20,8 @@ public class OAuthProviderFactory {
         final OAuthAttributes oauthAttributes = attribute.getOrDefault(providerType.name(), new OAuthAttributes());
         if (providerType == ProviderType.KAKAO) {
             return new KakaoOAuthProvider(oauthAttributes);
+        } else if (providerType == ProviderType.APPLE){
+            return new AppleOAuthProvider(oauthAttributes);
         }
 
         throw new OAuthException(providerType.name() + "의 OAuth 기능은 제공하지 않습니다.");

@@ -1,4 +1,4 @@
-package com.simleetag.homework.common;
+package com.simleetag.homework.domain;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
@@ -21,7 +21,6 @@ public abstract class BaseEntity {
     protected Long id;
 
     @CreatedDate
-    @Column(nullable = false)
     protected LocalDateTime createdAt;
 
     protected BaseEntity(Long id, LocalDateTime createdAt) {

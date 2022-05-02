@@ -10,6 +10,8 @@ import com.simleetag.homework.dto.AccessTokenResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -27,7 +29,7 @@ public class User extends DeletableEntity {
     @Column
     private String profileImage;
 
-    public User login(OAuthProvider oauthProvider, String code, OAuthJwt jwt) {
+    public User login(OAuthProvider oauthProvider, String code, OAuthJwt jwt) throws IOException {
         final AccessTokenResponse accessTokenResponse = oauthProvider.requestAccessToken(code);
         this.oauthId = oauthProvider.requestUserInformation(accessTokenResponse).getId();
         this.accessToken = jwt.createAccessToken(oauthId);

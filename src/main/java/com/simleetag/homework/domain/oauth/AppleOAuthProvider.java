@@ -36,14 +36,20 @@ public class AppleOAuthProvider extends AbstractOAuthProvider {
     @Autowired
     private OAuthJwt oauthJwt;
 
-    @Value("${apple.team.id}")
+    @Value("${oauth.attribute.apple.team-id}")
     private String TEAM_ID;
 
-    @Value("${apple.client.id}")
+    @Value("${oauth.attribute.apple.client-id}")
     private String CLIENT_ID;
 
-    @Value("${apple.key.path}")
+    @Value("${oauth.attribute.apple.key-path}")
     private String KEY_PATH;
+
+    @Value("${oauth.attribute.apple.uri}")
+    private String APPLE_URI;
+
+    @Value("${oauth.attribute.apple.client-secret-expiration}")
+    private Integer APPLE_CLIENT_SECRET_EXPIRATION;
 
     public AppleOAuthProvider() {
         this(new OAuthAttributes());
@@ -77,14 +83,14 @@ public class AppleOAuthProvider extends AbstractOAuthProvider {
     }
 
     private String makeClientSecret() throws IOException {
-        Date expirationDate = Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant());
+        Date expirationDate = Date.from(LocalDateTime.now().plusDays(APPLE_CLIENT_SECRET_EXPIRATION).atZone(ZoneId.systemDefault()).toInstant());
         Map<String, Object> headerMap = new HashMap<>();
         return JWT.create()
                 .withHeader(headerMap)
                 .withIssuer(TEAM_ID)
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(expirationDate)
-                .withAudience("https://appleid.apple.com")
+                .withAudience(APPLE_URI)
                 .withSubject(CLIENT_ID)
                 .sign(Algorithm.ECDSA256((ECDSAKeyProvider) getPrivateKey()));
     }

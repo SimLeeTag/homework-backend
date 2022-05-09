@@ -1,5 +1,6 @@
 package com.simleetag.homework.service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import com.simleetag.homework.domain.User;
@@ -21,7 +22,7 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final OAuthJwt oauthJwt;
 
-    public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
+    public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) throws IOException {
         final OAuthProvider oauthProvider = oauthProviderFactory.create(tokenRequest.getProviderType());
         final User user = new User().login(oauthProvider, tokenRequest.getCode(), oauthJwt);
         final User loggedInUser = findOrSave(user);

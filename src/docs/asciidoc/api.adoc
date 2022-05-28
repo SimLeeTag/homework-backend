@@ -47,4 +47,4 @@ endif::[]
 
 == Login API
 
-include::{snippets}/user-controller-test/login-test/auto-section.adoc[]
+include::{snippets}/o-auth-controller-test/login-test/auto-section.adoc[]

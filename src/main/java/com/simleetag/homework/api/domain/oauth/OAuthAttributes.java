@@ -11,4 +11,8 @@ public class OAuthAttributes {
     private String redirectUri;
     private String tokenUri;
     private String userInformationUri;
+    private String teamId;
+    private String keyPath;
+    private String uri;
+    private String clientSecretExpiration;
 }

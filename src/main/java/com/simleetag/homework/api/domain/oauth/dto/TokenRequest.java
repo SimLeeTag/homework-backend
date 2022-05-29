@@ -6,19 +6,23 @@ import com.simleetag.homework.api.domain.oauth.infra.provider.ProviderType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class TokenRequest {
 
     /**
-     * AccessToken을 발급받기 위한 코드
+     * OAuth Provider로 부터 발급받은 AccessToken
      */
     @NotBlank
-    private String code;
+    private String accessToken;
 
     /**
-     * Authorization Server 이름
+     * OAuth Provider 이름
+     * <p>
+     * Alert: ProviderType은 모두 [대문자]이어야 합니다
      */
     @NotBlank
     private ProviderType providerType;

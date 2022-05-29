@@ -1,13 +1,11 @@
 package com.simleetag.homework.api.domain.oauth;
 
-import java.io.IOException;
-
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +19,8 @@ public class OAuthController {
     /**
      * @title 회원가입 또는 로그인
      */
-    @GetMapping("/oauth")
-    public ResponseEntity<TokenResponse> login(@ModelAttribute final TokenRequest tokenRequest) throws IOException {
+    @PostMapping("/oauth")
+    public ResponseEntity<TokenResponse> login(@RequestBody final TokenRequest tokenRequest) {
         return ResponseEntity.ok(oauthService.signUpOrLogin(tokenRequest));
     }
 }

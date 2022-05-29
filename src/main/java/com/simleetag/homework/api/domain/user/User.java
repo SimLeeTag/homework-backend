@@ -1,11 +1,9 @@
 package com.simleetag.homework.api.domain.user;
 
-import java.io.IOException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.simleetag.homework.api.common.DeletableEntity;
-import com.simleetag.homework.api.domain.oauth.dto.AccessTokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProvider;
 
@@ -29,9 +27,8 @@ public class User extends DeletableEntity {
     @Column
     private String profileImage;
 
-    public User login(OAuthProvider oauthProvider, String code, OAuthJwt jwt) throws IOException {
-        final AccessTokenResponse accessTokenResponse = oauthProvider.requestAccessToken(code);
-        this.oauthId = oauthProvider.requestUserInformation(accessTokenResponse).getId();
+    public User login(OAuthProvider oauthProvider, String accessToken, OAuthJwt jwt) {
+        this.oauthId = oauthProvider.requestUserInformation(accessToken).getId();
         this.accessToken = jwt.createAccessToken(oauthId);
         return this;
     }

@@ -1,6 +1,5 @@
 package com.simleetag.homework.api.domain.oauth.infra.provider;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

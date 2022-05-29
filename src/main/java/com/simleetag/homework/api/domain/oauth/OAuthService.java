@@ -22,9 +22,9 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final OAuthJwt oauthJwt;
 
-    public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) throws IOException {
+    public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
         final OAuthProvider oauthProvider = oauthProviderFactory.create(tokenRequest.getProviderType());
-        final User user = new User().login(oauthProvider, tokenRequest.getCode(), oauthJwt);
+        final User user = new User().login(oauthProvider, tokenRequest.getAccessToken(), oauthJwt);
         final User loggedInUser = findOrSave(user);
         return new TokenResponse(loggedInUser.getAccessToken());
     }

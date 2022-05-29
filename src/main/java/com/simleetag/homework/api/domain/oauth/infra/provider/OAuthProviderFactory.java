@@ -1,9 +1,10 @@
 package com.simleetag.homework.api.domain.oauth.infra.provider;
 
+import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 
 import com.simleetag.homework.api.domain.oauth.OAuthAttributes;
-import com.simleetag.homework.api.common.exception.OAuthException;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -16,15 +17,24 @@ import lombok.RequiredArgsConstructor;
 public class OAuthProviderFactory {
 
     private final Map<String, OAuthAttributes> attribute;
+    private final Map<ProviderType, OAuthProvider> providers = new HashMap<>();
+
+    @PostConstruct
+    public void initProvider() {
+        for (Map.Entry<String, OAuthAttributes> entry : attribute.entrySet()) {
+            final String ProviderTypeName = entry.getKey();
+            final ProviderType providerType = ProviderType.from(ProviderTypeName);
+            final OAuthAttributes oauthAttributes = attribute.getOrDefault(ProviderTypeName, new OAuthAttributes());
+
+            if (providerType == ProviderType.KAKAO) {
+                providers.put(providerType, new KakaoOAuthProvider(oauthAttributes));
+            } else if (providerType == ProviderType.APPLE) {
+                providers.put(providerType, new AppleOAuthProvider(oauthAttributes));
+            }
+        }
+    }
 
     public OAuthProvider create(ProviderType providerType) {
-        final OAuthAttributes oauthAttributes = attribute.getOrDefault(providerType.name(), new OAuthAttributes());
-        if (providerType == ProviderType.KAKAO) {
-            return new KakaoOAuthProvider(oauthAttributes);
-        } else if (providerType == ProviderType.APPLE) {
-            return new AppleOAuthProvider(oauthAttributes);
-        }
-
-        throw new OAuthException(providerType.name() + "의 OAuth 기능은 제공하지 않습니다.");
+        return providers.get(providerType);
     }
 }

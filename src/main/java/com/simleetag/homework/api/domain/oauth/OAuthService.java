@@ -28,7 +28,7 @@ public class OAuthService {
         return new TokenResponse(loggedInUser.getAccessToken());
     }
 
-    private User findOrSave(User user) {
+    private synchronized User findOrSave(User user) {
         final Optional<User> savedUser = userRepository.findByOauthId(user.getOauthId());
         if (savedUser.isEmpty()) {
             return userRepository.save(user);

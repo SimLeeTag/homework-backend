@@ -1,5 +1,6 @@
 package com.simleetag.homework.api.domain.user;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -26,6 +27,14 @@ public class User extends DeletableEntity {
 
     @Column
     private String profileImage;
+
+    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String accessToken, String userName, String profileImage) {
+        super(id, createdAt, deletedAt);
+        this.oauthId = oauthId;
+        this.accessToken = accessToken;
+        this.userName = userName;
+        this.profileImage = profileImage;
+    }
 
     public User login(OAuthProvider oauthProvider, String accessToken, OAuthJwt jwt) {
         this.oauthId = oauthProvider.requestUserInformation(accessToken).getId();

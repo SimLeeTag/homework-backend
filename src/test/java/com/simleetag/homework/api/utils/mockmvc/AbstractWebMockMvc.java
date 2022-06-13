@@ -2,6 +2,8 @@ package com.simleetag.homework.api.utils.mockmvc;
 
 import java.nio.charset.StandardCharsets;
 
+import com.simleetag.homework.api.common.exception.GlobalCustomException;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +33,7 @@ public abstract class AbstractWebMockMvc implements WebMockMvc {
         Object[] controllers = findControllers(applicationContext);
 
         return MockMvcBuilders.standaloneSetup(controllers)
+                              .setControllerAdvice(applicationContext.getBean(GlobalCustomException.class))
                               .addFilters(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true));
     }
 

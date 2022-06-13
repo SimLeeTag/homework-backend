@@ -5,10 +5,10 @@ import java.util.Optional;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
-import com.simleetag.homework.api.domain.oauth.infra.UserRepository;
 import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProvider;
 import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProviderFactory;
 import com.simleetag.homework.api.domain.user.User;
+import com.simleetag.homework.api.domain.user.UserRepository;
 
 import org.springframework.stereotype.Service;
 

@@ -1,10 +1,11 @@
 package com.simleetag.homework.api.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simleetag.homework.api.domain.oauth.OAuthService;
+import com.simleetag.homework.api.domain.user.UserService;
 import com.simleetag.homework.api.utils.mockmvc.HttpMockMvc;
 import com.simleetag.homework.api.utils.mockmvc.RestDocsMockMvcFactory;
 import com.simleetag.homework.api.utils.mockmvc.WebMockMvc;
-import com.simleetag.homework.api.domain.oauth.OAuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,4 +55,7 @@ public abstract class ControllerTest {
 
     @MockBean
     protected OAuthService oAuthService;
+
+    @MockBean
+    protected UserService userService;
 }

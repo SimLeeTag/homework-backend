@@ -10,7 +10,7 @@ import lombok.Getter;
 public class TokenResponse {
 
     /**
-     * Homework 로그인에 필요한 AccessToken.
+     * Homework 로그인에 필요한 AccessToken
      */
     @NotBlank
     private String accessToken;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class User extends DeletableEntity {
 
     @Column(nullable = false)
-    private Long oauthId;
+    private String oauthId;
 
     @Column(nullable = false)
     private String accessToken;

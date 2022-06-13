@@ -1,6 +1,5 @@
 package com.simleetag.homework.api.domain.oauth;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;

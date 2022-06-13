@@ -4,26 +4,18 @@ import com.simleetag.homework.api.domain.oauth.OAuthAttributes;
 import com.simleetag.homework.api.domain.oauth.dto.UserInformationResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
 public class AppleOAuthProvider extends AbstractOAuthProvider {
 
-    @Autowired
-    private OAuthJwt oauthJwt;
+    private final OAuthJwt oauthJwt;
 
-    public AppleOAuthProvider() {
-        this(new OAuthAttributes());
-    }
-
-    public AppleOAuthProvider(OAuthAttributes oauthAttributes) {
+    public AppleOAuthProvider(OAuthAttributes oauthAttributes, OAuthJwt oauthJwt) {
         super(oauthAttributes);
+        this.oauthJwt = oauthJwt;
     }
 
     @Override
     public UserInformationResponse requestUserInformation(String accessToken) {
-        Long oauthId = oauthJwt.parseClaims(accessToken, "id", Long.class);
+        String oauthId = oauthJwt.parseClaims(accessToken, "sub", String.class);
         return new UserInformationResponse(oauthId);
     }
 }

@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class UserInformationResponse {
 
     @JsonProperty("id")
-    private Long id;
+    private String id;
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.simleetag.homework.api.domain.oauth.OAuthAttributes;
+import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,9 @@ public class OAuthProviderFactory {
         }
     }
 
-    public OAuthProvider create(ProviderType providerType) {
-        return providers.get(providerType);
+    public String retrieveOAuthId(TokenRequest tokenRequest) {
+        return providers.get(tokenRequest.getProviderType())
+                        .requestUserInformation(tokenRequest.getAccessToken())
+                        .getId();
     }
 }

@@ -20,7 +20,7 @@ public class OAuthJwt {
         algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String createAccessToken(String id) {
+    public String createAccessToken(Long id) {
         return JWT.create()
                   .withClaim("id", id)
                   .withIssuedAt(new Date())

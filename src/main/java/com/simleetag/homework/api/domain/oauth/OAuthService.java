@@ -5,12 +5,12 @@ import java.util.Optional;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
-import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProvider;
 import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProviderFactory;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.UserRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,18 +21,15 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final OAuthJwt oauthJwt;
 
+    @Transactional
     public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
-        final OAuthProvider oauthProvider = oauthProviderFactory.create(tokenRequest.getProviderType());
-        final User user = new User().login(oauthProvider, tokenRequest.getAccessToken(), oauthJwt);
-        final User loggedInUser = findOrSave(user);
-        return new TokenResponse(loggedInUser.getAccessToken());
-    }
-
-    private synchronized User findOrSave(User user) {
-        final Optional<User> savedUser = userRepository.findByOauthId(user.getOauthId());
-        if (savedUser.isEmpty()) {
-            return userRepository.save(user);
+        final String oauthId = oauthProviderFactory.retrieveOAuthId(tokenRequest);
+        final Optional<User> savedUser = userRepository.findByOauthId(oauthId);
+        if (savedUser.isPresent()) {
+            return TokenResponse.from(savedUser.get());
         }
-        return savedUser.get();
+
+        final User loggedInUser = userRepository.save(new User()).login(oauthId, oauthJwt);
+        return TokenResponse.from(loggedInUser);
     }
 }

@@ -2,6 +2,8 @@ package com.simleetag.homework.api.domain.oauth.dto;
 
 import javax.validation.constraints.NotBlank;
 
+import com.simleetag.homework.api.domain.user.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,4 +16,8 @@ public class TokenResponse {
      */
     @NotBlank
     private String accessToken;
+
+    public static TokenResponse from(User user) {
+        return new TokenResponse(user.getAccessToken());
+    }
 }

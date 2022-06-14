@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
-import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProvider;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +35,9 @@ public class User extends DeletableEntity {
         this.profileImage = profileImage;
     }
 
-    public User login(OAuthProvider oauthProvider, String accessToken, OAuthJwt jwt) {
-        this.oauthId = oauthProvider.requestUserInformation(accessToken).getId();
-        this.accessToken = jwt.createAccessToken(oauthId);
+    public User login(String oauthId, OAuthJwt oauthJwt) {
+        this.oauthId = oauthId;
+        this.accessToken = oauthJwt.createAccessToken(id);
         return this;
     }
 }

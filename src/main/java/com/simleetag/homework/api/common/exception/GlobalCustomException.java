@@ -24,6 +24,6 @@ public class GlobalCustomException {
     @ExceptionHandler(JWTDecodeException.class)
     public ResponseEntity<Error> handleJWTDecodeException() {
         final Error error = Error.from("잘못된 JWT 토큰입니다.");
-        return ResponseEntity.badRequest().body(error);
+        return ResponseEntity.status(401).body(error);
     }
 }

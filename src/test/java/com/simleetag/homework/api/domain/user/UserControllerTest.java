@@ -88,7 +88,7 @@ class UserControllerTest extends IntegrationTest {
         );
 
         // then
-        resultActions.andExpect(status().isBadRequest())
+        resultActions.andExpect(status().isUnauthorized())
                      .andExpect(jsonPath("$.message").value("잘못된 JWT 토큰입니다."));
     }
 }

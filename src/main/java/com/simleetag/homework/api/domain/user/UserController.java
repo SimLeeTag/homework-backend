@@ -1,11 +1,14 @@
 package com.simleetag.homework.api.domain.user;
 
-import com.simleetag.homework.api.domain.user.dto.UserRequest;
-import com.simleetag.homework.api.domain.user.dto.UserResponse;
+import java.util.List;
+
+import com.simleetag.homework.api.common.LogIn;
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.user.dto.UserWithHomesResponse;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -15,13 +18,15 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final HomeService homeService;
 
     /**
-     * @title AccessToken을 가진 유저 조회
+     * @title AccessToken으로 유저 조회
      */
-    @PostMapping("/users/me")
-    public ResponseEntity<UserResponse> findUserByAccessToken(@RequestBody UserRequest userRequest) {
-        final User user = userService.findByAccessToken(userRequest.getAccessToken());
-        return ResponseEntity.ok(UserResponse.from(user));
+    @GetMapping("/users/me")
+    public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@LogIn LogInUser logInUser) {
+        final User user = userService.findById(logInUser.getUserId());
+        final List<Home> homes = homeService.findAllWithMembers(logInUser.getUserId());
+        return ResponseEntity.ok(UserWithHomesResponse.from(user, homes));
     }
 }

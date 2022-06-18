@@ -1,12 +1,15 @@
 package com.simleetag.homework.api.domain.user;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import com.simleetag.homework.api.domain.user.dto.UserRequest;
-import com.simleetag.homework.api.utils.ControllerTest;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.simleetag.homework.api.common.IntegrationTest;
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeResources;
+import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,60 +17,78 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserControllerTest extends ControllerTest {
+class UserControllerTest extends IntegrationTest {
 
-    @Autowired
-    private UserController userController;
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private HomeService homeService;
+
+    @MockBean
+    private OAuthJwt oauthJwt;
 
     @Test
     @DisplayName("AccessToken을 가진 유저 조회 테스트")
     void findUserByAccessToken() throws Exception {
 
         // given
-        final long id = 1L;
-        final String userName = "Ever";
-        final String profileImage = "https://image.com/image.jpg";
-        final User user = new User(id, LocalDateTime.now(), LocalDateTime.now(), "12345", "aaa.bbb.ccc", userName, profileImage);
-        given(userService.findByAccessToken(any(String.class))).willReturn(user);
+        final User user = UserResources.aFixtureWithNoMembers();
+        given(userService.findById(any(Long.class))).willReturn(user);
 
-        String requestBody = objectMapper.writeValueAsString(new UserRequest("access.token.sample"));
+        final Home home = HomeResources.aFixtureWithMembers();
+        given(homeService.findAllWithMembers(any(Long.class))).willReturn(List.of(home));
+        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willReturn(new LogInUser(1L));
 
         // when
         ResultActions resultActions = this.successMockMvc.perform(
-                post("/users/me")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                get("/users/me")
+                        .with(successMockMvc.userToken())
         );
 
         // then
-        resultActions.andExpect(status().isOk())
-                     .andExpect(jsonPath("$.id").value(id))
-                     .andExpect(jsonPath("$.userName").value(userName))
-                     .andExpect(jsonPath("$.profileImage").value(profileImage));
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("AccessToken을 가진 유저가 존재하지 않을 경우 테스트")
+    @DisplayName("AccessToken에 해당하는 유저가 존재하지 않을 경우 테스트")
     void findUserByAccessNotExistToken() throws Exception {
 
         // given
-        final String message = "액세스 토큰을 가진 유저가 존재하지 않습니다.";
-        given(userService.findByAccessToken(any(String.class))).willThrow(new IllegalArgumentException(message));
-        String requestBody = objectMapper.writeValueAsString(new UserRequest("access.token.sample"));
+        final String message = String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", 1L);
+        given(userService.findById(any(Long.class))).willThrow(new IllegalArgumentException(message));
+        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willReturn(new LogInUser(1L));
 
         // when
-        ResultActions resultActions = this.successMockMvc.perform(
-                post("/users/me")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+        ResultActions resultActions = this.failMockMvc.perform(
+                get("/users/me")
+                        .with(failMockMvc.userToken())
         );
 
         // then
         resultActions.andExpect(status().isBadRequest())
                      .andExpect(jsonPath("$.message").value(message));
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 AccessToken 테스트")
+    void accessTokenIsNotValidTest() throws Exception {
+
+        // given
+        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willThrow(new JWTDecodeException("Invalid JWT"));
+
+        // when
+        ResultActions resultActions = this.successMockMvc.perform(
+                get("/users/me")
+                        .with(failMockMvc.userToken())
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                     .andExpect(jsonPath("$.message").value("잘못된 JWT 토큰입니다."));
     }
 }

@@ -1,11 +1,11 @@
 package com.simleetag.homework.api.domain.oauth;
 
+import com.simleetag.homework.api.common.IntegrationTest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.provider.ProviderType;
-import com.simleetag.homework.api.utils.ControllerTest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -18,10 +18,10 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class OAuthControllerTest extends ControllerTest {
+class OAuthControllerTest extends IntegrationTest {
 
-    @Autowired
-    private OAuthController OAuthController;
+    @MockBean
+    private OAuthService oauthService;
 
     @Test
     @DisplayName("OAuth 로그인 테스트")
@@ -30,7 +30,7 @@ class OAuthControllerTest extends ControllerTest {
         // given
         final String accessToken = "aaa.bbb.ccc";
         final TokenResponse tokenResponse = new TokenResponse(accessToken);
-        given(oAuthService.signUpOrLogin(any(TokenRequest.class))).willReturn(tokenResponse);
+        given(oauthService.signUpOrLogin(any(TokenRequest.class))).willReturn(tokenResponse);
 
         String requestBody = objectMapper.writeValueAsString(new TokenRequest("access.token.sample", ProviderType.KAKAO));
 

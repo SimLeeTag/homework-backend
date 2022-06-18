@@ -20,10 +20,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User extends DeletableEntity {
 
-    @Column(nullable = false)
+    @Column
     private String oauthId;
 
-    @Column(nullable = false)
+    @Column
     private String accessToken;
 
     @Column
@@ -35,7 +35,7 @@ public class User extends DeletableEntity {
     @Column
     private Integer point;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Member> members = new ArrayList<>();
 
     @Builder

@@ -12,23 +12,27 @@ public class UserResources {
 
     private UserResources() {}
 
-    public static User aFixtureWithNoMembers() {
-        return User.builder().id(1L)
+    public static User aFixtureWithNoMembers(Long id) {
+        return aFixtureWithNoMembers(id, "테스트");
+    }
+
+    public static User aFixtureWithNoMembers(Long id, String name) {
+        return User.builder().id(id)
                    .createdAt(LocalDateTime.now())
                    .deletedAt(LocalDateTime.now())
                    .oauthId("12345")
                    .accessToken("sample.access.token")
-                   .userName("Ever")
+                   .userName(name)
                    .profileImage("https://image.com/image.jpg")
                    .point(500)
                    .members(new ArrayList<>())
                    .build();
     }
 
-    public static User aFixtureWithMembers() {
-        final User user = aFixtureWithNoMembers();
-        final Home home = HomeResources.aFixtureWithNoMembers();
-        final Member member = MemberResources.aFixture(1L, user, home);
+    public static User aFixtureWithMembers(Long id) {
+        final User user = aFixtureWithNoMembers(id);
+        final Home home = HomeResources.aFixtureWithNoMembers(null);
+        final Member member = MemberResources.aFixture(null, user, home);
         user.getMembers().add(member);
         return user;
     }

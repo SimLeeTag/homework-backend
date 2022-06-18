@@ -1,7 +1,6 @@
 package com.simleetag.homework.api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.simleetag.homework.HomeworkBackendApplication;
 import com.simleetag.homework.api.utils.mockmvc.HttpMockMvc;
 import com.simleetag.homework.api.utils.mockmvc.RestDocsMockMvcFactory;
 import com.simleetag.homework.api.utils.mockmvc.WebMockMvc;
@@ -14,15 +13,14 @@ import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGe
 import org.springframework.core.env.Environment;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@ExtendWith(RestDocumentationExtension.class)
 @ComponentScan(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
-@SpringBootTest(classes = HomeworkBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public abstract class IntegrationTest {
 

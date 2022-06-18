@@ -7,11 +7,15 @@ public class HomeResources {
 
     private HomeResources() {}
 
-    public static Home aFixtureWithNoMembers() {
-        return Home.builder().id(1L)
+    public static Home aFixtureWithNoMembers(Long id) {
+        return aFixtureWithNoMembers(id, "테스트 집");
+    }
+
+    public static Home aFixtureWithNoMembers(Long id, String name) {
+        return Home.builder().id(id)
                    .createdAt(LocalDateTime.now())
                    .deletedAt(LocalDateTime.now())
-                   .homeName("에버 하우스")
+                   .homeName(name)
                    .members(new ArrayList<>())
                    .build();
     }

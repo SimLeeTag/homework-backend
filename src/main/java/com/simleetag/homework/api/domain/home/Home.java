@@ -22,7 +22,7 @@ public class Home extends DeletableEntity {
     @Column
     private String homeName;
 
-    @OneToMany
+    @OneToMany(mappedBy = "home")
     private List<Member> members = new ArrayList<>();
 
     @Builder

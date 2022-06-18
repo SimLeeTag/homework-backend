@@ -6,10 +6,8 @@ import com.simleetag.homework.api.domain.oauth.infra.provider.ProviderType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class TokenRequest {
 

@@ -29,7 +29,8 @@ public class OAuthService {
             return TokenResponse.from(savedUser.get());
         }
 
-        final User loggedInUser = userRepository.save(new User()).login(oauthId, oauthJwt);
+        final User loggedInUser = userRepository.save(new User())
+                                                .login(oauthId, oauthJwt);
         return TokenResponse.from(loggedInUser);
     }
 }

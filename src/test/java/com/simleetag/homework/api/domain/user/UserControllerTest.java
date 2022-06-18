@@ -37,9 +37,18 @@ class UserControllerTest extends IntegrationTest {
     void findUserByAccessToken() throws Exception {
 
         // given
-        final User user = userService.save(UserResources.aFixtureWithNoMembers());
-        final Home home = homeService.save(HomeResources.aFixtureWithNoMembers());
-        memberService.save(MemberResources.aFixture(null, user, home));
+        final User ever = userService.save(UserResources.aFixtureWithNoMembers(null, "에버"));
+        final User poogle = userService.save(UserResources.aFixtureWithNoMembers(null, "푸글"));
+        final User lena = userService.save(UserResources.aFixtureWithNoMembers(null, "레나"));
+        final User ttozzi = userService.save(UserResources.aFixtureWithNoMembers(null, "또치"));
+
+        final Home backend = homeService.save(HomeResources.aFixtureWithNoMembers(null, "백엔드"));
+        memberService.save(MemberResources.aFixture(null, ever, backend));
+        memberService.save(MemberResources.aFixture(null, poogle, backend));
+
+        final Home ios = homeService.save(HomeResources.aFixtureWithNoMembers(null, "아이오에스"));
+        memberService.save(MemberResources.aFixture(null, lena, ios));
+        memberService.save(MemberResources.aFixture(null, ttozzi, ios));
 
         final String accessToken = oauthJwt.createAccessToken(1L);
 
@@ -80,7 +89,7 @@ class UserControllerTest extends IntegrationTest {
         // given
 
         // when
-        ResultActions resultActions = this.successMockMvc.perform(
+        ResultActions resultActions = this.failMockMvc.perform(
                 get("/users/me")
                         .with(failMockMvc.userToken())
         );

@@ -2,7 +2,7 @@ package com.simleetag.homework.api.domain.oauth;
 
 import com.simleetag.homework.api.common.IntegrationTest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
-import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
+import com.simleetag.homework.api.domain.oauth.infra.provider.OAuthProviderFactory;
 import com.simleetag.homework.api.domain.oauth.infra.provider.ProviderType;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,13 +15,12 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class OAuthControllerTest extends IntegrationTest {
+class DummyOAuthTest extends IntegrationTest {
 
     @MockBean
-    private OAuthService oauthService;
+    private OAuthProviderFactory oAuthProviderFactory;
 
     @Test
     @DisplayName("OAuth 로그인 테스트")
@@ -29,10 +28,8 @@ class OAuthControllerTest extends IntegrationTest {
 
         // given
         final String accessToken = "sample.access.token";
-        final TokenResponse tokenResponse = new TokenResponse(accessToken);
-        given(oauthService.signUpOrLogin(any(TokenRequest.class))).willReturn(tokenResponse);
-
-        String requestBody = objectMapper.writeValueAsString(new TokenRequest("access.token.sample", ProviderType.KAKAO));
+        String requestBody = objectMapper.writeValueAsString(new TokenRequest(accessToken, ProviderType.KAKAO));
+        given(oAuthProviderFactory.retrieveOAuthId(any(TokenRequest.class))).willReturn("sample-oauth-id");
 
         // when
         ResultActions resultActions = this.successMockMvc.perform(
@@ -42,7 +39,6 @@ class OAuthControllerTest extends IntegrationTest {
         );
 
         // then
-        resultActions.andExpect(status().isOk())
-                     .andExpect(jsonPath("$.accessToken").value(accessToken));
+        resultActions.andExpect(status().isOk());
     }
 }

@@ -16,7 +16,7 @@ public class HttpMockMvc extends AbstractWebMockMvc {
 
     public static HttpMockMvc of(ApplicationContext applicationContext) {
         if (Objects.isNull(httpMockMvc)) {
-            httpMockMvc = new HttpMockMvc(defaultMockMvcBuilder(applicationContext).build());
+            httpMockMvc = new HttpMockMvc(standaloneMockMvcBuilder(applicationContext).build());
         }
 
         return httpMockMvc;

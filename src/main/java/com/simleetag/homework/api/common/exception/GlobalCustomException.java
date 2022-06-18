@@ -21,6 +21,18 @@ public class GlobalCustomException {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Error> handleAuthenticationException(AuthenticationException e) {
+        final Error error = Error.from(e.getMessage());
+        return ResponseEntity.status(401).body(error);
+    }
+
+    @ExceptionHandler(OAuthException.class)
+    public ResponseEntity<Error> handleOAuthException(OAuthException e) {
+        final Error error = Error.from(e.getMessage());
+        return ResponseEntity.status(401).body(error);
+    }
+
     @ExceptionHandler(JWTDecodeException.class)
     public ResponseEntity<Error> handleJWTDecodeException() {
         final Error error = Error.from("잘못된 JWT 토큰입니다.");

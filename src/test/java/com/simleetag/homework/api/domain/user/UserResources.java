@@ -17,7 +17,7 @@ public class UserResources {
                    .createdAt(LocalDateTime.now())
                    .deletedAt(LocalDateTime.now())
                    .oauthId("12345")
-                   .accessToken("aaa.bbb.ccc")
+                   .accessToken("sample.access.token")
                    .userName("Ever")
                    .profileImage("https://image.com/image.jpg")
                    .point(500)

@@ -29,4 +29,12 @@ public class HttpMockMvc extends AbstractWebMockMvc {
             return request;
         };
     }
+
+    @Override
+    public RequestPostProcessor userToken(String accessToken) {
+        return request -> {
+            request.addHeader("Authorization", BEARER + " " + accessToken);
+            return request;
+        };
+    }
 }

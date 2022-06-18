@@ -17,10 +17,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public List<Home> findAllHomeByUserId(Long userId) {
+    public List<Long> findAllHomeIdsByUserId(Long userId) {
         return memberRepository.findAllByUserId(userId)
                                .stream()
                                .map(Member::getHome)
+                               .map(Home::getId)
                                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Member save(Member member) {
+        return memberRepository.save(member);
     }
 }

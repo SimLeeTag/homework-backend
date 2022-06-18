@@ -20,4 +20,12 @@ public class RestDocsMockMvc extends AbstractWebMockMvc {
             return documentAuthorization(request, TOKEN_REQUIRED);
         };
     }
+
+    @Override
+    public RequestPostProcessor userToken(String accessToken) {
+        return request -> {
+            request.addHeader("Authorization", BEARER + " " + accessToken);
+            return documentAuthorization(request, TOKEN_REQUIRED);
+        };
+    }
 }

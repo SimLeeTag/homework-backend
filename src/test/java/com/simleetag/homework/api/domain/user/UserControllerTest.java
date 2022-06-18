@@ -1,35 +1,35 @@
 package com.simleetag.homework.api.domain.user;
 
-import java.util.List;
-
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.simleetag.homework.api.common.IntegrationTest;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.HomeResources;
 import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.member.MemberResources;
+import com.simleetag.homework.api.domain.member.MemberService;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UserControllerTest extends IntegrationTest {
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
-    @MockBean
+    @Autowired
     private HomeService homeService;
 
-    @MockBean
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
     private OAuthJwt oauthJwt;
 
     @Test
@@ -37,17 +37,16 @@ class UserControllerTest extends IntegrationTest {
     void findUserByAccessToken() throws Exception {
 
         // given
-        final User user = UserResources.aFixtureWithNoMembers();
-        given(userService.findById(any(Long.class))).willReturn(user);
+        final User user = userService.save(UserResources.aFixtureWithNoMembers());
+        final Home home = homeService.save(HomeResources.aFixtureWithNoMembers());
+        memberService.save(MemberResources.aFixture(null, user, home));
 
-        final Home home = HomeResources.aFixtureWithMembers();
-        given(homeService.findAllWithMembers(any(Long.class))).willReturn(List.of(home));
-        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willReturn(new LogInUser(1L));
+        final String accessToken = oauthJwt.createAccessToken(1L);
 
         // when
         ResultActions resultActions = this.successMockMvc.perform(
                 get("/users/me")
-                        .with(successMockMvc.userToken())
+                        .with(successMockMvc.userToken(accessToken))
         );
 
         // then
@@ -59,14 +58,14 @@ class UserControllerTest extends IntegrationTest {
     void findUserByAccessNotExistToken() throws Exception {
 
         // given
-        final String message = String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", 1L);
-        given(userService.findById(any(Long.class))).willThrow(new IllegalArgumentException(message));
-        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willReturn(new LogInUser(1L));
+        final long userId = 10L;
+        final String message = String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", userId);
+        final String accessToken = oauthJwt.createAccessToken(userId);
 
         // when
         ResultActions resultActions = this.failMockMvc.perform(
                 get("/users/me")
-                        .with(failMockMvc.userToken())
+                        .with(failMockMvc.userToken(accessToken))
         );
 
         // then
@@ -79,7 +78,6 @@ class UserControllerTest extends IntegrationTest {
     void accessTokenIsNotValidTest() throws Exception {
 
         // given
-        given(oauthJwt.parseClaimsAsLoginUser(any(String.class))).willThrow(new JWTDecodeException("Invalid JWT"));
 
         // when
         ResultActions resultActions = this.successMockMvc.perform(

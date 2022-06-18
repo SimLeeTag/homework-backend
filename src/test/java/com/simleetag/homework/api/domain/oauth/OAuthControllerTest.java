@@ -28,7 +28,7 @@ class OAuthControllerTest extends IntegrationTest {
     void loginTest() throws Exception {
 
         // given
-        final String accessToken = "aaa.bbb.ccc";
+        final String accessToken = "sample.access.token";
         final TokenResponse tokenResponse = new TokenResponse(accessToken);
         given(oauthService.signUpOrLogin(any(TokenRequest.class))).willReturn(tokenResponse);
 

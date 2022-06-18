@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @RestControllerAdvice
 public class GlobalCustomException {
@@ -30,6 +31,12 @@ public class GlobalCustomException {
     @ExceptionHandler(OAuthException.class)
     public ResponseEntity<Error> handleOAuthException(OAuthException e) {
         final Error error = Error.from(e.getMessage());
+        return ResponseEntity.status(401).body(error);
+    }
+
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<Error> handleWebClientResponseException(WebClientResponseException e) {
+        final Error error = Error.from(e.getResponseBodyAsString());
         return ResponseEntity.status(401).body(error);
     }
 

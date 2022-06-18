@@ -14,7 +14,7 @@ public class KakaoOAuthProvider extends AbstractOAuthProvider {
 
     @Override
     public UserInformationResponse requestUserInformation(String accessToken) {
-        String accessTokenWithBearer = "bearer " + accessToken;
+        String accessTokenWithBearer = "Bearer " + accessToken;
         return WebClient.create()
                         .get()
                         .uri(oauthAttributes.getUserInformationUri())

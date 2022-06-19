@@ -16,6 +16,7 @@ public class MemberResources {
                      .deletedAt(LocalDateTime.now())
                      .user(user)
                      .home(home)
+                     .point(500)
                      .build();
     }
 }

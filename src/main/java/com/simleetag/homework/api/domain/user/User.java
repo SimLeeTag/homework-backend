@@ -32,20 +32,16 @@ public class User extends DeletableEntity {
     @Column
     private String profileImage;
 
-    @Column
-    private Integer point;
-
     @OneToMany(mappedBy = "user")
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String accessToken, String userName, String profileImage, Integer point, List<Member> members) {
+    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String accessToken, String userName, String profileImage, List<Member> members) {
         super(id, createdAt, deletedAt);
         this.oauthId = oauthId;
         this.accessToken = accessToken;
         this.userName = userName;
         this.profileImage = profileImage;
-        this.point = point;
         this.members = members;
     }
 

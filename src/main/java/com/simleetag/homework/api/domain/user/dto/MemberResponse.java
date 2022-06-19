@@ -41,6 +41,14 @@ public class MemberResponse {
     @NotBlank
     private final String profileImage;
 
+    /**
+     * 멤버가 가진 포인트
+     * <br>
+     * 유저는 집마다 다른 포인트를 가지고 있다.
+     */
+    @NotBlank
+    private final Integer point;
+
     public static List<MemberResponse> from(List<Member> members) {
         List<MemberResponse> memberResponses = new ArrayList<>();
         for (Member member : members) {
@@ -48,7 +56,8 @@ public class MemberResponse {
                     member.getId(),
                     member.getUser().getId(),
                     member.getUser().getUserName(),
-                    member.getUser().getProfileImage()
+                    member.getUser().getProfileImage(),
+                    member.getPoint()
             ));
         }
 

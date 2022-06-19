@@ -1,6 +1,7 @@
 package com.simleetag.homework.api.domain.member;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -23,10 +24,14 @@ public class Member extends DeletableEntity {
     @ManyToOne
     private Home home;
 
+    @Column
+    private Integer point;
+
     @Builder
-    public Member(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, User user, Home home) {
+    public Member(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, User user, Home home, Integer point) {
         super(id, createdAt, deletedAt);
         this.user = user;
         this.home = home;
+        this.point = point;
     }
 }

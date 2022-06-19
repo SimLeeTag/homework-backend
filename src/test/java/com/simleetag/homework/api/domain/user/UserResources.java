@@ -24,7 +24,6 @@ public class UserResources {
                    .accessToken("sample.homework.token")
                    .userName(name)
                    .profileImage("https://image.com/image.jpg")
-                   .point(500)
                    .members(new ArrayList<>())
                    .build();
     }

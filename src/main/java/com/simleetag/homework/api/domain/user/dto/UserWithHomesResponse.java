@@ -32,12 +32,6 @@ public class UserWithHomesResponse {
     private final String profileImage;
 
     /**
-     * 유저가 가진 포인트
-     */
-    @NotBlank
-    private final Integer point;
-
-    /**
      * 유저가 속한 집 목록
      */
     @NotBlank
@@ -48,7 +42,6 @@ public class UserWithHomesResponse {
                 user.getId(),
                 user.getUserName(),
                 user.getProfileImage(),
-                user.getPoint(),
                 HomeResponse.from(homes)
         );
     }

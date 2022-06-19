@@ -18,7 +18,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 public abstract class AbstractWebMockMvc implements WebMockMvc {
 
     protected static final String BEARER = "Bearer";
-    protected static final String ACCESS_TOKEN = "sample.access.token";
+    protected static final String ACCESS_TOKEN = "sample.homework.token";
 
     protected final MockMvc mockMvc;
 

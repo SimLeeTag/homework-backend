@@ -27,7 +27,7 @@ class DummyOAuthTest extends IntegrationTest {
     void loginTest() throws Exception {
 
         // given
-        final String accessToken = "sample.access.token";
+        final String accessToken = "sample.homework.token";
         String requestBody = objectMapper.writeValueAsString(new TokenRequest(accessToken, ProviderType.KAKAO));
         given(oAuthProviderFactory.retrieveOAuthId(any(TokenRequest.class))).willReturn("sample-oauth-id");
 

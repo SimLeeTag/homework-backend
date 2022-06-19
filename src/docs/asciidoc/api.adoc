@@ -49,6 +49,10 @@ endif::[]
 
 include::{snippets}/dummy-o-auth-test/login-test/auto-section.adoc[]
 
+기가입 유저일 경우
+
+include::{snippets}/dummy-o-auth-test/used-user-login-test/http-response.adoc[]
+
 ==== Error
 
 - `401 Unauthorized`: 요청 AccessToken이 유효하지 않을 경우

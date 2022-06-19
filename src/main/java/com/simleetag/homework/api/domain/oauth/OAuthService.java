@@ -1,7 +1,9 @@
 package com.simleetag.homework.api.domain.oauth;
 
-import java.util.Optional;
+import java.util.List;
 
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
@@ -18,19 +20,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class OAuthService {
     private final OAuthProviderFactory oauthProviderFactory;
+    private final HomeService homeService;
     private final UserRepository userRepository;
     private final OAuthJwt oauthJwt;
 
     @Transactional
     public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
         final String oauthId = oauthProviderFactory.retrieveOAuthId(tokenRequest);
-        final Optional<User> savedUser = userRepository.findByOauthId(oauthId);
-        if (savedUser.isPresent()) {
-            return TokenResponse.from(savedUser.get());
-        }
+        final User loginUser = userRepository.findByOauthId(oauthId)
+                                             .orElseGet(() -> userRepository.save(new User()))
+                                             .login(oauthId, oauthJwt);
 
-        final User loggedInUser = userRepository.save(new User())
-                                                .login(oauthId, oauthJwt);
-        return TokenResponse.from(loggedInUser);
+        final List<Home> homes = homeService.findAllWithMembers(loginUser.getId());
+        return TokenResponse.from(loginUser, homes);
     }
 }

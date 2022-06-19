@@ -1,8 +1,11 @@
 package com.simleetag.homework.api.domain.oauth.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 
+import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.user.User;
+import com.simleetag.homework.api.domain.user.dto.UserWithHomesResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +20,13 @@ public class TokenResponse {
     @NotBlank
     private String accessToken;
 
-    public static TokenResponse from(User user) {
-        return new TokenResponse(user.getAccessToken());
+    /**
+     * Homework에 가입된 유저의 정보
+     */
+    @NotBlank
+    private UserWithHomesResponse user;
+
+    public static TokenResponse from(User user, List<Home> homes) {
+        return new TokenResponse(user.getAccessToken(), UserWithHomesResponse.from(user, homes));
     }
 }

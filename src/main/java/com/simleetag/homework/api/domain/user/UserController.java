@@ -2,7 +2,7 @@ package com.simleetag.homework.api.domain.user;
 
 import java.util.List;
 
-import com.simleetag.homework.api.common.LogIn;
+import com.simleetag.homework.api.common.Login;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.user.dto.UserWithHomesResponse;
@@ -24,7 +24,7 @@ public class UserController {
      * @title AccessToken으로 유저 조회
      */
     @GetMapping("/users/me")
-    public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@LogIn LogInUser logInUser) {
+    public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@Login LoginUser logInUser) {
         final User user = userService.findById(logInUser.getUserId());
         final List<Home> homes = homeService.findAllWithMembers(logInUser.getUserId());
         return ResponseEntity.ok(UserWithHomesResponse.from(user, homes));

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.simleetag.homework.api.common.exception.AuthenticationException;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
-import com.simleetag.homework.api.domain.user.LogInUser;
+import com.simleetag.homework.api.domain.user.LoginUser;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -14,17 +14,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class LogInUserArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
     private final OAuthJwt oauthJwt;
 
-    public LogInUserArgumentResolver(OAuthJwt oauthJwt) {
+    public LoginUserArgumentResolver(OAuthJwt oauthJwt) {
         this.oauthJwt = oauthJwt;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LogIn.class)
-                && LogInUser.class.equals(parameter.getParameterType());
+        return parameter.hasParameterAnnotation(Login.class)
+                && LoginUser.class.equals(parameter.getParameterType());
     }
 
     @Override

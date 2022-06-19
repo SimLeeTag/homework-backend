@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class LogInUser {
+public class LoginUser {
     private final Long userId;
 }

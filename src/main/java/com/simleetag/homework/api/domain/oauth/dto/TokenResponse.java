@@ -26,7 +26,7 @@ public class TokenResponse {
     @NotBlank
     private UserWithHomesResponse user;
 
-    public static TokenResponse from(User user, List<Home> homes) {
-        return new TokenResponse(user.getAccessToken(), UserWithHomesResponse.from(user, homes));
+    public static TokenResponse from(String accessToken, User user, List<Home> homes) {
+        return new TokenResponse(accessToken, UserWithHomesResponse.from(user, homes));
     }
 }

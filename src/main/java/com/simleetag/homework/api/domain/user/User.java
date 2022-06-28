@@ -9,7 +9,6 @@ import javax.persistence.OneToMany;
 
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.member.Member;
-import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -24,9 +23,6 @@ public class User extends DeletableEntity {
     private String oauthId;
 
     @Column
-    private String accessToken;
-
-    @Column
     private String userName;
 
     @Column
@@ -35,19 +31,16 @@ public class User extends DeletableEntity {
     @OneToMany(mappedBy = "user")
     private List<Member> members = new ArrayList<>();
 
+    public User(String oauthId) {
+        this.oauthId = oauthId;
+    }
+
     @Builder
-    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String accessToken, String userName, String profileImage, List<Member> members) {
+    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String userName, String profileImage, List<Member> members) {
         super(id, createdAt, deletedAt);
         this.oauthId = oauthId;
-        this.accessToken = accessToken;
         this.userName = userName;
         this.profileImage = profileImage;
         this.members = members;
-    }
-
-    public User login(String oauthId, OAuthJwt oauthJwt) {
-        this.oauthId = oauthId;
-        this.accessToken = oauthJwt.createAccessToken(id);
-        return this;
     }
 }

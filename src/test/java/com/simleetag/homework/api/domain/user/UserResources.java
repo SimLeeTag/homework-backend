@@ -21,7 +21,6 @@ public class UserResources {
                    .createdAt(LocalDateTime.now())
                    .deletedAt(LocalDateTime.now())
                    .oauthId("12345")
-                   .accessToken("sample.homework.token")
                    .userName(name)
                    .profileImage("https://image.com/image.jpg")
                    .members(new ArrayList<>())

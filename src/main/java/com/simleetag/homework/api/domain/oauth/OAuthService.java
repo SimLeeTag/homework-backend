@@ -1,9 +1,11 @@
 package com.simleetag.homework.api.domain.oauth;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.simleetag.homework.api.domain.home.Home;
-import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.member.Member;
+import com.simleetag.homework.api.domain.member.MemberRepository;
 import com.simleetag.homework.api.domain.oauth.dto.TokenRequest;
 import com.simleetag.homework.api.domain.oauth.dto.TokenResponse;
 import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
@@ -20,18 +22,23 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class OAuthService {
     private final OAuthProviderFactory oauthProviderFactory;
-    private final HomeService homeService;
     private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final OAuthJwt oauthJwt;
 
     @Transactional
     public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
         final String oauthId = oauthProviderFactory.retrieveOAuthId(tokenRequest);
-        final User loginUser = userRepository.findByOauthId(oauthId)
-                                             .orElseGet(() -> userRepository.save(new User()))
-                                             .login(oauthId, oauthJwt);
+        final User user = userRepository.findByOauthId(oauthId)
+                                        .orElseGet(() -> new User(oauthId));
 
-        final List<Home> homes = homeService.findAllWithMembers(loginUser.getId());
-        return TokenResponse.from(loginUser, homes);
+        final User savedUser = userRepository.save(user);
+        final String accessToken = oauthJwt.createAccessToken(savedUser.getId());
+        final List<Home> homes = memberRepository.findAllByUserId(savedUser.getId())
+                                                 .stream()
+                                                 .map(Member::getHome)
+                                                 .collect(Collectors.toList());
+
+        return TokenResponse.from(accessToken, savedUser, homes);
     }
 }

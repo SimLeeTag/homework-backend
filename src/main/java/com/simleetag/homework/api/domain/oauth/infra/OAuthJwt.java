@@ -1,9 +1,13 @@
 package com.simleetag.homework.api.domain.oauth.infra;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.simleetag.homework.api.domain.user.LoginUser;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -20,18 +24,29 @@ public class OAuthJwt {
         algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String createAccessToken(String id) {
+    public String createAccessToken(Long id) {
         return JWT.create()
-                  .withClaim("id", id)
+                  .withClaim("userId", id)
                   .withIssuedAt(new Date())
                   .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiration))
                   .sign(algorithm);
     }
 
     public <T> T parseClaims(String token, String claimName, Class<T> claimClass) {
+        return parseClaims(token)
+                .get(claimName)
+                .as(claimClass);
+    }
+
+    private Map<String, Claim> parseClaims(String token) {
         return JWT.decode(token)
-                  .getClaims()
-                  .get(claimName)
-                  .as(claimClass);
+                  .getClaims();
+    }
+
+    public LoginUser parseClaimsAsLoginUser(String accessToken) {
+        final JWTVerifier verifier = JWT.require(algorithm).build();
+        final Map<String, Claim> claims = verifier.verify(accessToken).getClaims();
+        final Long userId = claims.get("userId").as(Long.class);
+        return new LoginUser(userId);
     }
 }

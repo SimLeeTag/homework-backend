@@ -1,0 +1,28 @@
+package com.simleetag.homework.api.domain.home;
+
+import java.util.List;
+
+import com.simleetag.homework.api.domain.member.MemberService;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
+@Transactional
+@RequiredArgsConstructor
+@Service
+public class HomeService {
+
+    private final HomeRepository homeRepository;
+    private final MemberService memberService;
+
+    public List<Home> findAllWithMembers(Long userId) {
+        final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
+        return homeRepository.findAllWithMembersByIdIn(homeIds);
+    }
+
+    public Home save(Home home) {
+        return homeRepository.save(home);
+    }
+}

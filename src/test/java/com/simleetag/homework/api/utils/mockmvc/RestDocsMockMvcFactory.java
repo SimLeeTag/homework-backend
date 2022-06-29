@@ -14,6 +14,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.operation.preprocess.ContentModifyingOperationPreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.AbstractMockMvcBuilder;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
 import capital.scalable.restdocs.AutoDocumentation;
@@ -69,19 +71,39 @@ public class RestDocsMockMvcFactory {
         return new RestDocsMockMvc(createMockMvc(provider, snippets, applicationContext));
     }
 
+    public static WebMockMvc successRestDocsMockMvc(RestDocumentationContextProvider provider, WebApplicationContext wac) {
+        return restDocsMockMvc(provider, SUCCESS_SNIPPETS, wac);
+    }
+
+    public static WebMockMvc failRestDocsMockMvc(RestDocumentationContextProvider provider, WebApplicationContext wac) {
+        return restDocsMockMvc(provider, FAIL_SNIPPETS, wac);
+    }
+
+    public static RestDocsMockMvc restDocsMockMvc(RestDocumentationContextProvider provider, Snippet[] snippets, WebApplicationContext wac) {
+        return new RestDocsMockMvc(createMockMvc(provider, snippets, wac));
+    }
+
     private static MockMvc createMockMvc(RestDocumentationContextProvider provider, Snippet[] snippets, ApplicationContext applicationContext) {
-        return AbstractWebMockMvc.defaultMockMvcBuilder(applicationContext)
-                                 .alwaysDo(prepareJackson(OBJECT_MAPPER))
-                                 .alwaysDo(restDocumentation())
-                                 .apply(documentationConfiguration(provider)
-                                         .uris()
-                                         .withScheme("http")
-                                         .withHost("localhost")
-                                         .withPort(8080)
-                                         .and()
-                                         .snippets()
-                                         .withDefaults(snippets))
-                                 .build();
+        return mockMvc(provider, snippets, AbstractWebMockMvc.standaloneMockMvcBuilder(applicationContext));
+    }
+
+    private static MockMvc createMockMvc(RestDocumentationContextProvider provider, Snippet[] snippets, WebApplicationContext wac) {
+        return mockMvc(provider, snippets, AbstractWebMockMvc.defaultMockMvcBuilder(wac));
+
+    }
+
+    private static MockMvc mockMvc(RestDocumentationContextProvider provider, Snippet[] snippets, AbstractMockMvcBuilder builder) {
+        return builder.alwaysDo(prepareJackson(OBJECT_MAPPER))
+                      .alwaysDo(restDocumentation())
+                      .apply(documentationConfiguration(provider)
+                              .uris()
+                              .withScheme("http")
+                              .withHost("localhost")
+                              .withPort(8080)
+                              .and()
+                              .snippets()
+                              .withDefaults(snippets))
+                      .build();
     }
 
     private static RestDocumentationResultHandler restDocumentation() {

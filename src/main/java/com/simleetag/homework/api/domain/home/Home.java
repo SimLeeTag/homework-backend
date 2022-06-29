@@ -1,4 +1,4 @@
-package com.simleetag.homework.api.domain.user;
+package com.simleetag.homework.api.domain.home;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,30 +17,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class User extends DeletableEntity {
+public class Home extends DeletableEntity {
 
     @Column
-    private String oauthId;
+    private String homeName;
 
-    @Column
-    private String userName;
-
-    @Column
-    private String profileImage;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "home")
     private List<Member> members = new ArrayList<>();
 
-    public User(String oauthId) {
-        this.oauthId = oauthId;
-    }
-
     @Builder
-    public User(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String oauthId, String userName, String profileImage, List<Member> members) {
+    public Home(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, String homeName, List<Member> members) {
         super(id, createdAt, deletedAt);
-        this.oauthId = oauthId;
-        this.userName = userName;
-        this.profileImage = profileImage;
+        this.homeName = homeName;
         this.members = members;
     }
 }

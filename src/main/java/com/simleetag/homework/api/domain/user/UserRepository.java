@@ -1,8 +1,6 @@
-package com.simleetag.homework.api.domain.oauth.infra;
+package com.simleetag.homework.api.domain.user;
 
 import java.util.Optional;
-
-import com.simleetag.homework.api.domain.user.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

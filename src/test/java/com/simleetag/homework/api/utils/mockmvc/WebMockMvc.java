@@ -8,4 +8,6 @@ public interface WebMockMvc {
     ResultActions perform(RequestBuilder requestBuilder) throws Exception;
 
     RequestPostProcessor userToken();
+
+    RequestPostProcessor userToken(String accessToken);
 }

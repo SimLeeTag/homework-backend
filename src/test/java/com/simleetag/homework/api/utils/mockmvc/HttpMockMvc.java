@@ -16,7 +16,7 @@ public class HttpMockMvc extends AbstractWebMockMvc {
 
     public static HttpMockMvc of(ApplicationContext applicationContext) {
         if (Objects.isNull(httpMockMvc)) {
-            httpMockMvc = new HttpMockMvc(defaultMockMvcBuilder(applicationContext).build());
+            httpMockMvc = new HttpMockMvc(standaloneMockMvcBuilder(applicationContext).build());
         }
 
         return httpMockMvc;
@@ -26,6 +26,14 @@ public class HttpMockMvc extends AbstractWebMockMvc {
     public RequestPostProcessor userToken() {
         return request -> {
             request.addHeader("Authorization", BEARER + " " + ACCESS_TOKEN);
+            return request;
+        };
+    }
+
+    @Override
+    public RequestPostProcessor userToken(String accessToken) {
+        return request -> {
+            request.addHeader("Authorization", BEARER + " " + accessToken);
             return request;
         };
     }

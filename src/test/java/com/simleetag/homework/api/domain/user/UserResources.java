@@ -34,4 +34,14 @@ public class UserResources {
         user.getMembers().add(member);
         return user;
     }
+    public static User aFixtureWithMaximumMembers(Long id) {
+        final User user = aFixtureWithNoMembers(id);
+        final Member member1 = MemberResources.aFixture(null, user, null);
+        final Member member2 = MemberResources.aFixture(null, user, null);
+        final Member member3 = MemberResources.aFixture(null, user, null);
+        user.getMembers().add(member1);
+        user.getMembers().add(member2);
+        user.getMembers().add(member3);
+        return user;
+    }
 }

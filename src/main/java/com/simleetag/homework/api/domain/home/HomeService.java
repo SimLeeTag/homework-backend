@@ -75,8 +75,7 @@ public class HomeService {
                               .point(0)
                               .build();
 
-        Member newMember = memberService.findMemberByHomeIdAndUserId(homeId, user.getId())
-                .orElseGet(() -> memberService.save(member));
+        Member newMember = memberService.save(member);
 
         return new MemberIdResponse(newMember.getId());
     }

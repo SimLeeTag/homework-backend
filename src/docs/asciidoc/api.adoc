@@ -99,3 +99,11 @@ include::{snippets}/get-home-information-test/get-home/auto-section.adoc[]
 - `400 Bad Request`: invitation에 해당하는 집이 없는 경우
 
 include::{snippets}/get-home-information-test/find-home-by-home-id-not-exist/http-response.adoc[]
+
+include::{snippets}/join-home-test/join-home/auto-section.adoc[]
+
+==== Error
+
+- `400 Bad Request`: 최대 3개 이상의 집에 소속(생성 및 참여)되는 경우
+
+include::{snippets}/create-home-test/create-home-more-than-three/http-response.adoc[]

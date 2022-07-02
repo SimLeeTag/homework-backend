@@ -24,7 +24,7 @@ public class UserController {
     private final HomeService homeService;
 
     /**
-     * @title AccessToken으로 유저 조회
+     * @title Hoemwork 토큰으로 유저 조회
      */
     @GetMapping("/users/me")
     public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@Login LoginUser logInUser) {

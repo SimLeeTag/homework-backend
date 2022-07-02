@@ -33,8 +33,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         String[] authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ");
         String authType = authorizationHeader[0].toLowerCase();
         if (authType.startsWith("bearer")) {
-            final String accessToken = authorizationHeader[1];
-            return oauthJwt.parseClaimsAsLoginUser(accessToken);
+            final String homeworkToken = authorizationHeader[1];
+            return oauthJwt.parseClaimsAsLoginUser(homeworkToken);
         }
 
         throw new AuthenticationException("Bearer 형식의 토큰이 아닙니다.");

@@ -15,10 +15,10 @@ import lombok.Getter;
 public class TokenResponse {
 
     /**
-     * Homework 로그인에 필요한 AccessToken
+     * Homework 서비스를 사용하기 위한 JWT
      */
     @NotBlank
-    private String accessToken;
+    private String homeworkToken;
 
     /**
      * Homework에 가입된 유저의 정보
@@ -26,7 +26,7 @@ public class TokenResponse {
     @NotBlank
     private UserWithHomesResponse user;
 
-    public static TokenResponse from(String accessToken, User user, List<Home> homes) {
-        return new TokenResponse(accessToken, UserWithHomesResponse.from(user, homes));
+    public static TokenResponse from(String homeworkToken, User user, List<Home> homes) {
+        return new TokenResponse(homeworkToken, UserWithHomesResponse.from(user, homes));
     }
 }

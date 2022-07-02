@@ -57,12 +57,12 @@ class UserIntegrationTest extends IntegrationTest {
             memberService.save(MemberResources.aFixture(null, lena, ios));
             memberService.save(MemberResources.aFixture(null, ttozzi, ios));
 
-            final String accessToken = oauthJwt.createAccessToken(ever.getId());
+            final String homeworkToken = oauthJwt.createHomeworkToken(ever.getId());
 
             // when
             ResultActions resultActions = successMockMvc.perform(
                     get("/users/me")
-                            .with(successMockMvc.userToken(accessToken))
+                            .with(successMockMvc.userToken(homeworkToken))
             );
 
             // then
@@ -76,12 +76,12 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             final long userId = 10L;
             final String message = String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", userId);
-            final String accessToken = oauthJwt.createAccessToken(userId);
+            final String homeworkToken = oauthJwt.createHomeworkToken(userId);
 
             // when
             ResultActions resultActions = failMockMvc.perform(
                     get("/users/me")
-                            .with(failMockMvc.userToken(accessToken))
+                            .with(failMockMvc.userToken(homeworkToken))
             );
 
             // then
@@ -116,14 +116,14 @@ class UserIntegrationTest extends IntegrationTest {
 
             // given
             final User user = userRepository.save(UserResources.aFixtureWithNoMembers(null));
-            final String accessToken = oauthJwt.createAccessToken(user.getId());
+            final String homeworkToken = oauthJwt.createHomeworkToken(user.getId());
             final UserProfileRequest request = new UserProfileRequest("에버", "https://image.com");
 
             // when
             ResultActions resultActions = successMockMvc.perform(
                     patch("/users/me")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .with(successMockMvc.userToken(accessToken))
+                            .with(successMockMvc.userToken(homeworkToken))
                             .content(objectMapper.writeValueAsBytes(request))
             );
 

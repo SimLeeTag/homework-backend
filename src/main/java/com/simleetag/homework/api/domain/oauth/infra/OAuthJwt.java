@@ -24,7 +24,7 @@ public class OAuthJwt {
         algorithm = Algorithm.HMAC256(secret);
     }
 
-    public String createAccessToken(Long id) {
+    public String createHomeworkToken(Long id) {
         return JWT.create()
                   .withClaim("userId", id)
                   .withIssuedAt(new Date())
@@ -43,9 +43,9 @@ public class OAuthJwt {
                   .getClaims();
     }
 
-    public LoginUser parseClaimsAsLoginUser(String accessToken) {
+    public LoginUser parseClaimsAsLoginUser(String homeworkToken) {
         final JWTVerifier verifier = JWT.require(algorithm).build();
-        final Map<String, Claim> claims = verifier.verify(accessToken).getClaims();
+        final Map<String, Claim> claims = verifier.verify(homeworkToken).getClaims();
         final Long userId = claims.get("userId").as(Long.class);
         return new LoginUser(userId);
     }

@@ -47,11 +47,11 @@ endif::[]
 
 == Login API
 
-include::{snippets}/dummy-o-auth-test/login-test/auto-section.adoc[]
+include::{snippets}/dummy-o-auth-integration-test/login-test/auto-section.adoc[]
 
 기가입 유저일 경우
 
-include::{snippets}/dummy-o-auth-test/used-user-login-test/http-response.adoc[]
+include::{snippets}/dummy-o-auth-integration-test/used-user-login-test/http-response.adoc[]
 
 ==== Error
 
@@ -67,14 +67,16 @@ include::{snippets}/stable-o-auth-test/access-token-is-not-valid-at-apple-test/h
 
 == User API
 
-include::{snippets}/user-controller-test/find-user-by-access-token/auto-section.adoc[]
+include::{snippets}/find-user-test/find-user-by-access-token/auto-section.adoc[]
 
 ==== Error
 
 - `400 Bad Request`: accessToken에 해당하는 유저가 존재하지 않을 경우
 
-include::{snippets}/user-controller-test/find-user-by-access-not-exist-token/http-response.adoc[]
+include::{snippets}/find-user-test/find-user-by-access-not-exist-token/http-response.adoc[]
 
 - `401 Unauthorized`: AccessToken이 유효하지 않을 경우
 
-include::{snippets}/user-controller-test/access-token-is-not-valid-test/http-response.adoc[]
+include::{snippets}/find-user-test/access-token-is-not-valid-test/http-response.adoc[]
+
+include::{snippets}/edit-profile-test/edit-profile-test/auto-section.adoc[]

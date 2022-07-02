@@ -33,12 +33,12 @@ public class OAuthService {
                                         .orElseGet(() -> new User(oauthId));
 
         final User savedUser = userRepository.save(user);
-        final String accessToken = oauthJwt.createAccessToken(savedUser.getId());
+        final String homeworkToken = oauthJwt.createHomeworkToken(savedUser.getId());
         final List<Home> homes = memberRepository.findAllByUserId(savedUser.getId())
                                                  .stream()
                                                  .map(Member::getHome)
                                                  .collect(Collectors.toList());
 
-        return TokenResponse.from(accessToken, savedUser, homes);
+        return TokenResponse.from(homeworkToken, savedUser, homes);
     }
 }

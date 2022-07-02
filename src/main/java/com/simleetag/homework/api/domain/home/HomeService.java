@@ -21,8 +21,4 @@ public class HomeService {
         final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
         return homeRepository.findAllWithMembersByIdIn(homeIds);
     }
-
-    public Home save(Home home) {
-        return homeRepository.save(home);
-    }
 }

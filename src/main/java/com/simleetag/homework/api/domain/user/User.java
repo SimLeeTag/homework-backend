@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.member.Member;
+import com.simleetag.homework.api.domain.user.dto.UserProfileRequest;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -42,5 +43,10 @@ public class User extends DeletableEntity {
         this.userName = userName;
         this.profileImage = profileImage;
         this.members = members;
+    }
+
+    public void editProfile(UserProfileRequest request) {
+        this.userName = request.getUserName();
+        this.profileImage = request.getProfileImage();
     }
 }

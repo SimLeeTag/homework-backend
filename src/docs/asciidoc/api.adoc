@@ -80,3 +80,14 @@ include::{snippets}/find-user-test/find-user-by-access-not-exist-token/http-resp
 include::{snippets}/find-user-test/access-token-is-not-valid-test/http-response.adoc[]
 
 include::{snippets}/edit-profile-test/edit-profile-test/auto-section.adoc[]
+
+
+== Home API
+
+include::{snippets}/create-home-test/create-home/auto-section.adoc[]
+
+==== Error
+
+- `400 Bad Request`: 최대 3개 이상의 집에 소속(생성 및 참여)되는 경우
+
+include::{snippets}/create-home-test/create-home-more-than-three/http-response.adoc[]

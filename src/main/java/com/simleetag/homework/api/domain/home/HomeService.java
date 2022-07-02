@@ -32,7 +32,7 @@ public class HomeService {
 
     @Transactional
     public CreatedHomeResponse createHome(CreateHomeRequest homeRequest, User user) {
-        if (user.getMembers().size() > 3) {
+        if (user.getMembers().size() >= 3) {
             throw new HomeJoinException("최대 3개의 집에 소속될 수 있습니다.");
         }
         Home newHome = createNewHome(homeRequest, user);

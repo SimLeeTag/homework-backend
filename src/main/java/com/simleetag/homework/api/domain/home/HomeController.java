@@ -30,7 +30,7 @@ public class HomeController {
     @PostMapping("/homes")
     public ResponseEntity<CreatedHomeResponse> createHome(@Login LoginUser loginUser,
                                                           @RequestBody @Valid final CreateHomeRequest request) {
-        final User user = userService.findById(loginUser.getUserId());
+        final User user = userService.findUserWithMembersByUserId(loginUser.getUserId());
 
         CreatedHomeResponse response = homeService.createHome(request, user);
         return ResponseEntity.ok(response);

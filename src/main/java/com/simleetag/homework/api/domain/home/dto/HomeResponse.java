@@ -1,10 +1,11 @@
-package com.simleetag.homework.api.domain.user.dto;
+package com.simleetag.homework.api.domain.home.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.user.dto.MemberResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,5 +43,12 @@ public class HomeResponse {
         }
 
         return homeResponses;
+    }
+
+    public static HomeResponse from(Home home) {
+        return new HomeResponse(home.getId(),
+                home.getHomeName(),
+                MemberResponse.from(home.getMembers())
+        );
     }
 }

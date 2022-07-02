@@ -10,4 +10,6 @@ public interface WebMockMvc {
     RequestPostProcessor userToken();
 
     RequestPostProcessor userToken(String accessToken);
+
+    RequestPostProcessor invitation(String invitation);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.dto.HomeResponse;
 import com.simleetag.homework.api.domain.user.User;
 
 import lombok.AllArgsConstructor;

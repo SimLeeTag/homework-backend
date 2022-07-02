@@ -9,6 +9,7 @@ import com.simleetag.homework.api.domain.home.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.infra.HomeJwt;
 import com.simleetag.homework.api.domain.member.MemberService;
 import com.simleetag.homework.api.domain.user.User;
+import com.simleetag.homework.api.domain.home.dto.HomeResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,15 @@ public class HomeService {
                 .build();
         newHome.addMember(user);
         return newHome;
+    }
+
+    public HomeResponse findById(Long homeId) {
+        return HomeResponse.from(findHomeById(homeId));
+    }
+
+    private Home findHomeById(Long homeId) {
+        return homeRepository.findById(homeId)
+                             .orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId)));
     }
 
 }

@@ -6,10 +6,12 @@ import java.util.List;
 import com.simleetag.homework.api.common.exception.HomeJoinException;
 import com.simleetag.homework.api.domain.home.dto.CreateHomeRequest;
 import com.simleetag.homework.api.domain.home.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.infra.HomeJwt;
-import com.simleetag.homework.api.domain.member.MemberService;
-import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.home.dto.HomeResponse;
+import com.simleetag.homework.api.domain.home.infra.HomeJwt;
+import com.simleetag.homework.api.domain.member.Member;
+import com.simleetag.homework.api.domain.member.MemberService;
+import com.simleetag.homework.api.domain.member.dto.MemberIdResponse;
+import com.simleetag.homework.api.domain.user.User;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,4 +61,22 @@ public class HomeService {
                              .orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId)));
     }
 
+    @Transactional
+    public MemberIdResponse joinHome(Long homeId, User user) {
+        if (user.getMembers().size() >= 3) {
+            throw new HomeJoinException("최대 3개의 집에 소속될 수 있습니다.");
+        }
+
+        Home home = findHomeById(homeId);
+
+        Member member = Member.builder()
+                              .user(user)
+                              .home(home)
+                              .point(0)
+                              .build();
+
+        Member newMember = memberService.save(member);
+
+        return new MemberIdResponse(newMember.getId());
+    }
 }

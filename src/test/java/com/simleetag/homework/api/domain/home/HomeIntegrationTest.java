@@ -104,7 +104,7 @@ public class HomeIntegrationTest extends IntegrationTest {
             memberService.save(MemberResources.aFixture(null, ever, backend));
             memberService.save(MemberResources.aFixture(null, poogle, backend));
 
-            final String invitation = homeJwt.createHomeworkToken(1L);
+            final String invitation = homeJwt.createHomeworkToken(backend.getId());
             final String homeworkToken = oauthJwt.createHomeworkToken(poogle.getId());
 
             //when
@@ -141,5 +141,29 @@ public class HomeIntegrationTest extends IntegrationTest {
                          .andExpect(jsonPath("$.message").value(message));
         }
 
+    }
+
+    @Nested
+    class joinHomeTest {
+
+        @Test
+        @DisplayName("집 들어가기 성공 테스트")
+        void joinHome() throws Exception {
+
+            // given
+            final User poogle = userRepository.save(UserResources.aFixtureWithNoMembers(null, "푸글"));
+            final Home backend = homeRepository.save(HomeResources.aFixtureWithNoMembers(null, "백엔드"));
+
+            final String homeworkToken = oauthJwt.createHomeworkToken(poogle.getId());
+
+            // when
+            ResultActions resultActions = successMockMvc.perform(
+                    post("/homes/" + backend.getId())
+                            .with(successMockMvc.userToken(homeworkToken))
+            );
+
+            // then
+            resultActions.andExpect(status().is2xxSuccessful());
+        }
     }
 }

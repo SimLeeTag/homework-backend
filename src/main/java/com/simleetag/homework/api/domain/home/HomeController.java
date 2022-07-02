@@ -1,21 +1,20 @@
 package com.simleetag.homework.api.domain.home;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.common.Login;
 import com.simleetag.homework.api.domain.home.dto.CreateHomeRequest;
 import com.simleetag.homework.api.domain.home.dto.CreatedHomeResponse;
+import com.simleetag.homework.api.domain.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.user.LoginUser;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.UserService;
 import com.simleetag.homework.api.domain.home.dto.HomeResponse;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +44,16 @@ public class HomeController {
     @GetMapping("/homes")
     public ResponseEntity<HomeResponse> findMembersByToken(@Login LoginUser loginUser, @Invitation Long homeId) {
         return ResponseEntity.ok(homeService.findById(homeId));
+    }
+
+    /**
+     * @title 집 들어가기
+     */
+    @PostMapping("/homes/{homeId}")
+    public ResponseEntity<MemberIdResponse> joinHome(@Login LoginUser loginUser,
+                                                     @PathVariable @Positive Long homeId) {
+        final User user = userService.findUserWithMembersByUserId(loginUser.getUserId());
+        return ResponseEntity.ok(homeService.joinHome(homeId, user));
     }
 
 

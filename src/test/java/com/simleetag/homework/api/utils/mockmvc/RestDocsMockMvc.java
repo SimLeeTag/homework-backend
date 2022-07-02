@@ -9,6 +9,8 @@ public class RestDocsMockMvc extends AbstractWebMockMvc {
 
     private static final String TOKEN_REQUIRED = "User jwt required.";
 
+    private static final String INVITATION_REQUIRED = "Invitation required";
+
     protected RestDocsMockMvc(MockMvc mockMvc) {
         super(mockMvc);
     }
@@ -26,6 +28,14 @@ public class RestDocsMockMvc extends AbstractWebMockMvc {
         return request -> {
             request.addHeader("Authorization", BEARER + " " + accessToken);
             return documentAuthorization(request, TOKEN_REQUIRED);
+        };
+    }
+
+    @Override
+    public RequestPostProcessor invitation(String invitation) {
+        return request -> {
+            request.addHeader("invitation", invitation);
+            return documentAuthorization(request, INVITATION_REQUIRED);
         };
     }
 }

@@ -37,4 +37,12 @@ public class HttpMockMvc extends AbstractWebMockMvc {
             return request;
         };
     }
+
+    @Override
+    public RequestPostProcessor invitation(String invitation) {
+        return request -> {
+            request.addHeader("invitation", invitation);
+            return request;
+        };
+    }
 }

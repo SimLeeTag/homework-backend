@@ -123,13 +123,16 @@ public class HomeIntegrationTest extends IntegrationTest {
         void findHomeByHomeIdNotExist() throws Exception {
 
             // given
+            final User poogle = userRepository.save(UserResources.aFixtureWithNoMembers(null, "푸글"));
             final Long homeId = 10L;
             final String message = String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId);
             final String invitation = homeJwt.createHomeworkToken(homeId);
+            final String homeworkToken = oauthJwt.createHomeworkToken(poogle.getId());
 
             // when
             ResultActions resultActions = failMockMvc.perform(
                     get("/homes")
+                            .with(failMockMvc.userToken(homeworkToken))
                             .with(failMockMvc.invitation(invitation))
             );
 

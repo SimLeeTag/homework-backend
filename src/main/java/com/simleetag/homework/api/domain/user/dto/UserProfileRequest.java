@@ -18,6 +18,5 @@ public class UserProfileRequest {
     /**
      * 사용할 유저의 프로필 이미지 URL
      */
-    @NotBlank
     private String profileImage;
 }

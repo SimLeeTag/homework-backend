@@ -25,8 +25,9 @@ public class UserService {
     }
 
 
-    public void editProfile(LoginUser logInUser, UserProfileRequest request) {
+    public User editProfile(LoginUser logInUser, UserProfileRequest request) {
         final User user = findById(logInUser.getUserId());
         user.editProfile(request);
+        return user;
     }
 }

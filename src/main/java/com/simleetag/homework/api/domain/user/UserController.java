@@ -37,8 +37,9 @@ public class UserController {
      * @title 유저 프로필 수정
      */
     @PatchMapping("/users/me")
-    public ResponseEntity<Void> editProfile(@Login LoginUser logInUser, @RequestBody UserProfileRequest request) {
-        userService.editProfile(logInUser, request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserProfileResponse> editProfile(@Login LoginUser logInUser, @RequestBody UserProfileRequest request) {
+        final User user = userService.editProfile(logInUser, request);
+        final UserProfileResponse response = UserProfileResponse.from(user);
+        return ResponseEntity.ok(response);
     }
 }

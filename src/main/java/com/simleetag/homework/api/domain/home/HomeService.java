@@ -2,6 +2,7 @@ package com.simleetag.homework.api.domain.home;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.simleetag.homework.api.common.exception.HomeJoinException;
 import com.simleetag.homework.api.domain.home.dto.CreateHomeRequest;
@@ -65,6 +66,11 @@ public class HomeService {
     public MemberIdResponse joinHome(Long homeId, User user) {
         if (user.getMembers().size() >= 3) {
             throw new HomeJoinException("최대 3개의 집에 소속될 수 있습니다.");
+        }
+
+        Optional<Member> joinedMember = memberService.findMemberByHomeIdAndUserId(homeId, user.getId());
+        if (joinedMember.isPresent()) {
+            return new MemberIdResponse(joinedMember.get().getId());
         }
 
         Home home = findHomeById(homeId);

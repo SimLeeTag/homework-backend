@@ -22,13 +22,11 @@ public class Member extends DeletableEntity {
     @ManyToOne
     @JoinColumn(name = "home_id")
     private Home home;
-
+    @Column
+    private Integer point;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Column
-    private Integer point;
 
     @Builder
     public Member(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, User user, Home home, Integer point) {

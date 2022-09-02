@@ -5,7 +5,6 @@ import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
-import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.user.User;
 
 public record UserWithHomesResponse(

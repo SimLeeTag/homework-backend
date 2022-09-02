@@ -11,7 +11,6 @@ import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
 import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
-import com.simleetag.homework.api.domain.home.member.repository.MemberRepository;
 import com.simleetag.homework.api.domain.home.repository.HomeRepository;
 import com.simleetag.homework.api.domain.user.User;
 

@@ -3,14 +3,10 @@ package com.simleetag.homework.api.common;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
-import com.simleetag.homework.api.common.exception.AuthenticationException;
 import com.simleetag.homework.api.common.exception.CustomHeaderException;
-import com.simleetag.homework.api.domain.home.infra.HomeJwt;
-import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
-import com.simleetag.homework.api.domain.user.LoginUser;
+import com.simleetag.homework.api.domain.home.HomeJwt;
 
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

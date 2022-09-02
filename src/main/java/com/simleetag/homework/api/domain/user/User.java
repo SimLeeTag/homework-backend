@@ -6,10 +6,11 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.simleetag.homework.api.common.DeletableEntity;
-import com.simleetag.homework.api.domain.member.Member;
-import com.simleetag.homework.api.domain.user.dto.UserProfileRequest;
+import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,20 +18,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@Table(name = "`user`")
 @Entity
 public class User extends DeletableEntity {
-
-    @Column
-    private String oauthId;
-
-    @Column
-    private String userName;
-
-    @Column
-    private String profileImage;
-
     @OneToMany(mappedBy = "user")
     private List<Member> members = new ArrayList<>();
+    @Column
+    private String oauthId;
+    @Column
+    private String profileImage;
+    @Column
+    private String userName;
 
     public User(String oauthId) {
         this.oauthId = oauthId;
@@ -46,7 +44,14 @@ public class User extends DeletableEntity {
     }
 
     public void editProfile(UserProfileRequest request) {
-        this.userName = request.getUserName();
-        this.profileImage = request.getProfileImage();
+        this.userName = request.userName();
+        this.profileImage = request.profileImage();
+    }
+
+    public void addBy(Member member) {
+        this.members.add(member);
+        if (member.getUser() != this) {
+            member.setBy(this);
+        }
     }
 }

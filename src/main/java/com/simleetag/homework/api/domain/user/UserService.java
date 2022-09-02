@@ -1,6 +1,7 @@
 package com.simleetag.homework.api.domain.user;
 
-import com.simleetag.homework.api.domain.user.dto.UserProfileRequest;
+import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
+import com.simleetag.homework.api.domain.user.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
 
     public User findById(Long userId) {
@@ -26,7 +26,7 @@ public class UserService {
 
 
     public User editProfile(LoginUser logInUser, UserProfileRequest request) {
-        final User user = findById(logInUser.getUserId());
+        final var user = findById(logInUser.userId());
         user.editProfile(request);
         return user;
     }

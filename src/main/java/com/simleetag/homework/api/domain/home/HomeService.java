@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.simleetag.homework.api.common.exception.HomeJoinException;
-import com.simleetag.homework.api.domain.home.dto.CreateHomeRequest;
-import com.simleetag.homework.api.domain.home.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.dto.HomeResponse;
-import com.simleetag.homework.api.domain.home.infra.HomeJwt;
-import com.simleetag.homework.api.domain.member.Member;
-import com.simleetag.homework.api.domain.member.MemberService;
-import com.simleetag.homework.api.domain.member.dto.MemberIdResponse;
+import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
+import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
+import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.home.member.MemberService;
+import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
+import com.simleetag.homework.api.domain.home.member.repository.MemberRepository;
+import com.simleetag.homework.api.domain.home.repository.HomeRepository;
 import com.simleetag.homework.api.domain.user.User;
 
 import org.springframework.stereotype.Service;
@@ -19,38 +20,43 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class HomeService {
 
     private final HomeRepository homeRepository;
     private final MemberService memberService;
-
     private final HomeJwt homeJwt;
 
-    public List<Home> findAllWithMembers(Long userId) {
-        final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
+    public List<Home> findAllWithMembersByHomeIds(List<Long> homeIds) {
         return homeRepository.findAllWithMembersByIdIn(homeIds);
     }
 
-    @Transactional
     public CreatedHomeResponse createHome(CreateHomeRequest homeRequest, User user) {
         if (user.getMembers().size() >= 3) {
             throw new HomeJoinException("최대 3개의 집에 소속될 수 있습니다.");
         }
-        Home newHome = createNewHome(homeRequest, user);
-        homeRepository.save(newHome);
-        return CreatedHomeResponse.from(newHome, homeJwt);
-    }
 
-    private Home createNewHome(CreateHomeRequest homeRequest, User user) {
-        Home newHome = new Home.HomeBuilder()
-                .homeName(homeRequest.getHomeName())
+        // 집 저장
+        Home home = new Home.HomeBuilder()
+                .homeName(homeRequest.homeName())
                 .members(new ArrayList<>())
                 .build();
-        newHome.addMember(user);
-        return newHome;
+
+        homeRepository.save(home);
+
+        // 집 입장
+        Member member = Member.builder()
+                              .point(0)
+                              .build();
+
+        member.setBy(user);
+        member.setBy(home);
+
+        memberService.save(member);
+
+        return CreatedHomeResponse.from(home, homeJwt);
     }
 
     public HomeResponse findById(Long homeId) {
@@ -62,7 +68,6 @@ public class HomeService {
                              .orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId)));
     }
 
-    @Transactional
     public MemberIdResponse joinHome(Long homeId, User user) {
         if (user.getMembers().size() >= 3) {
             throw new HomeJoinException("최대 3개의 집에 소속될 수 있습니다.");
@@ -75,14 +80,14 @@ public class HomeService {
 
         Home home = findHomeById(homeId);
 
+        // 집 입장
         Member member = Member.builder()
-                              .user(user)
-                              .home(home)
                               .point(0)
                               .build();
 
-        Member newMember = memberService.save(member);
+        member.setBy(user);
+        member.setBy(home);
 
-        return new MemberIdResponse(newMember.getId());
+        return new MemberIdResponse(memberService.save(member).getId());
     }
 }

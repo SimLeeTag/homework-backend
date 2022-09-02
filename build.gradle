@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.3'
+    id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'java'
@@ -10,7 +10,7 @@ plugins {
 
 group = 'com.simleetag'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -35,7 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     //OAuth
-    implementation 'com.auth0:java-jwt:3.19.2'
+    implementation 'com.auth0:java-jwt:4.0.0'
 
     //Bouncy Castle Provider
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
@@ -52,7 +52,6 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
     // log
-    implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
     implementation 'com.github.maricn:logback-slack-appender:1.6.1'
 
     // webClient
@@ -60,8 +59,10 @@ dependencies {
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -74,7 +75,7 @@ dependencies {
     testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.12-SNAPSHOT'
     jsondoclet 'capital.scalable:spring-auto-restdocs-json-doclet-jdk9:2.0.12-SNAPSHOT'
 
-    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64'
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
 }
 
 task jsonDoclet(type: Javadoc, dependsOn: compileTestJava) {

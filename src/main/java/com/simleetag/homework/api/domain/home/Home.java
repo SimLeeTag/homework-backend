@@ -3,14 +3,12 @@ package com.simleetag.homework.api.domain.home;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import com.simleetag.homework.api.common.DeletableEntity;
-import com.simleetag.homework.api.domain.member.Member;
-import com.simleetag.homework.api.domain.user.User;
+import com.simleetag.homework.api.domain.home.member.Member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +22,7 @@ public class Home extends DeletableEntity {
     @Column
     private String homeName;
 
-    @OneToMany(mappedBy = "home", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "home")
     private List<Member> members = new ArrayList<>();
 
     @Builder
@@ -39,12 +37,11 @@ public class Home extends DeletableEntity {
         this.homeName = homeName;
         this.members = members;
     }
-    public void addMember(User user) {
-        Member member = Member.builder()
-                              .user(user)
-                              .home(this)
-                              .point(0)
-                              .build();
+
+    public void addBy(Member member) {
         this.members.add(member);
+        if (member.getHome() != this) {
+            member.setBy(this);
+        }
     }
 }

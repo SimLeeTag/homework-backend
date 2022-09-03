@@ -1,7 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'java'
     id "org.flywaydb.flyway" version "8.1.0"
     id 'org.sonarqube' version '3.3'
@@ -16,11 +15,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    jsondoclet
 }
 
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    mavenLocal()
     mavenCentral()
 }
 
@@ -67,28 +65,15 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'junit', module: 'junit'
+    }
 
-    // Spring Auto REST Docs
-    testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.12-SNAPSHOT'
-    jsondoclet 'capital.scalable:spring-auto-restdocs-json-doclet-jdk9:2.0.12-SNAPSHOT'
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
-}
-
-task jsonDoclet(type: Javadoc, dependsOn: compileTestJava) {
-    source = sourceSets.main.allJava
-    classpath = sourceSets.main.compileClasspath
-    destinationDir = javadocJsonDir
-    options.docletpath = configurations.jsondoclet.files.asType(List)
-    options.doclet = 'capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet'
-    options.memberLevel = JavadocMemberLevel.PACKAGE
-    failOnError false
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.encoding = 'UTF-8'
-    options.addStringOption('charSet', 'UTF-8')
 }
 
 test {
@@ -100,34 +85,7 @@ test {
         exceptionFormat = 'full'
     }
 
-    systemProperty 'org.springframework.restdocs.outputDir', snippetsDir
-    systemProperty 'org.springframework.restdocs.javadocJsonDir', javadocJsonDir
-
     useJUnitPlatform()
-
-    outputs.dir snippetsDir
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-
-    doFirst {
-        delete file('src/main/resources/static/docs')
-    }
-}
-
-task copyDocument(type: Copy) {
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-task restDocs {
-    group 'documentation'
-
-    dependsOn(jsonDoclet, test, asciidoctor, copyDocument)
-    test.mustRunAfter(jsonDoclet)
-    asciidoctor.mustRunAfter(test)
-    copyDocument.mustRunAfter(asciidoctor)
 }
 
 task testCoverage(type: Test) {
@@ -140,8 +98,7 @@ task testCoverage(type: Test) {
 }
 
 check {
-    dependsOn(testCoverage, restDocs)
-    restDocs.mustRunAfter(testCoverage)
+    dependsOn(testCoverage)
 }
 
 jar {

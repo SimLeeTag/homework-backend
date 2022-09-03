@@ -1,6 +1,5 @@
 package com.simleetag.homework.api.domain.home.member;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -10,7 +9,6 @@ import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.user.User;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,11 +26,7 @@ public class Member extends DeletableEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder
-    public Member(Long id, LocalDateTime createdAt, LocalDateTime deletedAt, User user, Home home, Integer point) {
-        super(id, createdAt, deletedAt);
-        this.user = user;
-        this.home = home;
+    public Member(Integer point) {
         this.point = point;
     }
 

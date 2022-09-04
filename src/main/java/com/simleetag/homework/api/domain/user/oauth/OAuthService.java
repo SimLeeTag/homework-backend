@@ -1,9 +1,9 @@
 package com.simleetag.homework.api.domain.user.oauth;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
-import com.simleetag.homework.api.domain.home.member.Member;
-import com.simleetag.homework.api.domain.home.member.repository.MemberRepository;
+import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
@@ -22,7 +22,7 @@ public class OAuthService {
     private final OAuthJwt oauthJwt;
     private final OAuthClientFactory oauthClientFactory;
     private final UserRepository userRepository;
-    private final MemberRepository memberRepository;
+    private final HomeService homeService;
 
     public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {
         final var oauthId = oauthClientFactory.getOAuthClient(tokenRequest.providerType())
@@ -32,11 +32,7 @@ public class OAuthService {
 
         final var homeworkToken = oauthJwt.createHomeworkToken(user.getId());
 
-        final var homes = memberRepository.findAllByUserId(user.getId())
-                                          .stream()
-                                          .map(Member::getHome)
-                                          .collect(Collectors.toList());
-
-        return TokenResponse.from(homeworkToken, user, homes);
+        final List<HomeWithMembersResponse> homeWithMembersResponses = homeService.findAllByMemberIds(user.getMemberIds());
+        return TokenResponse.from(homeworkToken, user, homeWithMembersResponses);
     }
 }

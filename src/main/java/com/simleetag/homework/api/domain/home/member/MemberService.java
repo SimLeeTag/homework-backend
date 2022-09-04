@@ -33,4 +33,8 @@ public class MemberService {
     public Optional<Member> findMemberByHomeIdAndUserId(Long homeId, Long userId) {
         return memberRepository.findByHomeIdAndUserId(homeId, userId);
     }
+
+    public List<Member> findAllById(List<Long> memberIds) {
+        return memberRepository.findAllById(memberIds);
+    }
 }

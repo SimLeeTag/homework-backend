@@ -8,10 +8,8 @@ import com.simleetag.homework.api.common.Login;
 import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
-import com.simleetag.homework.api.domain.user.User;
-import com.simleetag.homework.api.domain.user.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +24,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 public class HomeController {
-
-    private final UserService userService;
-
     private final HomeService homeService;
 
     @Operation(
@@ -38,8 +33,7 @@ public class HomeController {
     @PostMapping("/homes")
     public ResponseEntity<CreatedHomeResponse> createHome(@Login Long userId,
                                                           @RequestBody @Valid final CreateHomeRequest request) {
-        final User user = userService.findUserWithMembersByUserId(userId);
-        CreatedHomeResponse response = homeService.createHome(request, user);
+        CreatedHomeResponse response = homeService.createHome(userId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -48,7 +42,7 @@ public class HomeController {
             description = "초대 링크로 집에 속한 멤버들을 조회합니다."
     )
     @GetMapping("/homes")
-    public ResponseEntity<HomeResponse> findMembersByToken(@Login Long userId, @Invitation Long homeId) {
+    public ResponseEntity<HomeWithMembersResponse> findMembersByToken(@Login Long userId, @Invitation Long homeId) {
         return ResponseEntity.ok(homeService.findById(homeId));
     }
 
@@ -58,8 +52,7 @@ public class HomeController {
     @PostMapping("/homes/{homeId}")
     public ResponseEntity<MemberIdResponse> joinHome(@Login Long userId,
                                                      @PathVariable @Positive Long homeId) {
-        final User user = userService.findUserWithMembersByUserId(userId);
-        return ResponseEntity.ok(homeService.joinHome(homeId, user));
+        return ResponseEntity.ok(homeService.joinHome(userId, homeId));
     }
 
 

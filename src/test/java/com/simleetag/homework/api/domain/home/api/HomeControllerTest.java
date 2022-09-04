@@ -4,7 +4,7 @@ import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.HomeJwt;
 import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
@@ -117,7 +117,7 @@ public class HomeControllerTest extends TestSupport {
             homeController.joinHome(home.homeId(), homeworkToken);
 
             //when
-            final HomeResponse response =
+            final HomeWithMembersResponse response =
                     homeController.findMembersByToken(homeworkToken, home.invitation());
 
             //then

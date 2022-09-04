@@ -3,12 +3,11 @@ package com.simleetag.homework.api.domain.user;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.simleetag.homework.api.common.DeletableEntity;
-import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 
 import lombok.Getter;
@@ -20,8 +19,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User extends DeletableEntity {
 
-    @OneToMany(mappedBy = "user")
-    private final List<Member> members = new ArrayList<>();
+    @ElementCollection
+    private final List<Long> memberIds = new ArrayList<>();
 
     @Column
     private String oauthId;
@@ -39,12 +38,5 @@ public class User extends DeletableEntity {
     public void editProfile(UserProfileRequest request) {
         this.userName = request.userName();
         this.profileImage = request.profileImage();
-    }
-
-    public void addBy(Member member) {
-        this.members.add(member);
-        if (member.getUser() != this) {
-            member.setBy(this);
-        }
     }
 }

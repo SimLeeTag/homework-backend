@@ -1,3 +1,4 @@
 [submodule "src/main/resources"]
 	path = src/main/resources
 	url = https://github.com/SimLeeTag/homework-backend-submodule.git
+	branch = main

@@ -1,14 +1,12 @@
 package com.simleetag.homework.api.common;
 
+import java.util.Enumeration;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
-import com.simleetag.homework.api.common.exception.AuthenticationException;
-import com.simleetag.homework.api.domain.user.LoginUser;
 import com.simleetag.homework.api.domain.user.oauth.OAuthJwt;
 
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -24,19 +22,22 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Login.class)
-                && LoginUser.class.equals(parameter.getParameterType());
+                && Long.class.equals(parameter.getParameterType());
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         final HttpServletRequest request = Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class));
-        String[] authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ");
-        String authType = authorizationHeader[0].toLowerCase();
-        if (authType.startsWith("bearer")) {
-            final String homeworkToken = authorizationHeader[1];
-            return oauthJwt.parseClaimsAsLoginUser(homeworkToken);
+        final Enumeration<String> userIds = request.getHeaders(IdentifierHeader.USER.getKey());
+        if (!userIds.hasMoreElements()) {
+            throw new IllegalArgumentException("USER ID 헤더를 입력하지 않았습니다.");
         }
 
-        throw new AuthenticationException("Bearer 형식의 토큰이 아닙니다.");
+        final String userIdJwt = userIds.nextElement();
+        if (userIdJwt.isBlank()) {
+            throw new IllegalArgumentException("USER ID 헤더가 비어있습니다.");
+        }
+
+        return oauthJwt.parseClaimsAsUserId(userIdJwt);
     }
 }

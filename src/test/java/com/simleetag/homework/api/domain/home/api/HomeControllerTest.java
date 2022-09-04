@@ -20,36 +20,43 @@ import org.junit.jupiter.api.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HomeControllerTest extends TestSupport {
 
+    private HomeControllerFlow homeController;
     @Autowired
     private HomeJwt homeJwt;
-
     private String homeworkToken;
-
+    private OAuthControllerFlow oauthController;
+    private UserControllerFlow userController;
     private Long userId;
 
-    @BeforeAll
-    public void setUp() throws Exception {
 
+    @BeforeAll
+    public void init() {
+        oauthController = new OAuthControllerFlow(mockMvc);
+        userController = new UserControllerFlow(mockMvc);
+        homeController = new HomeControllerFlow(mockMvc);
+    }
+
+    @BeforeEach
+    public void setUp() throws Exception {
         // 에버 유저 생성
         var loginRequest = new TokenRequest("a.b.c", ProviderType.KAKAO);
-        final TokenResponse ever = new OAuthControllerFlow(defaultMockMvc, false).login(loginRequest);
+        final TokenResponse ever = oauthController.login(loginRequest);
 
         userId = ever.user().userId();
         homeworkToken = ever.homeworkToken();
 
         // 에버 정보 수정
         final UserProfileRequest everProfile = new UserProfileRequest("에버", "https://image.com");
-        new UserControllerFlow(defaultMockMvc, false).editProfile(ever.homeworkToken(), everProfile);
+        userController.editProfile(ever.homeworkToken(), everProfile);
 
         // 푸글 유저 생성
-        final TokenResponse poogle = new OAuthControllerFlow(defaultMockMvc, false).login(loginRequest);
+        final TokenResponse poogle = oauthController.login(loginRequest);
 
         // 푸글 정보 수정
         final UserProfileRequest poogleProfile = new UserProfileRequest("푸글", "https://image.com");
-        new UserControllerFlow(defaultMockMvc, false).editProfile(poogle.homeworkToken(), poogleProfile);
+        userController.editProfile(poogle.homeworkToken(), poogleProfile);
     }
 
     @Nested
@@ -64,7 +71,7 @@ public class HomeControllerTest extends TestSupport {
             final CreateHomeRequest request = new CreateHomeRequest(homeName);
 
             // when
-            final CreatedHomeResponse response = new HomeControllerFlow(restDocsMockMvc).createHome(homeworkToken, request);
+            final CreatedHomeResponse response = homeController.createHome(homeworkToken, request);
 
             // then
             assertThat(response.homeName()).isEqualTo(homeName);
@@ -75,8 +82,6 @@ public class HomeControllerTest extends TestSupport {
         void createHomeMoreThanThree() throws Exception {
 
             // given
-            final HomeControllerFlow homeController = new HomeControllerFlow(restDocsMockMvc);
-
             // 집 생성
             final String homeName = "백엔드집";
             final CreateHomeRequest request = new CreateHomeRequest(homeName);
@@ -88,7 +93,7 @@ public class HomeControllerTest extends TestSupport {
             homeController.createHome(homeworkToken, request);
 
             final String response =
-                    new HomeControllerFlow(restDocsMockMvc).createHomeFail(homeworkToken, request, status().isBadRequest());
+                    homeController.createHomeFail(homeworkToken, request, status().isBadRequest());
 
             // then
             assertThat(response).isEqualTo(message);
@@ -103,8 +108,6 @@ public class HomeControllerTest extends TestSupport {
         void getHome() throws Exception {
 
             //given
-            final HomeControllerFlow homeController = new HomeControllerFlow(restDocsMockMvc);
-
             // 집 생성
             final String homeName = "백엔드집";
             final CreateHomeRequest request = new CreateHomeRequest(homeName);
@@ -115,7 +118,7 @@ public class HomeControllerTest extends TestSupport {
 
             //when
             final HomeResponse response =
-                    new HomeControllerFlow(restDocsMockMvc).findMembersByToken(homeworkToken, home.invitation());
+                    homeController.findMembersByToken(homeworkToken, home.invitation());
 
             //then
             assertThat(response.homeId()).isEqualTo(home.homeId());
@@ -126,8 +129,6 @@ public class HomeControllerTest extends TestSupport {
         void findHomeByHomeIdNotExist() throws Exception {
 
             // given
-            final HomeControllerFlow homeController = new HomeControllerFlow(restDocsMockMvc);
-
             final Long homeId = 10L;
             final String invalidInvitationToken = homeJwt.createHomeworkToken(homeId);
             final String message = String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId);
@@ -150,8 +151,6 @@ public class HomeControllerTest extends TestSupport {
         void joinHome() throws Exception {
 
             // given
-            final HomeControllerFlow homeController = new HomeControllerFlow(restDocsMockMvc);
-
             // 집 생성
             final String homeName = "백엔드집";
             final CreateHomeRequest request = new CreateHomeRequest(homeName);

@@ -7,28 +7,22 @@ import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
 import com.simleetag.homework.api.domain.user.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record UserWithHomesResponse(
-        /**
-         * 유저 ID
-         */
+        @Schema(description = "유저 ID")
         @NotBlank
         Long userId,
 
-        /**
-         * 유저 이름
-         */
+        @Schema(description = "유저 이름")
         @NotBlank
         String userName,
 
-        /**
-         * 프로필 이미지 경로
-         */
+        @Schema(description = "프로필 이미지 경로")
         @NotBlank
         String profileImage,
 
-        /**
-         * 유저가 속한 집 목록
-         */
+        @Schema(description = "유저가 속한 집 목록")
         @NotBlank
         List<HomeResponse> homes
 ) {

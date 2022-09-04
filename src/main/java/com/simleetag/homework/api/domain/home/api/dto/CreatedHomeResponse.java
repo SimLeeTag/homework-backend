@@ -5,22 +5,18 @@ import javax.validation.constraints.NotBlank;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.HomeJwt;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record CreatedHomeResponse(
-        /**
-         * 집 ID
-         */
+        @Schema(description = "집 ID")
         @NotBlank
         Long homeId,
 
-        /**
-         * 집 이름
-         */
+        @Schema(description = "집 이름")
         @NotBlank
         String homeName,
 
-        /**
-         * 집 초대링크 토큰
-         */
+        @Schema(description = "집 초대링크 토큰")
         @NotBlank
         String invitation
 ) {

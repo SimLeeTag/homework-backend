@@ -3,6 +3,7 @@ package com.simleetag.homework.api.domain.user.api;
 import java.nio.charset.StandardCharsets;
 
 import com.simleetag.homework.api.common.FlowSupport;
+import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.common.exception.Error;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileResponse;
@@ -12,8 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserControllerFlow extends FlowSupport {
@@ -21,14 +22,10 @@ public class UserControllerFlow extends FlowSupport {
         super(mockMvc);
     }
 
-    public UserControllerFlow(MockMvc mockMvc, boolean document) {
-        super(mockMvc, document);
-    }
-
     public UserWithHomesResponse findUserByAccessToken(String homeworkToken) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   get("/users/me")
-                                                           .with(mockMvc.userToken(homeworkToken))
+                                                   get("/api/users/me")
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
                                            ).andExpect(
                                                    status().isOk()
                                            )
@@ -41,8 +38,8 @@ public class UserControllerFlow extends FlowSupport {
 
     public String findUserByAccessTokenFail(String homeworkToken, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   get("/users/me")
-                                                           .with(mockMvc.userToken(homeworkToken))
+                                                   get("/api/users/me")
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
                                            ).andExpect(
                                                    matcher
                                            )
@@ -55,9 +52,9 @@ public class UserControllerFlow extends FlowSupport {
 
     public UserProfileResponse editProfile(String homeworkToken, UserProfileRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   patch("/users/me")
+                                                   patch("/api/users/me")
                                                            .contentType(MediaType.APPLICATION_JSON)
-                                                           .with(mockMvc.userToken(homeworkToken))
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
                                                            .content(objectMapper.writeValueAsString(request))
                                            ).andExpect(
                                                    status().isOk()
@@ -71,9 +68,9 @@ public class UserControllerFlow extends FlowSupport {
 
     public String editProfileFail(String homeworkToken, UserProfileRequest request, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   patch("/users/me")
+                                                   patch("/api/users/me")
                                                            .contentType(MediaType.APPLICATION_JSON)
-                                                           .with(mockMvc.userToken(homeworkToken))
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
                                                            .content(objectMapper.writeValueAsString(request))
                                            ).andExpect(
                                                    matcher

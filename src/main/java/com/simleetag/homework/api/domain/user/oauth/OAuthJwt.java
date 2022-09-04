@@ -8,7 +8,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.simleetag.homework.api.config.AppEnvironment;
-import com.simleetag.homework.api.domain.user.LoginUser;
 
 import org.springframework.stereotype.Component;
 
@@ -42,10 +41,9 @@ public class OAuthJwt {
                   .getClaims();
     }
 
-    public LoginUser parseClaimsAsLoginUser(String homeworkToken) {
+    public Long parseClaimsAsUserId(String homeworkToken) {
         final JWTVerifier verifier = JWT.require(algorithm).build();
         final Map<String, Claim> claims = verifier.verify(homeworkToken).getClaims();
-        final Long userId = claims.get("userId").as(Long.class);
-        return new LoginUser(userId);
+        return claims.get("userId").as(Long.class);
     }
 }

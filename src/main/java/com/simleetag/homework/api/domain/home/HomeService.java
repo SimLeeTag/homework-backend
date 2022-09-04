@@ -1,6 +1,5 @@
 package com.simleetag.homework.api.domain.home;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,18 +37,10 @@ public class HomeService {
         }
 
         // 집 저장
-        Home home = new Home.HomeBuilder()
-                .homeName(homeRequest.homeName())
-                .members(new ArrayList<>())
-                .build();
-
-        homeRepository.save(home);
+        final Home home = homeRepository.save(new Home(homeRequest.homeName()));
 
         // 집 입장
-        Member member = Member.builder()
-                              .point(0)
-                              .build();
-
+        Member member = new Member(0);
         member.setBy(user);
         member.setBy(home);
 
@@ -80,9 +71,7 @@ public class HomeService {
         Home home = findHomeById(homeId);
 
         // 집 입장
-        Member member = Member.builder()
-                              .point(0)
-                              .build();
+        Member member = new Member(0);
 
         member.setBy(user);
         member.setBy(home);

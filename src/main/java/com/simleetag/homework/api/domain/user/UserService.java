@@ -25,8 +25,8 @@ public class UserService {
     }
 
 
-    public User editProfile(LoginUser logInUser, UserProfileRequest request) {
-        final var user = findById(logInUser.userId());
+    public User editProfile(Long userId, UserProfileRequest request) {
+        final var user = findById(userId);
         user.editProfile(request);
         return user;
     }

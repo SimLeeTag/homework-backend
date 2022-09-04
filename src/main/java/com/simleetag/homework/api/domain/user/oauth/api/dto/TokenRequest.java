@@ -4,18 +4,17 @@ import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record TokenRequest(
-        /**
-         * OAuth Provider로 부터 발급받은 AccessToken
-         */
+        @Schema(description = "OAuth Provider로 부터 발급받은 AccessToken")
         @NotBlank
         String accessToken,
 
-        /**
-         * OAuth Provider 이름
-         * <p>
-         * Alert: ProviderType은 모두 [대문자]이어야 합니다
-         */
+        @Schema(
+                description = "OAuth Provider 이름",
+                oneOf = ProviderType.class
+        )
         @NotBlank
         ProviderType providerType
 ) {}

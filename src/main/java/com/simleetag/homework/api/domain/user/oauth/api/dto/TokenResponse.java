@@ -7,16 +7,14 @@ import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.api.dto.UserWithHomesResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record TokenResponse(
-        /**
-         * Homework 서비스를 사용하기 위한 JWT
-         */
+        @Schema(description = "Homework 서비스를 사용하기 위한 JWT")
         @NotBlank
         String homeworkToken,
 
-        /**
-         * Homework에 가입된 유저의 정보
-         */
+        @Schema(description = "Homework에 가입된 유저의 정보")
         @NotBlank UserWithHomesResponse user
 ) {
     public static TokenResponse from(String homeworkToken, User user, List<Home> homes) {

@@ -9,7 +9,7 @@ import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class OAuthControllerFlow extends FlowSupport {
@@ -17,13 +17,9 @@ public class OAuthControllerFlow extends FlowSupport {
         super(mockMvc);
     }
 
-    public OAuthControllerFlow(MockMvc mockMvc, boolean document) {
-        super(mockMvc, document);
-    }
-
     public TokenResponse login(TokenRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   post("/oauth")
+                                                   post("/api/oauth")
                                                            .contentType(MediaType.APPLICATION_JSON)
                                                            .content(objectMapper.writeValueAsString(request))
                                            ).andExpect(

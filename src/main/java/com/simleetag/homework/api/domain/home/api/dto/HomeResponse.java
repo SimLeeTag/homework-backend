@@ -7,22 +7,18 @@ import javax.validation.constraints.NotBlank;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.user.api.dto.MemberResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record HomeResponse(
-        /**
-         * 집 ID
-         */
+        @Schema(description = "집 ID")
         @NotBlank
         Long homeId,
 
-        /**
-         * 집 이름
-         */
+        @Schema(description = "집 이름")
         @NotBlank
         String homeName,
 
-        /**
-         * 집에 속한 유저 목록
-         */
+        @Schema(description = "집에 속한 유저 목록")
         @NotBlank
         List<MemberResponse> members
 ) {

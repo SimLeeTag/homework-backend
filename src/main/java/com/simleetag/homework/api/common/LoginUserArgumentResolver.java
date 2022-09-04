@@ -4,8 +4,8 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
 import com.simleetag.homework.api.common.exception.AuthenticationException;
-import com.simleetag.homework.api.domain.oauth.infra.OAuthJwt;
 import com.simleetag.homework.api.domain.user.LoginUser;
+import com.simleetag.homework.api.domain.user.oauth.OAuthJwt;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;

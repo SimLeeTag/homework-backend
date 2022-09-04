@@ -45,6 +45,7 @@ public class GlobalCustomException {
         final Error error = Error.from("잘못된 JWT 토큰입니다.");
         return ResponseEntity.status(401).body(error);
     }
+
     @ExceptionHandler(HomeJoinException.class)
     public ResponseEntity<Error> handleHomeJoinException(HomeJoinException e) {
         final Error error = Error.from(e.getMessage());

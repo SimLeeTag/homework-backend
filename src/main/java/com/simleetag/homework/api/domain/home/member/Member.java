@@ -19,11 +19,15 @@ public class Member extends DeletableEntity {
     @ManyToOne
     @JoinColumn(name = "home_id")
     private Home home;
+
     @Column
     private Integer point;
+
     @Column
     private Long userId;
 
+    @Column
+    private boolean deleted = false;
 
     public Member(Long userId, Integer point) {
         this.userId = userId;

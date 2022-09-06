@@ -31,6 +31,9 @@ public class User extends DeletableEntity {
     @Column
     private String userName;
 
+    @Column
+    private boolean deleted = false;
+
     public User(String oauthId) {
         this.oauthId = oauthId;
     }
@@ -38,5 +41,9 @@ public class User extends DeletableEntity {
     public void editProfile(UserProfileRequest request) {
         this.userName = request.userName();
         this.profileImage = request.profileImage();
+    }
+
+    public void addMemberId(Long memberId) {
+        this.memberIds.add(memberId);
     }
 }

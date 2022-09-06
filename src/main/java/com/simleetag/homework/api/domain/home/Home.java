@@ -3,6 +3,7 @@ package com.simleetag.homework.api.domain.home;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -23,6 +24,12 @@ public class Home extends DeletableEntity {
     @Column
     private String homeName;
 
+    @ElementCollection
+    private final List<Long> categoryIds = new ArrayList<>();
+
+    @Column
+    private boolean deleted = false;
+
     public Home(String homeName) {
         this.homeName = homeName;
     }
@@ -32,5 +39,9 @@ public class Home extends DeletableEntity {
         if (member.getHome() != this) {
             member.setBy(this);
         }
+    }
+
+    public void addCategoryId(Long categoryId) {
+        this.categoryIds.add(categoryId);
     }
 }

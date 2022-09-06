@@ -33,7 +33,7 @@ public class MemberService {
         return memberRepository.findByHomeIdAndUserId(homeId, userId);
     }
 
-    public List<Member> findAllById(List<Long> memberIds) {
+    public List<Member> findAllByIds(List<Long> memberIds) {
         return memberRepository.findAllById(memberIds);
     }
 

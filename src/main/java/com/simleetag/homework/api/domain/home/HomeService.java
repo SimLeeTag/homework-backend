@@ -30,12 +30,12 @@ public class HomeService {
     private final HomeJwt homeJwt;
 
     public List<HomeWithMembersResponse> findAllByMemberIds(List<Long> memberIds) {
-        final List<Long> homeIds = memberService.findAllById(memberIds).stream().map(Member::getHome).map(Home::getId).toList();
+        final List<Long> homeIds = memberService.findAllByIds(memberIds).stream().map(Member::getHome).map(Home::getId).toList();
 
-        return findAllByIdIn(homeIds);
+        return findAllByIds(homeIds);
     }
 
-    public List<HomeWithMembersResponse> findAllByIdIn(List<Long> homeIds) {
+    private List<HomeWithMembersResponse> findAllByIds(List<Long> homeIds) {
         return homeIds.stream().map(this::findById).toList();
     }
 

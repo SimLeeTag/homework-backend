@@ -19,12 +19,6 @@ public class UserService {
                              .orElseThrow(() -> new IllegalArgumentException(String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", userId)));
     }
 
-    public User findUserWithMembersByUserId(Long userId) {
-        return userRepository.findUserWithMembersById(userId)
-                             .orElseThrow(() -> new IllegalArgumentException(String.format("UserID[%d]에 해당하는 유저가 존재하지 않습니다.", userId)));
-    }
-
-
     public User editProfile(Long userId, UserProfileRequest request) {
         final var user = findById(userId);
         user.editProfile(request);

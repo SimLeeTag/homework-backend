@@ -3,8 +3,8 @@ package com.simleetag.homework.api.domain.user.api;
 import java.util.List;
 
 import com.simleetag.homework.api.common.Login;
-import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.UserService;
@@ -37,7 +37,10 @@ public class UserController {
     public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@Login Long userId) {
         final User user = userService.findById(userId);
         final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
-        final List<Home> homes = homeService.findAllWithMembersByHomeIds(homeIds);
+        final List<HomeWithMembersResponse> homes = homeIds.stream()
+                                                           .map(homeService::findById)
+                                                           .toList();
+
         return ResponseEntity.ok(UserWithHomesResponse.from(user, homes));
     }
 

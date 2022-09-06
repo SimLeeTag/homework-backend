@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.home.Home;
-import com.simleetag.homework.api.domain.user.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,19 +21,13 @@ public class Member extends DeletableEntity {
     private Home home;
     @Column
     private Integer point;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long userId;
 
-    public Member(Integer point) {
+
+    public Member(Long userId, Integer point) {
+        this.userId = userId;
         this.point = point;
-    }
-
-    public void setBy(User user) {
-        this.user = user;
-        if (!user.getMembers().contains(this)) {
-            user.addBy(this);
-        }
     }
 
     public void setBy(Home home) {

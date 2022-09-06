@@ -19,6 +19,7 @@ public class Home extends DeletableEntity {
 
     @OneToMany(mappedBy = "home")
     private final List<Member> members = new ArrayList<>();
+
     @Column
     private String homeName;
 

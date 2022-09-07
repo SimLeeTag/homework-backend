@@ -1,6 +1,6 @@
-package com.simleetag.homework.api.domain.task.api;
+package com.simleetag.homework.api.domain.work.api;
 
-import com.simleetag.homework.api.domain.task.CategoryType;
+import com.simleetag.homework.api.domain.work.CategoryType;
 
 public record CategoryCreateRequest(
         Long homeId,

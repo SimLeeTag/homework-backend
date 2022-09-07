@@ -4,15 +4,18 @@ import java.util.Arrays;
 
 import com.simleetag.homework.api.domain.home.api.HomeController;
 import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
-import com.simleetag.homework.api.domain.task.CategoryType;
-import com.simleetag.homework.api.domain.task.TaskGroupType;
-import com.simleetag.homework.api.domain.task.api.*;
 import com.simleetag.homework.api.domain.user.api.UserController;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
 import com.simleetag.homework.api.domain.user.oauth.api.OAuthController;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
+import com.simleetag.homework.api.domain.work.CategoryType;
+import com.simleetag.homework.api.domain.work.api.*;
+import com.simleetag.homework.api.domain.work.task.api.TaskCreateRequest;
+import com.simleetag.homework.api.domain.work.task.api.TaskMaintenanceController;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
+import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupMaintenanceController;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +29,20 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class DBInitializer implements CommandLineRunner {
+    // user
     private final OAuthController oauthController;
     private final UserController userController;
-    private final HomeController homeController;
-    private final CategoryMaintenanceController categoryMaintenanceController;
 
+    // home
+    private final HomeController homeController;
+
+    // work
+    private final CategoryMaintenanceController categoryMaintenanceController;
+    private final TaskGroupMaintenanceController taskGroupMaintenanceController;
+    private final TaskMaintenanceController taskMaintenanceController;
+    private Long homeId;
     private String homeworkToken;
     private Long userId;
-    private Long homeId;
 
     @Override
     public void run(String... args) {
@@ -48,6 +57,9 @@ public class DBInitializer implements CommandLineRunner {
 
         // 기본 카테고리 및 집안일 등록
         addAllDefaultCategoryWithTaskGroup();
+
+        // 일회성 집안일 샘플 등록
+        addTemporaryTaskSample();
     }
 
     private void addAllDefaultCategoryWithTaskGroup() {
@@ -80,5 +92,16 @@ public class DBInitializer implements CommandLineRunner {
                 )
         );
         categoryMaintenanceController.addAllDefaultCategoryWithTaskGroup(request);
+    }
+
+    private void addTemporaryTaskSample() {
+        final Long temporaryCategoryId =
+                categoryMaintenanceController.add(
+                        new CategoryCreateRequest(homeId, "일회성 집안일", CategoryType.TEMPORARY)).getBody();
+
+        final Long temporaryTaskGroupId = taskGroupMaintenanceController.add(
+                new TaskGroupCreateRequest("일회성 집안일", TaskGroupType.TEMPORARY), temporaryCategoryId).getBody();
+
+        taskMaintenanceController.add(new TaskCreateRequest(userId), temporaryCategoryId, temporaryTaskGroupId);
     }
 }

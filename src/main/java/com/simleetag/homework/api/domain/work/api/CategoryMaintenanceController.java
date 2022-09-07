@@ -1,6 +1,6 @@
-package com.simleetag.homework.api.domain.task.api;
+package com.simleetag.homework.api.domain.work.api;
 
-import com.simleetag.homework.api.domain.task.CategoryService;
+import com.simleetag.homework.api.domain.work.CategoryService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

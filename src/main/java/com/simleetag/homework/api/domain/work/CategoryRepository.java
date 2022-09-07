@@ -1,4 +1,4 @@
-package com.simleetag.homework.api.domain.task;
+package com.simleetag.homework.api.domain.work;
 
 import java.util.List;
 

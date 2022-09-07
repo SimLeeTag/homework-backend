@@ -1,10 +1,11 @@
-package com.simleetag.homework.api.domain.task;
+package com.simleetag.homework.api.domain.work;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
 import com.simleetag.homework.api.common.DeletableEntity;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +19,13 @@ public class Category extends DeletableEntity {
     private final List<TaskGroup> taskGroups = new ArrayList<>();
 
     @Column
+    private boolean deleted = false;
+
+    @Column
     private Long homeId;
 
     @Column
     private String name;
-
-    @Column
-    private boolean deleted = false;
 
     @Column
     @Enumerated(value = EnumType.STRING)

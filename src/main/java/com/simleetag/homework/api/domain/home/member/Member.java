@@ -16,6 +16,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends DeletableEntity {
 
+    @Column
+    private final boolean deleted = false;
+
     @ManyToOne
     @JoinColumn(name = "home_id")
     private Home home;
@@ -25,9 +28,6 @@ public class Member extends DeletableEntity {
 
     @Column
     private Long userId;
-
-    @Column
-    private boolean deleted = false;
 
     public Member(Long userId, Integer point) {
         this.userId = userId;

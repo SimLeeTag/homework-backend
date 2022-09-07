@@ -1,8 +1,9 @@
-package com.simleetag.homework.api.domain.task.api;
+package com.simleetag.homework.api.domain.work.taskGroup.api;
 
-import com.simleetag.homework.api.domain.task.Category;
-import com.simleetag.homework.api.domain.task.CategoryService;
-import com.simleetag.homework.api.domain.task.TaskGroupService;
+import com.simleetag.homework.api.domain.work.Category;
+import com.simleetag.homework.api.domain.work.CategoryService;
+import com.simleetag.homework.api.domain.work.api.TaskGroupCreateRequest;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "집안일 꾸러미 관리")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/maintenance/categories/{categoryId}")
+@RequestMapping("/maintenance/categories/{categoryId}/task-groups")
 public class TaskGroupMaintenanceController {
     private final TaskGroupService taskGroupService;
     private final CategoryService categoryService;

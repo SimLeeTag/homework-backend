@@ -47,7 +47,7 @@ public class MemberService {
         final Member member = new Member(userId, 0);
         member.setBy(home);
         final Long memberId = memberRepository.save(member).getId();
-        user.addMemberId(memberId);
+        user.getMemberIds().add(memberId);
         return member;
     }
 }

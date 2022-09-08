@@ -81,13 +81,6 @@ public class DBInitializer implements CommandLineRunner {
                                 new TaskGroupCreateRequest("청소기 돌리기", TaskGroupType.ROUTINE),
                                 new TaskGroupCreateRequest("물걸레질", TaskGroupType.ROUTINE),
                                 new TaskGroupCreateRequest("화장실 청소", TaskGroupType.ROUTINE)
-                        ),
-                        new CategoryWithTaskCreateRequest(
-                                new CategoryCreateRequest(homeId, "빨래", CategoryType.DEFAULT),
-                                new TaskGroupCreateRequest("빨랫감 수거", TaskGroupType.ROUTINE),
-                                new TaskGroupCreateRequest("빨래 돌리기", TaskGroupType.ROUTINE),
-                                new TaskGroupCreateRequest("건조대 널기", TaskGroupType.ROUTINE),
-                                new TaskGroupCreateRequest("빨래 개기", TaskGroupType.ROUTINE)
                         )
                 )
         );

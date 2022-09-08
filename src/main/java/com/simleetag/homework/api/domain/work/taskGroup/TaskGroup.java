@@ -40,7 +40,11 @@ public class TaskGroup extends DeletableEntity {
     @Column
     private Long point;
 
-    @Column
+    /**
+     * 자주 변경되는 값이 아니고, 인덱싱에 사용되지 않는 컬럼일 경우 다른 테이블로 저장하지 않아도 된다.
+     * 조인하여 가져오지 않기 위해 TEXT로 저장한다.
+     */
+    @Column(columnDefinition = "TEXT")
     private String textOfPeriod;
 
     @Column
@@ -67,10 +71,6 @@ public class TaskGroup extends DeletableEntity {
     }
 
     public Period getPeriod() {
-        if (!StringUtils.hasText(textOfPeriod)) {
-            return null;
-        }
-
         return JsonMapper.readValue(textOfPeriod, Period.class);
     }
 

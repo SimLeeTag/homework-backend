@@ -1,5 +1,7 @@
 package com.simleetag.homework.api.domain.work.task;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import com.simleetag.homework.api.common.DeletableEntity;
@@ -13,6 +15,16 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Task extends DeletableEntity {
 
+    @ManyToOne
+    @JoinColumn(name = "task_group_id")
+    private TaskGroup taskGroup;
+
+    @Column
+    private Long ownerId;
+
+    @Column
+    private LocalDate dueDate;
+
     @Column
     @Enumerated(value = EnumType.STRING)
     private final RequestStatus requestStatus = RequestStatus.NONE;
@@ -20,9 +32,6 @@ public class Task extends DeletableEntity {
     @Column
     @Enumerated(value = EnumType.STRING)
     private final TaskStatus taskStatus = TaskStatus.UNFINISHED;
-
-    @Column
-    private final boolean deleted = false;
 
     /**
      * 집안일 별로 난이도를 가져야 한다.
@@ -33,14 +42,16 @@ public class Task extends DeletableEntity {
     private Difficulty level;
 
     @Column
-    private Long ownerId;
-
-    @ManyToOne
-    @JoinColumn(name = "task_group_id")
-    private TaskGroup taskGroup;
+    private final boolean deleted = false;
 
     public Task(Long ownerId) {
         this.ownerId = ownerId;
+        this.dueDate = LocalDate.now();
+    }
+
+    public Task(Long ownerId, LocalDate dueDate) {
+        this.ownerId = ownerId;
+        this.dueDate = dueDate;
     }
 
     public void setBy(TaskGroup taskGroup) {

@@ -14,25 +14,33 @@ import lombok.NoArgsConstructor;
 public class Task extends DeletableEntity {
 
     @Column
-    private Long assigneeId;
-
-    @Column
-    private final boolean deleted = false;
-
-    @Column
     @Enumerated(value = EnumType.STRING)
     private final RequestStatus requestStatus = RequestStatus.NONE;
-
-    @ManyToOne
-    @JoinColumn(name = "task_group_id")
-    private TaskGroup taskGroup;
 
     @Column
     @Enumerated(value = EnumType.STRING)
     private final TaskStatus taskStatus = TaskStatus.UNFINISHED;
 
-    public Task(Long assigneeId) {
-        this.assigneeId = assigneeId;
+    @Column
+    private final boolean deleted = false;
+
+    /**
+     * 집안일 별로 난이도를 가져야 한다.
+     * 집안일 꾸러미가 난이도를 가질 경우 일회성 집안일들은 모두 같은 난이도를 갖게 되어버리기 때문이다.
+     */
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private Difficulty level;
+
+    @Column
+    private Long ownerId;
+
+    @ManyToOne
+    @JoinColumn(name = "task_group_id")
+    private TaskGroup taskGroup;
+
+    public Task(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public void setBy(TaskGroup taskGroup) {

@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class DBInitializer implements CommandLineRunner {
     // user
     private final OAuthController oauthController;
+
     private final UserController userController;
 
     // home
@@ -38,10 +39,15 @@ public class DBInitializer implements CommandLineRunner {
 
     // work
     private final CategoryMaintenanceController categoryMaintenanceController;
+
     private final TaskGroupMaintenanceController taskGroupMaintenanceController;
+
     private final TaskMaintenanceController taskMaintenanceController;
+
     private Long homeId;
+
     private String homeworkToken;
+
     private Long userId;
 
     @Override

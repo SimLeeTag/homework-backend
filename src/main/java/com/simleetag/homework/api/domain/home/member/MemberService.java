@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
     private final UserService userService;
+
     private final MemberRepository memberRepository;
 
     public List<Long> findAllHomeIdsByUserId(Long userId) {

@@ -24,11 +24,11 @@ public class Home extends DeletableEntity {
     @Column
     private final boolean deleted = false;
 
-    @Column
-    private String homeName;
-
     @ElementCollection
     private final List<Long> categoryIds = new ArrayList<>();
+
+    @Column
+    private String homeName;
 
     public Home(String homeName) {
         this.homeName = homeName;

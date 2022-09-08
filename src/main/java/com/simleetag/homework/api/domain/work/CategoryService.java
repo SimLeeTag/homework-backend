@@ -21,8 +21,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CategoryService {
     private static final String ENTITY_NOT_FOUND_EXCEPTION = "[%d] ID 에 해당하는 카테고리가 존재하지 않습니다.";
+
     private final HomeService homeService;
+
     private final TaskGroupService taskGroupService;
+
     private final CategoryRepository categoryRepository;
 
     public List<CategoryWithDefaultTaskResponse> findAllDefaultCategoryWithTask() {

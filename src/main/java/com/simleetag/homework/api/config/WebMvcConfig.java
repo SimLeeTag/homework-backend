@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     private final OAuthJwt oauthJwt;
+
     private final HomeJwt homeJwt;
 
     @Override

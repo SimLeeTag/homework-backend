@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class OAuthClientConfiguration {
     private final AppEnvironment appEnvironment;
+
     private final OAuthJwt oauthJwt;
 
     @Bean

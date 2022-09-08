@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/maintenance/categories/{categoryId}/task-groups")
 public class TaskGroupMaintenanceController {
     private final TaskGroupService taskGroupService;
+
     private final CategoryService categoryService;
 
     @Operation(summary = "등록")

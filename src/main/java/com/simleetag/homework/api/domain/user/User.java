@@ -22,14 +22,14 @@ public class User extends DeletableEntity {
     @Column
     private final boolean deleted = false;
 
+    @ElementCollection
+    private final List<Long> memberIds = new ArrayList<>();
+
     @Column
     private String oauthId;
 
     @Column
     private String profileImage;
-
-    @ElementCollection
-    private final List<Long> memberIds = new ArrayList<>();
 
     @Column
     private String userName;

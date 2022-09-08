@@ -7,10 +7,7 @@ import javax.persistence.*;
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.task.Task;
-import com.simleetag.homework.api.domain.work.task.TaskLevel;
 import com.simleetag.homework.utils.JsonMapper;
-
-import org.springframework.util.StringUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,16 +20,12 @@ public class TaskGroup extends DeletableEntity {
     @OneToMany(mappedBy = "taskGroup")
     private final List<Task> tasks = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     @Column
     private final boolean deleted = false;
 
-    @Column
-    @Enumerated(value = EnumType.STRING)
-    private TaskLevel level;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column
     private String name;
@@ -45,7 +38,7 @@ public class TaskGroup extends DeletableEntity {
      * 조인하여 가져오지 않기 위해 TEXT로 저장한다.
      */
     @Column(columnDefinition = "TEXT")
-    private String textOfPeriod;
+    private String textOfCycle;
 
     @Column
     @Enumerated(value = EnumType.STRING)
@@ -70,11 +63,11 @@ public class TaskGroup extends DeletableEntity {
         }
     }
 
-    public Period getPeriod() {
-        return JsonMapper.readValue(textOfPeriod, Period.class);
+    public Cycle getCycle() {
+        return JsonMapper.readValue(textOfCycle, Cycle.class);
     }
 
-    public void setPeriod(Period period) {
-        this.textOfPeriod = JsonMapper.writeValueAsString(period);
+    public void setCycle(Cycle cycle) {
+        this.textOfCycle = JsonMapper.writeValueAsString(cycle);
     }
 }

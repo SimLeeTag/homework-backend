@@ -26,9 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends TestSupport {
 
     private HomeControllerFlow homeController;
+
     private OAuthControllerFlow oauthController;
+
     @Autowired
     private OAuthJwt oauthJwt;
+
     private UserControllerFlow userController;
 
     @BeforeAll

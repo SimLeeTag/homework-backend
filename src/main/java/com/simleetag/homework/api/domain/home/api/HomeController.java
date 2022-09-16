@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "집")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/homes")
 public class HomeController {
     private final HomeService homeService;
 
@@ -30,7 +30,7 @@ public class HomeController {
             summary = "집 생성",
             description = "집을 생성한 사용자는 자동으로 집의 멤버로 추가됩니다."
     )
-    @PostMapping("/homes")
+    @PostMapping
     public ResponseEntity<CreatedHomeResponse> createHome(@Login Long userId,
                                                           @RequestBody @Valid final CreateHomeRequest request) {
         CreatedHomeResponse response = homeService.createHome(userId, request);
@@ -41,7 +41,7 @@ public class HomeController {
             summary = "집 멤버 조회",
             description = "초대 링크로 집에 속한 멤버들을 조회합니다."
     )
-    @GetMapping("/homes")
+    @GetMapping
     public ResponseEntity<HomeWithMembersResponse> findMembersByToken(@Login Long userId, @Invitation Long homeId) {
         return ResponseEntity.ok(homeService.findById(homeId));
     }
@@ -49,7 +49,7 @@ public class HomeController {
     @Operation(
             summary = "집 들어가기"
     )
-    @PostMapping("/homes/{homeId}")
+    @PostMapping("{homeId}")
     public ResponseEntity<MemberIdResponse> joinHome(@Login Long userId,
                                                      @PathVariable @Positive Long homeId) {
         return ResponseEntity.ok(homeService.joinHome(userId, homeId));

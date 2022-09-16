@@ -23,17 +23,19 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "사용자 계정")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+
     private final HomeService homeService;
+
     private final MemberService memberService;
 
     @Operation(
             summary = "유저 조회",
             description = "Homework 토큰으로 사용자 정보를 조회합니다."
     )
-    @GetMapping("/users/me")
+    @GetMapping("/me")
     public ResponseEntity<UserWithHomesResponse> findUserByAccessToken(@Login Long userId) {
         final User user = userService.findById(userId);
         final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
@@ -48,7 +50,7 @@ public class UserController {
             summary = "유저 프로필 수정",
             description = "Homework 토큰으로 사용자 정보를 조회합니다."
     )
-    @PatchMapping("/users/me")
+    @PatchMapping("/me")
     public ResponseEntity<UserProfileResponse> editProfile(@Login Long userId, @RequestBody UserProfileRequest request) {
         final User user = userService.editProfile(userId, request);
         final UserProfileResponse response = UserProfileResponse.from(user);

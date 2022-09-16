@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HomeJwt {
     private final Algorithm algorithm;
+
     private final long accessTokenExpiration;
 
     public HomeJwt(AppEnvironment appEnvironment) {

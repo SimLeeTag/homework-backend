@@ -10,7 +10,9 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "app")
 public class AppEnvironment {
     private Client client;
+
     private Jwt jwt;
+
     private Oauth oauth;
 
     public record Oauth(KakaoAttributes kakaoAttributes, AppleAttributes appleAttributes) {

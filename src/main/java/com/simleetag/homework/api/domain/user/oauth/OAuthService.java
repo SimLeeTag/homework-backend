@@ -20,8 +20,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class OAuthService {
     private final OAuthJwt oauthJwt;
+
     private final OAuthClientFactory oauthClientFactory;
+
     private final UserRepository userRepository;
+
     private final HomeService homeService;
 
     public TokenResponse signUpOrLogin(final TokenRequest tokenRequest) {

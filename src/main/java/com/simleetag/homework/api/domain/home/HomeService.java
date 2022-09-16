@@ -25,8 +25,11 @@ import lombok.RequiredArgsConstructor;
 public class HomeService {
 
     private final UserService userService;
+
     private final MemberService memberService;
+
     private final HomeRepository homeRepository;
+
     private final HomeJwt homeJwt;
 
     public List<HomeWithMembersResponse> findAllByMemberIds(List<Long> memberIds) {
@@ -39,7 +42,7 @@ public class HomeService {
         return homeIds.stream().map(this::findById).toList();
     }
 
-    private Home findHomeById(Long homeId) {
+    public Home findHomeById(Long homeId) {
         return homeRepository.findById(homeId).orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId)));
     }
 

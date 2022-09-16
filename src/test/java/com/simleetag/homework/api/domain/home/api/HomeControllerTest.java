@@ -23,11 +23,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HomeControllerTest extends TestSupport {
 
     private HomeControllerFlow homeController;
+
     @Autowired
     private HomeJwt homeJwt;
+
     private String homeworkToken;
+
     private OAuthControllerFlow oauthController;
+
     private UserControllerFlow userController;
+
     private Long userId;
 
 

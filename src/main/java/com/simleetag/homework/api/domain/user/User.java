@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User extends DeletableEntity {
 
-    @Column
-    private final boolean deleted = false;
-
     @ElementCollection
     private final List<Long> memberIds = new ArrayList<>();
 

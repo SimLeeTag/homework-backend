@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 public abstract class FlowSupport {
     protected final MockMvc mockMvc;
+
     protected final ObjectMapper objectMapper;
 
     public FlowSupport(MockMvc mockMvc) {

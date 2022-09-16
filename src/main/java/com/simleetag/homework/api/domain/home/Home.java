@@ -21,9 +21,6 @@ public class Home extends DeletableEntity {
     @OneToMany(mappedBy = "home")
     private final List<Member> members = new ArrayList<>();
 
-    @Column
-    private final boolean deleted = false;
-
     @ElementCollection
     private final List<Long> categoryIds = new ArrayList<>();
 

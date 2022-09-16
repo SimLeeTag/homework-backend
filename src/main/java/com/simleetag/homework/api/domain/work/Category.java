@@ -19,9 +19,6 @@ public class Category extends DeletableEntity {
     private final List<TaskGroup> taskGroups = new ArrayList<>();
 
     @Column
-    private boolean deleted = false;
-
-    @Column
     private Long homeId;
 
     @Column

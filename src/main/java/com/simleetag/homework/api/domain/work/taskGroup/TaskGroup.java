@@ -20,9 +20,6 @@ public class TaskGroup extends DeletableEntity {
     @OneToMany(mappedBy = "taskGroup")
     private final List<Task> tasks = new ArrayList<>();
 
-    @Column
-    private final boolean deleted = false;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

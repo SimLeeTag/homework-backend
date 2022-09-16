@@ -16,9 +16,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends DeletableEntity {
 
-    @Column
-    private final boolean deleted = false;
-
     @ManyToOne
     @JoinColumn(name = "home_id")
     private Home home;

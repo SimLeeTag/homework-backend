@@ -35,6 +35,12 @@ public class User extends DeletableEntity {
         this.oauthId = oauthId;
     }
 
+    public User(String oauthId, String profileImage, String userName) {
+        this.oauthId = oauthId;
+        this.profileImage = profileImage;
+        this.userName = userName;
+    }
+
     public void editProfile(UserProfileRequest request) {
         this.userName = request.userName();
         this.profileImage = request.profileImage();

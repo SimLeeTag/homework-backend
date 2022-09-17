@@ -4,12 +4,8 @@ import java.util.Arrays;
 
 import com.simleetag.homework.api.domain.home.api.HomeController;
 import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
-import com.simleetag.homework.api.domain.user.api.UserController;
-import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
-import com.simleetag.homework.api.domain.user.oauth.ProviderType;
-import com.simleetag.homework.api.domain.user.oauth.api.OAuthController;
-import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
-import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
+import com.simleetag.homework.api.domain.user.api.UserMaintenanceController;
+import com.simleetag.homework.api.domain.user.api.UserSignUpRequest;
 import com.simleetag.homework.api.domain.work.CategoryType;
 import com.simleetag.homework.api.domain.work.api.*;
 import com.simleetag.homework.api.domain.work.task.api.TaskCreateRequest;
@@ -30,9 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DBInitializer implements CommandLineRunner {
     // user
-    private final OAuthController oauthController;
-
-    private final UserController userController;
+    private final UserMaintenanceController userMaintenanceController;
 
     // home
     private final HomeController homeController;
@@ -46,17 +40,13 @@ public class DBInitializer implements CommandLineRunner {
 
     private Long homeId;
 
-    private String homeworkToken;
-
     private Long userId;
 
     @Override
     public void run(String... args) {
         // 유저 생성 및 정보 수정
-        final TokenResponse user = oauthController.login(new TokenRequest("a.b.c", ProviderType.KAKAO)).getBody();
-        homeworkToken = user.homeworkToken();
-        userId = user.user().userId();
-        userController.editProfile(userId, new UserProfileRequest("에버", "image.com"));
+        userId = userMaintenanceController.signUp(
+                new UserSignUpRequest("dummy-oauth-id", "image.com", "ever")).getBody();
 
         // 집 생성 및 입장
         homeId = homeController.createHome(userId, new CreateHomeRequest("백엔드 집")).getBody().homeId();

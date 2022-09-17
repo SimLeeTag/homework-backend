@@ -1,5 +1,7 @@
 package com.simleetag.homework.api.domain.user.api;
 
+import com.simleetag.homework.api.domain.user.UserService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +17,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/maintenance")
 public class UserMaintenanceController {
+    private final UserService userService;
 
-    @Operation(summary = "테스트 API")
+    @Operation(summary = "생성")
     @GetMapping
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello world!");
+    public ResponseEntity<Long> signUp(UserSignUpRequest request) {
+        return ResponseEntity.ok(userService.add(request).getId());
     }
 }

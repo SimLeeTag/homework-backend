@@ -1,5 +1,6 @@
 package com.simleetag.homework.api.domain.user;
 
+import com.simleetag.homework.api.domain.user.api.UserSignUpRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.repository.UserRepository;
 
@@ -23,5 +24,10 @@ public class UserService {
         final var user = findById(userId);
         user.editProfile(request);
         return user;
+    }
+
+    public User add(UserSignUpRequest request) {
+        User user = new User(request.oauthId(), request.profileImage(), request.userName());
+        return userRepository.save(user);
     }
 }

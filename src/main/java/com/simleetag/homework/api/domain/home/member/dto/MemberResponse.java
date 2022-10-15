@@ -1,11 +1,10 @@
 package com.simleetag.homework.api.domain.home.member.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
 import com.simleetag.homework.api.domain.home.member.Member;
-import com.simleetag.homework.api.domain.user.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -26,39 +25,23 @@ public record MemberResponse(
         @NotBlank
         Long userId,
 
-        @Schema(description = "유저 이름")
-        @NotBlank
-        String userName,
-
-        @Schema(description = "프로필 이미지 경로")
-        @NotBlank
-        String profileImage,
-
         @Schema(description = "멤버가 가진 포인트")
-        @NotBlank
-        Integer point
+        @PositiveOrZero
+        Integer point,
+
+        @Schema(description = "멤버 생성 시각")
+        LocalDateTime createdAt,
+
+        @Schema(description = "집 나간 시각")
+        LocalDateTime deletedAt
 ) {
-    private static final String EXCEPTION_MESSAGE = "[%d] ID를 가진 멤버의 정보가 존재하지 않습니다.";
-
-    public static List<MemberResponse> from(List<Member> members, List<User> users) {
-        List<MemberResponse> memberResponses = new ArrayList<>();
-        for (Member member : members) {
-            final User matchingUser =
-                    users.stream()
-                         .filter(user -> member.getUserId().equals(user.getId()))
-                         .findAny()
-                         .orElseThrow(() -> new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, member.getUserId())));
-
-            memberResponses.add(
-                    new MemberResponse(
-                            member.getId(),
-                            matchingUser.getId(),
-                            matchingUser.getUserName(),
-                            matchingUser.getProfileImage(),
-                            member.getPoint()
-                    ));
-        }
-
-        return memberResponses;
+    public static MemberResponse from(Member member) {
+        return new MemberResponse(
+                member.getId(),
+                member.getUserId(),
+                member.getPoint(),
+                member.getCreatedAt(),
+                member.getDeletedAt()
+        );
     }
 }

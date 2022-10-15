@@ -84,18 +84,4 @@ public class HomeControllerFlow extends FlowSupport {
 
         return objectMapper.readValue(responseBody, Error.class).message();
     }
-
-    public MemberIdResponse joinHome(Long homeId, String homeworkToken) throws Exception {
-        final String responseBody = mockMvc.perform(
-                                                   post("/api/homes/" + homeId)
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
-                                           ).andExpect(
-                                                   status().isOk()
-                                           )
-                                           .andReturn()
-                                           .getResponse()
-                                           .getContentAsString(StandardCharsets.UTF_8);
-
-        return objectMapper.readValue(responseBody, MemberIdResponse.class);
-    }
 }

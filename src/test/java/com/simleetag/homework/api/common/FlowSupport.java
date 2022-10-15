@@ -1,6 +1,7 @@
 package com.simleetag.homework.api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simleetag.homework.utils.JsonMapper;
 
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -11,6 +12,6 @@ public abstract class FlowSupport {
 
     public FlowSupport(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = JsonMapper.getJsonMapper();
     }
 }

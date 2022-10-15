@@ -1,8 +1,9 @@
 package com.simleetag.homework.api.domain.home.api;
 
+import java.util.List;
+
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.HomeService;
-import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.EmptyHomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeModifyRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
@@ -23,9 +24,9 @@ public class HomeMaintenanceController {
     private final HomeService homeService;
 
     @Operation(summary = "조회")
-    @GetMapping("{id}")
-    public ResponseEntity<HomeResponse> findOne(@PathVariable Long id) {
-        final Home home = homeService.findHomeById(id);
+    @GetMapping("{homeId}")
+    public ResponseEntity<HomeResponse> findOne(@PathVariable Long homeId) {
+        final Home home = homeService.findHomeById(homeId);
         return ResponseEntity.ok(HomeResponse.from(home));
     }
 
@@ -37,16 +38,30 @@ public class HomeMaintenanceController {
     }
 
     @Operation(summary = "수정")
-    @PutMapping("{id}")
-    public ResponseEntity<HomeResponse> modify(@PathVariable Long id, HomeModifyRequest request) {
-        final Home home = homeService.modify(id, request);
+    @PutMapping("{homeId}")
+    public ResponseEntity<HomeResponse> modify(@PathVariable Long homeId, HomeModifyRequest request) {
+        final Home home = homeService.modify(homeId, request);
+        return ResponseEntity.ok(HomeResponse.from(home));
+    }
+
+    @Operation(summary = "집에 속한 유저를 내쫓기")
+    @PatchMapping("{homeId}/kick-out")
+    public ResponseEntity<HomeResponse> kickOut(@PathVariable Long homeId, List<Long> memberIds) {
+        final Home home = homeService.kickOut(homeId, memberIds);
+        return ResponseEntity.ok(HomeResponse.from(home));
+    }
+
+    @Operation(summary = "집에 속한 모든 유저를 내쫓기")
+    @PatchMapping("{homeId}/kick-out/all")
+    public ResponseEntity<HomeResponse> kickOutAll(@PathVariable Long homeId) {
+        final Home home = homeService.kickOutAll(homeId);
         return ResponseEntity.ok(HomeResponse.from(home));
     }
 
     @Operation(summary = "삭제")
-    @DeleteMapping("{id}")
-    public ResponseEntity<HomeResponse> expire(@PathVariable Long id) {
-        final Home home = homeService.expire(id);
+    @DeleteMapping("{homeId}")
+    public ResponseEntity<HomeResponse> expire(@PathVariable Long homeId) {
+        final Home home = homeService.expire(homeId);
         return ResponseEntity.ok(HomeResponse.from(home));
     }
 }

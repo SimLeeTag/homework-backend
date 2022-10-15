@@ -40,7 +40,7 @@ public class UserController {
         final User user = userService.findById(userId);
         final List<Long> homeIds = memberService.findAllHomeIdsByUserId(userId);
         final List<HomeWithMembersResponse> homes = homeIds.stream()
-                                                           .map(homeService::findById)
+                                                           .map(homeService::findValidHomeWithMembers)
                                                            .toList();
 
         return ResponseEntity.ok(UserWithHomesResponse.from(user, homes));

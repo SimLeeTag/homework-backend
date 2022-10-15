@@ -2,6 +2,7 @@ package com.simleetag.homework.api.domain.user.api;
 
 import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
+import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
@@ -27,6 +28,8 @@ class UserControllerTest extends TestSupport {
 
     private HomeControllerFlow homeController;
 
+    private MemberControllerFlow memberController;
+
     private OAuthControllerFlow oauthController;
 
     @Autowired
@@ -39,6 +42,7 @@ class UserControllerTest extends TestSupport {
         oauthController = new OAuthControllerFlow(mockMvc);
         userController = new UserControllerFlow(mockMvc);
         homeController = new HomeControllerFlow(mockMvc);
+        memberController = new MemberControllerFlow(mockMvc);
     }
 
     @Nested
@@ -66,8 +70,8 @@ class UserControllerTest extends TestSupport {
             final CreatedHomeResponse iOS = homeController.createHome(ttozzi.homeworkToken(), new HomeCreateRequest("iOS"));
 
             // 집 입장
-            homeController.joinHome(iOS.homeId(), ttozzi.homeworkToken());
-            homeController.joinHome(iOS.homeId(), ever.homeworkToken());
+            memberController.joinHome(iOS.homeId(), ttozzi.homeworkToken());
+            memberController.joinHome(iOS.homeId(), ever.homeworkToken());
 
             // when
             final UserWithHomesResponse response = userController.findUserByAccessToken(ever.homeworkToken());

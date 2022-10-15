@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "사용자 계정")
+@Tag(name = "사용자 계정 관리")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/maintenance/users")

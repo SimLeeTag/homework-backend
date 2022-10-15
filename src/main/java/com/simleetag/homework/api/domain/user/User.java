@@ -1,5 +1,6 @@
 package com.simleetag.homework.api.domain.user;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -44,5 +45,9 @@ public class User extends DeletableEntity {
     public void editProfile(UserProfileRequest request) {
         this.userName = request.userName();
         this.profileImage = request.profileImage();
+    }
+
+    public void expire() {
+        this.deletedAt = LocalDateTime.now();
     }
 }

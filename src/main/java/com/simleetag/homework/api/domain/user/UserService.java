@@ -30,4 +30,10 @@ public class UserService {
         User user = new User(request.oauthId(), request.profileImage(), request.userName());
         return userRepository.save(user);
     }
+
+    public User expire(Long userId) {
+        final var user = findById(userId);
+        user.expire();
+        return user;
+    }
 }

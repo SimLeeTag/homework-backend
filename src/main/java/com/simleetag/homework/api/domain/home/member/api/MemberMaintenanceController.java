@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/maintenance/homes/{homeId}/members")
 public class MemberMaintenanceController {
     private final HomeService homeService;
+
     private final MemberService memberService;
 
     @Operation(summary = "조회")

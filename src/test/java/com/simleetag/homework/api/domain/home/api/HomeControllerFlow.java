@@ -5,10 +5,9 @@ import java.nio.charset.StandardCharsets;
 import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.common.exception.Error;
-import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
-import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

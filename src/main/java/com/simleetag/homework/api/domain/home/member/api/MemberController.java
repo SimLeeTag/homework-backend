@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/homes")
 public class MemberController {
     private final HomeService homeService;
+
     private final MemberService memberService;
 
     @Operation(

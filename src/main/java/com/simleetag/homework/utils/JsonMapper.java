@@ -8,7 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class JsonMapper {
     private static final ObjectMapper MAPPER =
             new ObjectMapper().enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                    .registerModule(new JavaTimeModule());
+                              .registerModule(new JavaTimeModule());
 
     private JsonMapper() {}
 

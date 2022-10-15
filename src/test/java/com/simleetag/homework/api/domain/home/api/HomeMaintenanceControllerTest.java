@@ -3,8 +3,6 @@ package com.simleetag.homework.api.domain.home.api;
 import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
-import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.home.member.MemberMaintenanceControllerFlow;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
@@ -25,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HomeMaintenanceControllerTest extends TestSupport {
 
+    private String everHomeworkToken;
+
     private HomeControllerFlow homeController;
 
     private HomeMaintenanceControllerFlow homeMaintenanceController;
@@ -33,11 +33,9 @@ public class HomeMaintenanceControllerTest extends TestSupport {
 
     private MemberMaintenanceControllerFlow memberMaintenanceController;
 
-    private String everHomeworkToken;
+    private OAuthControllerFlow oauthController;
 
     private String poogleHomeworkToken;
-
-    private OAuthControllerFlow oauthController;
 
     private UserControllerFlow userController;
 

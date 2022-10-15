@@ -1,8 +1,6 @@
 package com.simleetag.homework.api.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simleetag.homework.HomeworkBackendApplication;
-import com.simleetag.homework.utils.JsonMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

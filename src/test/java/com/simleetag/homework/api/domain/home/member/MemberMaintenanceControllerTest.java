@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberMaintenanceControllerTest extends TestSupport {
 
+    private CreatedHomeResponse home;
+
     private HomeControllerFlow homeController;
 
     private MemberMaintenanceControllerFlow memberMaintenanceController;
@@ -30,8 +32,6 @@ public class MemberMaintenanceControllerTest extends TestSupport {
     private UserControllerFlow userController;
 
     private Long userId;
-
-    private CreatedHomeResponse home;
 
     @BeforeAll
     public void init() {

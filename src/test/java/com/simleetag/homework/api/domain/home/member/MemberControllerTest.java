@@ -5,7 +5,6 @@ import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
-import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
@@ -24,9 +23,9 @@ public class MemberControllerTest extends TestSupport {
 
     private HomeControllerFlow homeController;
 
-    private MemberControllerFlow memberController;
-
     private String homeworkToken;
+
+    private MemberControllerFlow memberController;
 
     private OAuthControllerFlow oauthController;
 

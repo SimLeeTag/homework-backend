@@ -24,12 +24,12 @@ public class HomeControllerTest extends TestSupport {
 
     private HomeControllerFlow homeController;
 
-    private MemberControllerFlow memberController;
-
     @Autowired
     private HomeJwt homeJwt;
 
     private String homeworkToken;
+
+    private MemberControllerFlow memberController;
 
     private OAuthControllerFlow oauthController;
 

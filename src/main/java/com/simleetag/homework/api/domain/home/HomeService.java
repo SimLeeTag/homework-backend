@@ -69,7 +69,7 @@ public class HomeService {
 
     public HomeWithMembersResponse findValidHomeWithMembers(Long homeId) {
         final Home home = homeDslRepository.findValidHomeAndMembers(homeId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집은 유효하지 않은 집입니다.", homeId)));
+                                           .orElseThrow(() -> new IllegalArgumentException(String.format("HomeID[%d]에 해당하는 집은 유효하지 않은 집입니다.", homeId)));
         final List<Member> members = home.getMembers();
         final List<User> users = members.stream().map(Member::getUserId).distinct().map(userService::findById).toList();
 

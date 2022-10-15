@@ -30,7 +30,7 @@ public record HomeResponse(
         return new HomeResponse(
                 home.getId(),
                 home.getHomeName(),
-                home.getTextOfCategoryIds(),
+                home.getCategoryIds(),
                 home.getCreatedAt(),
                 home.getDeletedAt()
         );

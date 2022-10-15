@@ -49,7 +49,7 @@ public class Home extends DeletableEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public List<Long> getTextOfCategoryIds() {
+    public List<Long> getCategoryIds() {
         if (StringUtils.isBlank(textOfCategoryIds)) {
             return new ArrayList<>();
         }
@@ -66,7 +66,7 @@ public class Home extends DeletableEntity {
     }
 
     public void addCategoryId(Long id) {
-        final List<Long> categoryIds = getTextOfCategoryIds();
+        final List<Long> categoryIds = getCategoryIds();
         categoryIds.add(id);
         setCategoryIds(categoryIds);
     }

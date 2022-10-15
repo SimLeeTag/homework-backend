@@ -2,7 +2,7 @@ package com.simleetag.homework.api.domain.home.api;
 
 import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.HomeJwt;
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
@@ -73,7 +73,7 @@ public class HomeControllerTest extends TestSupport {
 
             // given
             final String homeName = "백엔드집";
-            final CreateHomeRequest request = new CreateHomeRequest(homeName);
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
 
             // when
             final CreatedHomeResponse response = homeController.createHome(homeworkToken, request);
@@ -89,7 +89,7 @@ public class HomeControllerTest extends TestSupport {
             // given
             // 집 생성
             final String homeName = "백엔드집";
-            final CreateHomeRequest request = new CreateHomeRequest(homeName);
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
             final String message = "최대 3개의 집에 소속될 수 있습니다.";
 
             // when
@@ -115,7 +115,7 @@ public class HomeControllerTest extends TestSupport {
             //given
             // 집 생성
             final String homeName = "백엔드집";
-            final CreateHomeRequest request = new CreateHomeRequest(homeName);
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
             final CreatedHomeResponse home = homeController.createHome(homeworkToken, request);
 
             // 멤버 추가
@@ -158,7 +158,7 @@ public class HomeControllerTest extends TestSupport {
             // given
             // 집 생성
             final String homeName = "백엔드집";
-            final CreateHomeRequest request = new CreateHomeRequest(homeName);
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
             final CreatedHomeResponse home = homeController.createHome(homeworkToken, request);
 
             // when

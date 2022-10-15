@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.common.exception.Error;
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
@@ -23,7 +23,7 @@ public class HomeControllerFlow extends FlowSupport {
         super(mockMvc);
     }
 
-    public CreatedHomeResponse createHome(String homeworkToken, CreateHomeRequest request) throws Exception {
+    public CreatedHomeResponse createHome(String homeworkToken, HomeCreateRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
                                                    post("/api/homes")
                                                            .contentType(MediaType.APPLICATION_JSON)
@@ -39,7 +39,7 @@ public class HomeControllerFlow extends FlowSupport {
         return objectMapper.readValue(responseBody, CreatedHomeResponse.class);
     }
 
-    public String createHomeFail(String homeworkToken, CreateHomeRequest request, ResultMatcher matcher) throws Exception {
+    public String createHomeFail(String homeworkToken, HomeCreateRequest request, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
                                                    post("/api/homes")
                                                            .contentType(MediaType.APPLICATION_JSON)

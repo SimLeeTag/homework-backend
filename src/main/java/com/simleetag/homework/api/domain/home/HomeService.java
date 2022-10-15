@@ -3,9 +3,7 @@ package com.simleetag.homework.api.domain.home;
 import java.util.List;
 import java.util.Optional;
 
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
-import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
+import com.simleetag.homework.api.domain.home.api.dto.*;
 import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
@@ -54,12 +52,16 @@ public class HomeService {
         return HomeWithMembersResponse.from(home, MemberResponse.from(members, users));
     }
 
-    public CreatedHomeResponse createHome(Long userId, CreateHomeRequest homeRequest) {
+    public CreatedHomeResponse createHome(Long userId, HomeCreateRequest homeRequest) {
         final Home home = homeRepository.save(new Home(homeRequest.homeName()));
 
         memberService.join(home, userId);
 
         return CreatedHomeResponse.from(home, homeJwt);
+    }
+
+    public Home createEmptyHome(EmptyHomeCreateRequest homeRequest) {
+        return homeRepository.save(new Home(homeRequest.homeName()));
     }
 
     public MemberIdResponse joinHome(Long userId, Long homeId) {
@@ -73,5 +75,17 @@ public class HomeService {
         final Member member = memberService.join(home, userId);
 
         return new MemberIdResponse(member.getId());
+    }
+
+    public Home modify(Long id, HomeModifyRequest request) {
+        final Home home = findHomeById(id);
+        home.modify(request);
+        return home;
+    }
+
+    public Home expire(Long id) {
+        final Home home = findHomeById(id);
+        home.expire();
+        return home;
     }
 }

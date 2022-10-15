@@ -6,7 +6,7 @@ import javax.validation.constraints.Positive;
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.common.Login;
 import com.simleetag.homework.api.domain.home.HomeService;
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
@@ -32,7 +32,7 @@ public class HomeController {
     )
     @PostMapping
     public ResponseEntity<CreatedHomeResponse> createHome(@Login Long userId,
-                                                          @RequestBody @Valid final CreateHomeRequest request) {
+                                                          @RequestBody @Valid final HomeCreateRequest request) {
         CreatedHomeResponse response = homeService.createHome(userId, request);
         return ResponseEntity.ok(response);
     }

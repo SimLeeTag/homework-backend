@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record CreateHomeRequest(
+public record EmptyHomeCreateRequest(
         @Schema(
                 description = "집 이름",
                 maxLength = 12

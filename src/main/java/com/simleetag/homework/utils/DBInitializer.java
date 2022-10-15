@@ -3,7 +3,7 @@ package com.simleetag.homework.utils;
 import java.util.Arrays;
 
 import com.simleetag.homework.api.domain.home.api.HomeController;
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.user.api.UserMaintenanceController;
 import com.simleetag.homework.api.domain.user.api.UserSignUpRequest;
 import com.simleetag.homework.api.domain.work.CategoryType;
@@ -49,7 +49,7 @@ public class DBInitializer implements CommandLineRunner {
                 new UserSignUpRequest("dummy-oauth-id", "image.com", "ever")).getBody();
 
         // 집 생성 및 입장
-        homeId = homeController.createHome(userId, new CreateHomeRequest("백엔드 집")).getBody().homeId();
+        homeId = homeController.createHome(userId, new HomeCreateRequest("백엔드 집")).getBody().homeId();
 
         // 기본 카테고리 및 집안일 등록
         addAllDefaultCategoryWithTaskGroup();

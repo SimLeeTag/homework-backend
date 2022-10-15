@@ -2,7 +2,7 @@ package com.simleetag.homework.api.domain.user.api;
 
 import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
-import com.simleetag.homework.api.domain.home.api.dto.CreateHomeRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileResponse;
@@ -62,8 +62,8 @@ class UserControllerTest extends TestSupport {
             userController.editProfile(ttozzi.homeworkToken(), ttozziProfile);
 
             // 집 생성
-            homeController.createHome(ever.homeworkToken(), new CreateHomeRequest("백엔드"));
-            final CreatedHomeResponse iOS = homeController.createHome(ttozzi.homeworkToken(), new CreateHomeRequest("iOS"));
+            homeController.createHome(ever.homeworkToken(), new HomeCreateRequest("백엔드"));
+            final CreatedHomeResponse iOS = homeController.createHome(ttozzi.homeworkToken(), new HomeCreateRequest("iOS"));
 
             // 집 입장
             homeController.joinHome(iOS.homeId(), ttozzi.homeworkToken());

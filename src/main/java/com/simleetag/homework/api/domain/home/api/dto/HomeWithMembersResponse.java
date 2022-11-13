@@ -4,7 +4,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.home.Home;
-import com.simleetag.homework.api.domain.home.member.dto.MemberResponse;
+import com.simleetag.homework.api.domain.home.member.dto.MemberWithUserResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,13 +19,13 @@ public record HomeWithMembersResponse(
 
         @Schema(description = "집에 속한 유저 목록")
         @NotBlank
-        List<MemberResponse> members
+        List<MemberWithUserResponse> members
 ) {
-    public static HomeWithMembersResponse from(Home home, List<MemberResponse> memberResponses) {
+    public static HomeWithMembersResponse from(Home home, List<MemberWithUserResponse> memberWithUserRespons) {
         return new HomeWithMembersResponse(
                 home.getId(),
                 home.getHomeName(),
-                memberResponses
+                memberWithUserRespons
         );
     }
 }

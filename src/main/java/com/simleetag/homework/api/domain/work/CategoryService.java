@@ -43,7 +43,7 @@ public class CategoryService {
 
     public Category add(CategoryCreateRequest request) {
         final Category category = categoryRepository.save(new Category(request.homeId(), request.name(), request.type()));
-        homeService.findHomeById(request.homeId()).getCategoryIds().add(category.getId());
+        homeService.findHomeById(request.homeId()).addCategoryId(category.getId());
         return category;
     }
 

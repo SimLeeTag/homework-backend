@@ -3,11 +3,18 @@ package com.simleetag.homework.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JsonMapper {
-    private static final ObjectMapper MAPPER = new ObjectMapper().enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+    private static final ObjectMapper MAPPER =
+            new ObjectMapper().enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                              .registerModule(new JavaTimeModule());
 
     private JsonMapper() {}
+
+    public static ObjectMapper getJsonMapper() {
+        return MAPPER;
+    }
 
     public static <T> String writeValueAsString(T object) {
         String json;

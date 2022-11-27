@@ -29,15 +29,15 @@ public class Category extends DeletableEntity {
     @JoinColumn(name = "home_id")
     private Home home;
 
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
+
     @Column
     private String name;
 
     @Column
     @Enumerated(value = EnumType.STRING)
     private CategoryType type;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 
     public Category(String name, CategoryType type, Home home) {
         this.name = name;

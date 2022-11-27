@@ -7,7 +7,6 @@ import java.util.Objects;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
 import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
-import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupSync;
 
 import org.apache.commons.lang3.StringUtils;
 

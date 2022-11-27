@@ -1,7 +1,6 @@
 package com.simleetag.homework.api.domain.work.api;
 
 import java.util.List;
-
 import javax.persistence.criteria.Join;
 
 import com.simleetag.homework.api.domain.home.Home;
@@ -43,13 +42,6 @@ public class CategoryMaintenanceController {
             Long homeId,
             Long categoryId
     ) {
-        public Specification<Category> toSpecs() {
-            Specification<Category> spec = (root, query, builder) -> null;
-            if (homeId != null) spec = spec.and(equalHomeId(homeId));
-            if (categoryId != null) spec = spec.and(equalCategoryId(categoryId));
-            return spec;
-        }
-
         private static Specification<Category> equalHomeId(Long homeId) {
             return (root, query, builder) -> {
                 Join<Home, Category> categoryTask = root.join("home");
@@ -59,6 +51,15 @@ public class CategoryMaintenanceController {
 
         private static Specification<Category> equalCategoryId(Long categoryId) {
             return (root, query, builder) -> builder.equal(root.get("id"), categoryId);
+        }
+
+        public Specification<Category> toSpecs() {
+            Specification<Category> spec = (root, query, builder) -> null;
+            if (homeId != null)
+                spec = spec.and(equalHomeId(homeId));
+            if (categoryId != null)
+                spec = spec.and(equalCategoryId(categoryId));
+            return spec;
         }
     }
 }

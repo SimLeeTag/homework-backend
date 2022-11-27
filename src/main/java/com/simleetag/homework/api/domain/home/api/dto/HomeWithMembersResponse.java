@@ -19,7 +19,7 @@ public record HomeWithMembersResponse(
 
         @Schema(description = """
                 집 초기화 여부
-                
+                                
                 - true : 한 번이라도 집안일 설정을 완료함
                 - false: 한 번도 집안일 설정을 완료하지 않음
                 """)

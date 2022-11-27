@@ -2,15 +2,10 @@ package com.simleetag.homework.api.domain.user.api;
 
 import java.util.List;
 
-import javax.persistence.criteria.Join;
-
-import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.UserService;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserResponse;
-import com.simleetag.homework.api.domain.work.Category;
-import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceController;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -57,14 +52,15 @@ public class UserMaintenanceController {
     public record UserSearchCondition(
             Long userId
     ) {
-        public Specification<User> toSpecs() {
-            Specification<User> spec = (root, query, builder) -> null;
-            if (userId != null) spec = spec.and(equalUserId(userId));
-            return spec;
-        }
-
         private static Specification<User> equalUserId(Long userId) {
             return (root, query, builder) -> builder.equal(root.get("id"), userId);
+        }
+
+        public Specification<User> toSpecs() {
+            Specification<User> spec = (root, query, builder) -> null;
+            if (userId != null)
+                spec = spec.and(equalUserId(userId));
+            return spec;
         }
     }
 }

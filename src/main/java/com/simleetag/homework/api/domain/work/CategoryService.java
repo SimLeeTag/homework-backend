@@ -11,7 +11,6 @@ import com.simleetag.homework.api.domain.work.repository.CategoryDslRepository;
 import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
-import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupSync;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -40,6 +40,9 @@ public class TaskGroup extends DeletableEntity {
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
+
     @Column
     private String name;
 
@@ -56,9 +59,6 @@ public class TaskGroup extends DeletableEntity {
     @Column
     @Enumerated(value = EnumType.STRING)
     private TaskGroupType type;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 
     public TaskGroup(String name, TaskGroupType type) {
         this(name, type, null);

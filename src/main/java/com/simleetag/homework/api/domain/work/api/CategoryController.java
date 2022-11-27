@@ -47,7 +47,7 @@ public class CategoryController {
                       - CategoryName이 null이 아닐 경우 해당 카테고리를 DB에 추가합니다.
                                         
                     - 그 외 DB에 저장되어있던 변경이 없는 카테고리는 모두 삭제됩니다.                                       
-                    
+                                        
                     집안일꾸러미도 같은 로직으로 적용됩니다.
                     """
     )

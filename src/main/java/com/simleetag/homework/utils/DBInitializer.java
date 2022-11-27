@@ -70,7 +70,7 @@ public class DBInitializer implements CommandLineRunner {
                         null,
                         null,
                         null
-                        )).getBody();
+                )).getBody();
 
         taskMaintenanceController.add(new TaskCreateRequest(DayOfWeek.MONDAY), temporaryCategoryId, temporaryTaskGroupId);
     }

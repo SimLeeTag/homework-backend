@@ -32,21 +32,21 @@ public class GlobalCustomException {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Error> handleAuthenticationException(AuthenticationException e) {
         final Error error = Error.from(e.getMessage());
-        log.error(Arrays.toString(e.getStackTrace()));
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
     @ExceptionHandler(OAuthException.class)
     public ResponseEntity<Error> handleOAuthException(OAuthException e) {
         final Error error = Error.from(e.getMessage());
-        log.error(Arrays.toString(e.getStackTrace()));
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
     @ExceptionHandler(WebClientResponseException.class)
     public ResponseEntity<Error> handleWebClientResponseException(WebClientResponseException e) {
         final Error error = Error.from(e.getResponseBodyAsString());
-        log.error(Arrays.toString(e.getStackTrace()));
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
@@ -59,7 +59,7 @@ public class GlobalCustomException {
     @ExceptionHandler(HomeJoinException.class)
     public ResponseEntity<Error> handleHomeJoinException(HomeJoinException e) {
         final Error error = Error.from(e.getMessage());
-        log.error(Arrays.toString(e.getStackTrace()));
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(400).body(error);
     }
 }

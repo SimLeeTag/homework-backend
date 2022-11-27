@@ -4,6 +4,9 @@ import javax.validation.Valid;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.common.Login;
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeFinder;
+import com.simleetag.homework.api.domain.home.HomeJwt;
 import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
@@ -24,6 +27,10 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
     private final HomeService homeService;
 
+    private final HomeFinder homeFinder;
+
+    private final HomeJwt homeJwt;
+
     @Operation(
             summary = "집 생성",
             description = "집을 생성한 사용자는 자동으로 집의 멤버로 추가됩니다."
@@ -31,8 +38,8 @@ public class HomeController {
     @PostMapping
     public ResponseEntity<CreatedHomeResponse> createHome(@Login Long userId,
                                                           @RequestBody @Valid final HomeCreateRequest request) {
-        CreatedHomeResponse response = homeService.createHome(userId, request);
-        return ResponseEntity.ok(response);
+        Home home = homeService.createHome(userId, request);
+        return ResponseEntity.ok(CreatedHomeResponse.from(home, homeJwt));
     }
 
     @Operation(
@@ -41,6 +48,7 @@ public class HomeController {
     )
     @GetMapping
     public ResponseEntity<HomeWithMembersResponse> findMembersByToken(@Login Long userId, @Invitation Long homeId) {
-        return ResponseEntity.ok(homeService.findValidHomeWithMembers(homeId));
+        final Home home = homeFinder.findHomeWithMembers(homeId);
+        return ResponseEntity.ok(HomeWithMembersResponse.from(home));
     }
 }

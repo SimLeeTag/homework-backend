@@ -1,7 +1,6 @@
 package com.simleetag.homework.api.domain.home.api.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.simleetag.homework.api.domain.home.Home;
@@ -17,9 +16,6 @@ public record HomeResponse(
         @NotBlank
         String homeName,
 
-        @Schema(description = "집이 가지고 있는 카테고리 ID 리스트")
-        List<Long> categoryIds,
-
         @Schema(description = "집 생성 시각")
         LocalDateTime createdAt,
 
@@ -30,7 +26,6 @@ public record HomeResponse(
         return new HomeResponse(
                 home.getId(),
                 home.getHomeName(),
-                home.getCategoryIds(),
                 home.getCreatedAt(),
                 home.getDeletedAt()
         );

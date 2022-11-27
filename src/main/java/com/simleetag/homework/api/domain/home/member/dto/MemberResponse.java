@@ -38,7 +38,7 @@ public record MemberResponse(
     public static MemberResponse from(Member member) {
         return new MemberResponse(
                 member.getId(),
-                member.getUserId(),
+                member.getUser().getId(),
                 member.getPoint(),
                 member.getCreatedAt(),
                 member.getDeletedAt()

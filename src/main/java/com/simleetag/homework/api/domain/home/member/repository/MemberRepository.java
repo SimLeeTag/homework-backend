@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    List<Member> findAllByUserId(Long userId);
-
+    List<Member> findAllByHomeId(Long homeId);
 }

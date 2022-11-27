@@ -1,4 +1,4 @@
-package com.simleetag.homework.api.domain.work.task;
+package com.simleetag.homework.api.domain.work.taskGroup;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

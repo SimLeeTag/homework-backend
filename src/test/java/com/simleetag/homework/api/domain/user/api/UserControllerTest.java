@@ -7,7 +7,7 @@ import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileResponse;
-import com.simleetag.homework.api.domain.user.api.dto.UserWithHomesResponse;
+import com.simleetag.homework.api.domain.user.api.dto.findUserWithHomeAndMembersResponse;
 import com.simleetag.homework.api.domain.user.oauth.OAuthJwt;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
 import com.simleetag.homework.api.domain.user.oauth.api.OAuthControllerFlow;
@@ -74,7 +74,7 @@ class UserControllerTest extends TestSupport {
             memberController.joinHome(iOS.homeId(), ever.homeworkToken());
 
             // when
-            final UserWithHomesResponse response = userController.findUserByAccessToken(ever.homeworkToken());
+            final findUserWithHomeAndMembersResponse response = userController.findUserByAccessToken(ever.homeworkToken());
 
             // then
             assertThat(response.homes().size()).isEqualTo(2);

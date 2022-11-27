@@ -135,7 +135,7 @@ public class HomeControllerTest extends TestSupport {
             // given
             final Long homeId = 10L;
             final String invalidInvitationToken = homeJwt.createHomeworkToken(homeId);
-            final String message = String.format("HomeID[10]에 해당하는 집은 유효하지 않은 집입니다.", homeId);
+            final String message = String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId);
 
             // when
             final String response =

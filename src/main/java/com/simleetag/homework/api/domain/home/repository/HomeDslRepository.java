@@ -16,16 +16,16 @@ public class HomeDslRepository extends QuerydslRepositorySupport {
         super(Home.class);
     }
 
-    public Optional<Home> findValidHomeAndMembers(Long homeId) {
-        final Home validHome = from(home)
-                .leftJoin(home.members, member).fetchJoin()
+    public Optional<Home> findHomeWithMembers(Long homeId) {
+        final Home homeWithMembers = from(home)
+                .innerJoin(home.members, member).fetchJoin()
                 .where(
-                        member.home.id.eq(homeId)
-                                      .and(home.deletedAt.isNull())
-                                      .and(member.deletedAt.isNull())
+                        home.id.eq(homeId)
+                               .and(home.deletedAt.isNull())
+                               .and(member.deletedAt.isNull())
                 ).fetchOne();
 
-        return Optional.ofNullable(validHome);
+        return Optional.ofNullable(homeWithMembers);
 
     }
 }

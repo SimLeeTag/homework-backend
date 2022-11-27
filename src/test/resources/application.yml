@@ -51,12 +51,14 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 50
         enable_lazy_load_no_trans: false
+        show_sql: false
+
       org:
         hibernate:
           envers:
             audit_strategy: org.hibernate.envers.strategy.DefaultAuditStrategy
     database-platform: org.hibernate.dialect.H2Dialect
-    open-in-view: false
+    open-in-view: true
 
   autoconfigure:
     exclude[0]: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration

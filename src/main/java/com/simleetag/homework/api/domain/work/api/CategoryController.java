@@ -54,7 +54,28 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Void> sync(@Invitation Long homeId,
                                      @RequestBody List<CategoryResources.Request.Create> requests) {
+        taskGroupValidate(requests);
         categoryService.sync(homeId, requests);
         return ResponseEntity.ok().build();
+    }
+
+    private void taskGroupValidate(List<CategoryResources.Request.Create> requests) {
+        boolean valid = false;
+        for (CategoryResources.Request.Create request : requests) {
+            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest : request.taskGroup()) {
+                if (taskGroupCreateRequest.cycle() == null && taskGroupCreateRequest.difficulty() == null && taskGroupCreateRequest.ownerId() == null) {
+                    valid = true;
+                    continue;
+                }
+
+                if (taskGroupCreateRequest.cycle() != null && taskGroupCreateRequest.difficulty() != null && taskGroupCreateRequest.ownerId() != null) {
+                    valid = true;
+                }
+            }
+        }
+
+        if (!valid) {
+            throw new IllegalArgumentException("주기, 난이도, 담당자는 모두 null이거나 모두 null이 아니어야 합니다.");
+        }
     }
 }

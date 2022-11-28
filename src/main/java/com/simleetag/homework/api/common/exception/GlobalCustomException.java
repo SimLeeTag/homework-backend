@@ -1,7 +1,5 @@
 package com.simleetag.homework.api.common.exception;
 
-import java.util.Arrays;
-
 import com.auth0.jwt.exceptions.JWTDecodeException;
 
 import org.springframework.http.ResponseEntity;

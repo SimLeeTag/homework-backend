@@ -38,7 +38,7 @@ public class CategorySync {
 
             // 카테고리 추가
             if (!StringUtils.isBlank(categoryRequest.name())) {
-                final Category category = categoryRepository.save(new Category(home, categoryRequest.name(), Category.CategoryType.ROUTINE, modifiedAt));
+                final Category category = categoryRepository.save(new Category(home, modifiedAt, categoryRequest.name(), Category.CategoryType.ROUTINE));
                 categories.add(category);
             }
         }

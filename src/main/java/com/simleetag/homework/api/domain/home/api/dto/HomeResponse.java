@@ -20,14 +20,23 @@ public record HomeResponse(
         LocalDateTime createdAt,
 
         @Schema(description = "집 삭제 시각")
-        LocalDateTime deletedAt
+        LocalDateTime deletedAt,
+
+        @Schema(description = """
+                집 초기화 여부
+                                
+                - true : 한 번이라도 집안일 설정을 완료함
+                - false: 한 번도 집안일 설정을 완료하지 않음
+                """)
+        @NotBlank
+        Boolean initialized
 ) {
     public static HomeResponse from(Home home) {
         return new HomeResponse(
                 home.getId(),
                 home.getHomeName(),
                 home.getCreatedAt(),
-                home.getDeletedAt()
-        );
+                home.getDeletedAt(),
+                home.getInitialized());
     }
 }

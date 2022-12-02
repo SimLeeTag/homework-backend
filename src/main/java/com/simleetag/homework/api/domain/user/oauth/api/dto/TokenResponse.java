@@ -1,11 +1,9 @@
 package com.simleetag.homework.api.domain.user.oauth.api.dto;
 
-import java.util.List;
 import javax.validation.constraints.NotBlank;
 
-import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.user.User;
-import com.simleetag.homework.api.domain.user.api.dto.UserWithHomesResponse;
+import com.simleetag.homework.api.domain.user.api.dto.findUserWithHomeAndMembersResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,13 +13,13 @@ public record TokenResponse(
         String homeworkToken,
 
         @Schema(description = "Homework에 가입된 유저의 정보")
-        @NotBlank UserWithHomesResponse user
+        @NotBlank findUserWithHomeAndMembersResponse user
 ) {
-    public static TokenResponse from(String homeworkToken, UserWithHomesResponse user) {
+    public static TokenResponse from(String homeworkToken, findUserWithHomeAndMembersResponse user) {
         return new TokenResponse(homeworkToken, user);
     }
 
-    public static TokenResponse from(String homeworkToken, User user, List<HomeWithMembersResponse> homeWithMembersResponses) {
-        return from(homeworkToken, UserWithHomesResponse.from(user, homeWithMembersResponses));
+    public static TokenResponse from(String homeworkToken, User user) {
+        return from(homeworkToken, findUserWithHomeAndMembersResponse.from(user));
     }
 }

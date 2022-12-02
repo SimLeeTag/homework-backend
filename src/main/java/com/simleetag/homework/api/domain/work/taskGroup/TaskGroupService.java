@@ -1,9 +1,13 @@
 package com.simleetag.homework.api.domain.work.taskGroup;
 
-import java.util.Arrays;
 
+import java.util.List;
+
+import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.work.Category;
-import com.simleetag.homework.api.domain.work.api.TaskGroupCreateRequest;
+import com.simleetag.homework.api.domain.work.api.CategoryResources;
+import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupMaintenanceResources;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,15 +22,7 @@ public class TaskGroupService {
 
     private final TaskGroupRepository taskGroupRepository;
 
-    public TaskGroup add(Category category, TaskGroupCreateRequest request) {
-        final TaskGroup taskGroup = new TaskGroup(request.name(), request.type());
-        taskGroup.setBy(category);
-        return taskGroupRepository.save(taskGroup);
-    }
-
-    public void addAllDefaultTaskGroup(Category category, TaskGroupCreateRequest... requests) {
-        Arrays.stream(requests).forEach(request -> add(category, request));
-    }
+    private final MemberFinder memberFinder;
 
     public TaskGroup findById(Long categoryId, Long taskGroupId) {
         final TaskGroup taskGroup = findById(taskGroupId);
@@ -40,5 +36,22 @@ public class TaskGroupService {
     public TaskGroup findById(Long id) {
         return taskGroupRepository.findById(id)
                                   .orElseThrow(() -> new IllegalArgumentException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    public TaskGroup add(Category category, TaskGroupMaintenanceResources.Request.TaskGroup request) {
+        Member owner = request.ownerId() == null ? null : memberFinder.findByIdOrElseThrow(request.ownerId());
+        final TaskGroup taskGroup = new TaskGroup(
+                request.difficulty(),
+                request.name(),
+                owner,
+                request.point(),
+                request.type(),
+                request.cycle());
+        taskGroup.setBy(category);
+        return taskGroupRepository.save(taskGroup);
+    }
+
+    public void sync(List<CategoryResources.Request.Create> requests, List<Category> categories) {
+        new TaskGroupSync(taskGroupRepository, memberFinder, categories, requests).sync();
     }
 }

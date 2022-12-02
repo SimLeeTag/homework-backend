@@ -19,17 +19,6 @@ public class MemberDslRepository extends QuerydslRepositorySupport {
 
     public Optional<Member> findMemberByIdAndHomeId(Long memberId, Long homeId) {
         final Member foundMember = from(member)
-                .innerJoin(member.home, home).fetchJoin()
-                .where(
-                        member.home.id.eq(homeId)
-                                      .and(member.id.eq(memberId))
-                ).fetchOne();
-
-        return Optional.ofNullable(foundMember);
-    }
-
-    public Optional<Member> findValidMemberByIdAndHomeId(Long memberId, Long homeId) {
-        final Member foundMember = from(member)
                 .innerJoin(home.members, member).fetchJoin()
                 .where(
                         member.home.id.eq(homeId)

@@ -1,20 +1,21 @@
 package com.simleetag.homework.api.domain.home.member;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.home.Home;
 import com.simleetag.homework.api.domain.home.member.dto.MemberModifyRequest;
+import com.simleetag.homework.api.domain.user.User;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Member extends DeletableEntity {
 
@@ -25,13 +26,12 @@ public class Member extends DeletableEntity {
     @Column
     private Integer point;
 
-    @Column
-    private Long userId;
+    @OneToOne(mappedBy = "owner")
+    private TaskGroup taskGroup;
 
-    public Member(Long userId, Integer point) {
-        this.userId = userId;
-        this.point = point;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void setBy(Home home) {
         this.home = home;

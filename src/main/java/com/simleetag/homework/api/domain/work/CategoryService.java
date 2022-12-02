@@ -1,15 +1,16 @@
 package com.simleetag.homework.api.domain.work;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.simleetag.homework.api.domain.home.HomeService;
-import com.simleetag.homework.api.domain.work.api.CategoryCreateRequest;
-import com.simleetag.homework.api.domain.work.api.CategoryWithDefaultTaskResponse;
-import com.simleetag.homework.api.domain.work.api.CategoryWithTaskCreateRequest;
-import com.simleetag.homework.api.domain.work.api.DefaultCategoryWithTaskCreateRequest;
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeFinder;
+import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceController;
+import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceResources;
+import com.simleetag.homework.api.domain.work.api.CategoryResources;
+import com.simleetag.homework.api.domain.work.repository.CategoryDslRepository;
+import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
-import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,40 +23,49 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
     private static final String ENTITY_NOT_FOUND_EXCEPTION = "[%d] ID 에 해당하는 카테고리가 존재하지 않습니다.";
 
-    private final HomeService homeService;
+    private final CategoryRepository categoryRepository;
+
+    private final CategoryDslRepository categoryDslRepository;
 
     private final TaskGroupService taskGroupService;
 
-    private final CategoryRepository categoryRepository;
+    private final TaskGroupRepository taskGroupRepository;
 
-    public List<CategoryWithDefaultTaskResponse> findAllDefaultCategoryWithTask() {
-        final List<Category> categories = categoryRepository.findAllByType(CategoryType.DEFAULT);
-
-        final List<CategoryWithDefaultTaskResponse> responses = new ArrayList<>();
-        for (Category category : categories) {
-            final List<TaskGroupResponse> tasks = TaskGroupResponse.from(category.getTaskGroups());
-            final CategoryWithDefaultTaskResponse categoryResponse = CategoryWithDefaultTaskResponse.from(category, tasks);
-            responses.add(categoryResponse);
-        }
-
-        return responses;
-    }
-
-    public Category add(CategoryCreateRequest request) {
-        final Category category = categoryRepository.save(new Category(request.homeId(), request.name(), request.type()));
-        homeService.findHomeById(request.homeId()).addCategoryId(category.getId());
-        return category;
-    }
-
-    public void addAllDefaultCategoryWithTaskGroup(DefaultCategoryWithTaskCreateRequest request) {
-        for (CategoryWithTaskCreateRequest createRequest : request.categoryWithTaskCreateRequests()) {
-            final Category category = add(createRequest.categoryCreateRequest());
-            taskGroupService.addAllDefaultTaskGroup(category, createRequest.taskGroupCreateRequest());
-        }
-    }
+    private final HomeFinder homeFinder;
 
     public Category findById(Long id) {
         return categoryRepository.findById(id)
                                  .orElseThrow(() -> new IllegalArgumentException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    public List<Category> findAllWithTaskGroupByHomeId(Long homeId) {
+        return categoryDslRepository.findAllWithTaskGroupByHomeId(homeId);
+    }
+
+    public List<Category> search(CategoryMaintenanceController.CategorySearchCondition condition) {
+        return categoryRepository.findAll(condition.toSpecs());
+    }
+
+    public Category add(CategoryMaintenanceResources.Request.Category request) {
+        final Home home = homeFinder.findHomeById(request.homeId());
+        return categoryRepository.save(
+                new Category(
+                        request.name(),
+                        request.type(),
+                        home
+                )
+        );
+    }
+
+    public void setDefaultCategoriesAtHome(Home home) {
+        new DefaultCategory(categoryRepository, taskGroupRepository).setDefaultCategoriesAtHome(home);
+    }
+
+    public void sync(Long homeId, List<CategoryResources.Request.Create> requests) {
+        final List<Category> categories = categoryDslRepository.findAllWithTaskGroupByHomeId(homeId);
+        final Home home = homeFinder.findHomeById(homeId);
+        new CategorySync(categoryRepository, requests, categories).sync(home);
+        taskGroupService.sync(requests, categories);
+        home.initialize();
     }
 }

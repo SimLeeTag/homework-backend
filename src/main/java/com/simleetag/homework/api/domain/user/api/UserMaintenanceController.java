@@ -2,14 +2,12 @@ package com.simleetag.homework.api.domain.user.api;
 
 import java.util.List;
 
-import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
-import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.user.User;
 import com.simleetag.homework.api.domain.user.UserService;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserResponse;
-import com.simleetag.homework.api.domain.user.api.dto.UserWithHomesResponse;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +23,12 @@ import lombok.RequiredArgsConstructor;
 public class UserMaintenanceController {
     private final UserService userService;
 
-    @Operation(summary = "조회")
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findOne(@PathVariable Long id) {
-        final User user = userService.findById(id);
-        return ResponseEntity.ok(UserResponse.from(user));
+    @Operation(summary = "검색")
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> search(@RequestParam(required = false) Long id) {
+        var condition = new UserSearchCondition(id);
+        final List<User> users = userService.findAll(condition);
+        return ResponseEntity.ok(UserResponse.from(users));
     }
 
     @Operation(summary = "생성")
@@ -48,5 +47,20 @@ public class UserMaintenanceController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> expire(@PathVariable Long id) {
         return ResponseEntity.ok(userService.expire(id).getId());
+    }
+
+    public record UserSearchCondition(
+            Long userId
+    ) {
+        private static Specification<User> equalUserId(Long userId) {
+            return (root, query, builder) -> builder.equal(root.get("id"), userId);
+        }
+
+        public Specification<User> toSpecs() {
+            Specification<User> spec = (root, query, builder) -> null;
+            if (userId != null)
+                spec = spec.and(equalUserId(userId));
+            return spec;
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.common.exception.Error;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileResponse;
-import com.simleetag.homework.api.domain.user.api.dto.UserWithHomesResponse;
+import com.simleetag.homework.api.domain.user.api.dto.findUserWithHomeAndMembersResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,7 +22,7 @@ public class UserControllerFlow extends FlowSupport {
         super(mockMvc);
     }
 
-    public UserWithHomesResponse findUserByAccessToken(String homeworkToken) throws Exception {
+    public findUserWithHomeAndMembersResponse findUserByAccessToken(String homeworkToken) throws Exception {
         final String responseBody = mockMvc.perform(
                                                    get("/api/users/me")
                                                            .header(IdentifierHeader.USER.getKey(), homeworkToken)
@@ -33,7 +33,7 @@ public class UserControllerFlow extends FlowSupport {
                                            .getResponse()
                                            .getContentAsString(StandardCharsets.UTF_8);
 
-        return objectMapper.readValue(responseBody, UserWithHomesResponse.class);
+        return objectMapper.readValue(responseBody, findUserWithHomeAndMembersResponse.class);
     }
 
     public String findUserByAccessTokenFail(String homeworkToken, ResultMatcher matcher) throws Exception {

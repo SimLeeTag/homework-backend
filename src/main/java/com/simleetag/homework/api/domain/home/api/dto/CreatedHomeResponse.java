@@ -18,9 +18,22 @@ public record CreatedHomeResponse(
 
         @Schema(description = "집 초대링크 토큰")
         @NotBlank
-        String invitation
+        String invitation,
+
+        @Schema(description = """
+                집 초기화 여부
+                                
+                - true : 한 번이라도 집안일 설정을 완료함
+                - false: 한 번도 집안일 설정을 완료하지 않음
+                """)
+        @NotBlank
+                Boolean initialized
 ) {
     public static CreatedHomeResponse from(Home home, HomeJwt homeJwt) {
-        return new CreatedHomeResponse(home.getId(), home.getHomeName(), homeJwt.createHomeworkToken(home.getId()));
+        return new CreatedHomeResponse(
+                home.getId(),
+                home.getHomeName(),
+                homeJwt.createHomeworkToken(home.getId()),
+                home.getInitialized());
     }
 }

@@ -15,7 +15,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     public Task add(TaskGroup taskGroup, TaskCreateRequest request) {
-        final Task task = new Task(request.assigneeId());
+        final Task task = new Task();
         task.setBy(taskGroup);
         return taskRepository.save(task);
     }

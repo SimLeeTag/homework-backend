@@ -2,7 +2,6 @@ package com.simleetag.homework.api.domain.work.taskGroup.api;
 
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.CategoryService;
-import com.simleetag.homework.api.domain.work.api.TaskGroupCreateRequest;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
 
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,8 @@ public class TaskGroupMaintenanceController {
 
     @Operation(summary = "등록")
     @PostMapping
-    public ResponseEntity<Long> add(@RequestBody TaskGroupCreateRequest request,
-                                    @PathVariable Long categoryId) {
+    public ResponseEntity<Long> add(@PathVariable Long categoryId,
+                                    @RequestBody TaskGroupMaintenanceResources.Request.TaskGroup request) {
         final Category category = categoryService.findById(categoryId);
         return ResponseEntity.ok(taskGroupService.add(category, request).getId());
     }

@@ -2,7 +2,6 @@ package com.simleetag.homework.api.domain.home;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,10 +10,10 @@ import javax.persistence.OneToMany;
 import com.simleetag.homework.api.common.DeletableEntity;
 import com.simleetag.homework.api.domain.home.api.dto.HomeModifyRequest;
 import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.work.Category;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @NoArgsConstructor
@@ -24,11 +23,15 @@ public class Home extends DeletableEntity {
     @OneToMany(mappedBy = "home")
     private final List<Member> members = new ArrayList<>();
 
+    @OneToMany(mappedBy = "home")
+    private final List<Category> categories = new ArrayList<>();
+
     @Column
     private String homeName;
 
+    /* 유저가 집안일을 한 번이라도 초기화했는지에 대한 여부 */
     @Column
-    private String textOfCategoryIds;
+    private Boolean initialized = false;
 
     public Home(String homeName) {
         this.homeName = homeName;
@@ -49,29 +52,7 @@ public class Home extends DeletableEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public List<Long> getCategoryIds() {
-        if (StringUtils.isBlank(textOfCategoryIds)) {
-            return new ArrayList<>();
-        }
-
-        return new ArrayList<>(
-                Arrays.stream(textOfCategoryIds.split(","))
-                      .map(Long::valueOf)
-                      .toList()
-        );
-    }
-
-    public void setCategoryIds(List<Long> categoryIds) {
-        this.textOfCategoryIds = StringUtils.join(categoryIds, ",");
-    }
-
-    public void addCategoryId(Long id) {
-        final List<Long> categoryIds = getCategoryIds();
-        categoryIds.add(id);
-        setCategoryIds(categoryIds);
-    }
-
-    public void kickOutAll(List<Member> members) {
-        members.forEach(Member::expire);
+    public void initialize() {
+        this.initialized = true;
     }
 }

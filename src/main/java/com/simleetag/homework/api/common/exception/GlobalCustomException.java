@@ -7,36 +7,44 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalCustomException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Error> handleException(Exception e) {
         final Error error = Error.from(e.getMessage());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.internalServerError().body(error);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Error> handleIllegalArgumentException(IllegalArgumentException e) {
         final Error error = Error.from(e.getMessage());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.badRequest().body(error);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Error> handleAuthenticationException(AuthenticationException e) {
         final Error error = Error.from(e.getMessage());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
     @ExceptionHandler(OAuthException.class)
     public ResponseEntity<Error> handleOAuthException(OAuthException e) {
         final Error error = Error.from(e.getMessage());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
     @ExceptionHandler(WebClientResponseException.class)
     public ResponseEntity<Error> handleWebClientResponseException(WebClientResponseException e) {
         final Error error = Error.from(e.getResponseBodyAsString());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(401).body(error);
     }
 
@@ -49,6 +57,7 @@ public class GlobalCustomException {
     @ExceptionHandler(HomeJoinException.class)
     public ResponseEntity<Error> handleHomeJoinException(HomeJoinException e) {
         final Error error = Error.from(e.getMessage());
+        log.error("Message : {}", e.getMessage(), e);
         return ResponseEntity.status(400).body(error);
     }
 }

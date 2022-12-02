@@ -25,10 +25,6 @@ public record UserResponse(
         @NotBlank
         String oauthId,
 
-        @Schema(description = "유저가 속한 집에서 유저에게 할당한 ID")
-        @NotBlank
-        List<Long> memberIds,
-
         @Schema(description = "유저 생성 시각")
         LocalDateTime createdAt,
 
@@ -41,9 +37,12 @@ public record UserResponse(
                 user.getUserName(),
                 user.getProfileImage(),
                 user.getOauthId(),
-                user.getMemberIds(),
                 user.getCreatedAt(),
                 user.getDeletedAt()
         );
+    }
+
+    public static List<UserResponse> from(List<User> users) {
+        return users.stream().map(UserResponse::from).toList();
     }
 }

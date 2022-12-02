@@ -1,8 +1,7 @@
 package com.simleetag.homework.api.domain.home.api;
 
-import java.util.List;
-
 import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeFinder;
 import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.home.api.dto.EmptyHomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeModifyRequest;
@@ -23,10 +22,12 @@ import lombok.RequiredArgsConstructor;
 public class HomeMaintenanceController {
     private final HomeService homeService;
 
+    private final HomeFinder homeFinder;
+
     @Operation(summary = "조회")
     @GetMapping("{homeId}")
     public ResponseEntity<HomeResponse> findOne(@PathVariable Long homeId) {
-        final Home home = homeService.findHomeById(homeId);
+        final Home home = homeFinder.findHomeById(homeId);
         return ResponseEntity.ok(HomeResponse.from(home));
     }
 
@@ -41,20 +42,6 @@ public class HomeMaintenanceController {
     @PutMapping("{homeId}")
     public ResponseEntity<HomeResponse> modify(@PathVariable Long homeId, HomeModifyRequest request) {
         final Home home = homeService.modify(homeId, request);
-        return ResponseEntity.ok(HomeResponse.from(home));
-    }
-
-    @Operation(summary = "집에 속한 유저를 내쫓기")
-    @PatchMapping("{homeId}/kick-out")
-    public ResponseEntity<HomeResponse> kickOut(@PathVariable Long homeId, List<Long> memberIds) {
-        final Home home = homeService.kickOut(homeId, memberIds);
-        return ResponseEntity.ok(HomeResponse.from(home));
-    }
-
-    @Operation(summary = "집에 속한 모든 유저를 내쫓기")
-    @PatchMapping("{homeId}/kick-out/all")
-    public ResponseEntity<HomeResponse> kickOutAll(@PathVariable Long homeId) {
-        final Home home = homeService.kickOutAll(homeId);
         return ResponseEntity.ok(HomeResponse.from(home));
     }
 

@@ -1,8 +1,9 @@
 package com.simleetag.homework.api.domain.home.member.api;
 
 import com.simleetag.homework.api.domain.home.Home;
-import com.simleetag.homework.api.domain.home.HomeService;
+import com.simleetag.homework.api.domain.home.HomeFinder;
 import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.home.member.dto.MemberModifyRequest;
 import com.simleetag.homework.api.domain.home.member.dto.MemberResponse;
@@ -20,14 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/maintenance/homes/{homeId}/members")
 public class MemberMaintenanceController {
-    private final HomeService homeService;
-
     private final MemberService memberService;
+
+    private final MemberFinder memberFinder;
+
+    private final HomeFinder homeFinder;
 
     @Operation(summary = "조회")
     @GetMapping("{memberId}")
     public ResponseEntity<MemberResponse> findOne(@PathVariable Long homeId, @PathVariable Long memberId) {
-        final Member member = memberService.findMemberByIdAndHomeId(homeId, memberId);
+        final Member member = memberFinder.findMemberByIdAndHomeId(homeId, memberId);
         return ResponseEntity.ok(MemberResponse.from(member));
     }
 
@@ -38,7 +41,7 @@ public class MemberMaintenanceController {
     @PostMapping
     public ResponseEntity<MemberResponse> join(@PathVariable Long homeId,
                                                @RequestParam Long userId) {
-        final Home home = homeService.findValidHomeWithMembersById(homeId);
+        final Home home = homeFinder.findHomeWithMembers(homeId);
         final Member member = memberService.join(home, userId);
         return ResponseEntity.ok(MemberResponse.from(member));
     }
@@ -53,8 +56,18 @@ public class MemberMaintenanceController {
     }
 
     @Operation(
+            summary = "집의 모든 멤버 삭제",
+            description = "집에서 모든 멤버를 삭제합니다."
+    )
+    @DeleteMapping
+    public ResponseEntity<MemberResponse> expireAll(@PathVariable Long homeId) {
+        memberService.expireAll(homeId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
             summary = "삭제",
-            description = "집에서 나가는 것은 멤버를 집에서 삭제하는 것이므로 멤버 삭제와 같습니다."
+            description = "멤버 삭제는 집에서 나가는 것과 같습니다."
     )
     @DeleteMapping("{memberId}")
     public ResponseEntity<MemberResponse> expire(@PathVariable Long homeId, @PathVariable Long memberId) {

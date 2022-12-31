@@ -144,3 +144,6 @@ gradle-app.setting
 ### Auth file
 src/main/resources/static/docs/api.html
 src/main/resources/static/AuthKey_9N74MH6N25.p8
+
+### QueryDSL
+generated

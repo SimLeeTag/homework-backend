@@ -8,6 +8,7 @@ import com.simleetag.homework.api.common.exception.Error;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
+import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,4 +84,19 @@ public class HomeControllerFlow extends FlowSupport {
 
         return objectMapper.readValue(responseBody, Error.class).message();
     }
+
+    public MemberIdResponse joinHome(Long homeId, String homeworkToken) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   post("/api/homes/" + homeId + "/members")
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, MemberIdResponse.class);
+    }
+
 }

@@ -33,7 +33,7 @@ public class MemberService {
                    .stream()
                    .filter(member -> member.getUser().getId().equals(userId))
                    .findAny()
-                   .orElseGet(() -> memberRepository.save(new Member(home, 0, null, user)));
+                   .orElseGet(() -> memberRepository.save(new Member(home, 0, user)));
     }
 
     public Member modify(Long homeId, Long memberId, MemberModifyRequest request) {

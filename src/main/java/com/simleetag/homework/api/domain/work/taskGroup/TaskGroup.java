@@ -46,7 +46,7 @@ public class TaskGroup extends DeletableEntity {
     @Column
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     private Member owner;
 
@@ -65,23 +65,29 @@ public class TaskGroup extends DeletableEntity {
     }
 
     public TaskGroup(String name, TaskGroupType type, LocalDateTime modifiedAt) {
-        this(null, name, null, null, type, null);
+        this(null, name, null, type, null);
         this.modifiedAt = modifiedAt;
     }
 
-    public TaskGroup(Difficulty difficulty, String name, Member owner, Long point, TaskGroupType type, Cycle cycle) {
+    public TaskGroup(Difficulty difficulty, String name,  Long point, TaskGroupType type, Cycle cycle) {
         this.name = name;
         this.type = type;
         this.difficulty = difficulty;
-        this.owner = owner;
         this.point = point;
         setCycle(cycle);
     }
 
-    public void setBy(Category category) {
+    public void setCategoryBy(Category category) {
         this.category = category;
         if (!category.getTaskGroups().contains(this)) {
             category.addBy(this);
+        }
+    }
+
+    public void setOwnerBy(Member owner) {
+        this.owner = owner;
+        if (!owner.getTaskGroups().contains(this)) {
+            owner.addBy(this);
         }
     }
 
@@ -107,11 +113,10 @@ public class TaskGroup extends DeletableEntity {
         this.textOfCycle = JsonMapper.writeValueAsString(cycle);
     }
 
-    public void sync(CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest, Member owner) {
+    public void sync(CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest) {
         this.name = taskGroupRequest.taskGroupName();
         this.difficulty = taskGroupRequest.difficulty();
         this.point = taskGroupRequest.point();
-        this.owner = owner;
         this.type = taskGroupRequest.taskGroupType();
         this.modifiedAt = LocalDateTime.now();
         syncCycle(taskGroupRequest.cycle());

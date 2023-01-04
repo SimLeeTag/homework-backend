@@ -52,8 +52,11 @@ public class TaskGroupSync {
                         }
                     }
 
-                    taskGroup.sync(taskGroupRequest, owner);
-                    taskGroup.setBy(foundCategory);
+                    taskGroup.sync(taskGroupRequest);
+                    taskGroup.setCategoryBy(foundCategory);
+                    if (owner != null) {
+                        taskGroup.setOwnerBy(owner);
+                    }
                     taskGroupRepository.save(taskGroup);
                     continue;
                 }
@@ -63,8 +66,11 @@ public class TaskGroupSync {
                     if (!StringUtils.isBlank(taskGroupRequest.taskGroupName())) {
                         final Category foundCategory = findCategoryByNameOrElseThrow(request);
 
-                        taskGroup.sync(taskGroupRequest, owner);
-                        taskGroup.setBy(foundCategory);
+                        taskGroup.sync(taskGroupRequest);
+                        taskGroup.setCategoryBy(foundCategory);
+                        if (owner != null) {
+                            taskGroup.setOwnerBy(owner);
+                        }
                         taskGroupRepository.save(taskGroup);
                     }
                 }

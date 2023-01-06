@@ -40,7 +40,7 @@ public class HomeMaintenanceController {
 
     @Operation(summary = "생성")
     @PostMapping
-    public ResponseEntity<HomeResponse> create(EmptyHomeCreateRequest request) {
+    public ResponseEntity<HomeResponse> create(@RequestBody EmptyHomeCreateRequest request) {
         final Home home = homeService.createEmptyHome(request);
         return ResponseEntity.ok(HomeResponse.from(home));
     }

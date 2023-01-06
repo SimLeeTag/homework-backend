@@ -43,11 +43,13 @@ public class TaskGroupService {
         final TaskGroup taskGroup = new TaskGroup(
                 request.difficulty(),
                 request.name(),
-                owner,
                 request.point(),
                 request.type(),
                 request.cycle());
-        taskGroup.setBy(category);
+        taskGroup.setCategoryBy(category);
+        if (owner != null) {
+            taskGroup.setOwnerBy(owner);
+        }
         return taskGroupRepository.save(taskGroup);
     }
 

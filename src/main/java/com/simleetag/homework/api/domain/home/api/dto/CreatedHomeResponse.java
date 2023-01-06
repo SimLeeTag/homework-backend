@@ -27,7 +27,7 @@ public record CreatedHomeResponse(
                 - false: 한 번도 집안일 설정을 완료하지 않음
                 """)
         @NotBlank
-                Boolean initialized
+        Boolean initialized
 ) {
     public static CreatedHomeResponse from(Home home, HomeJwt homeJwt) {
         return new CreatedHomeResponse(

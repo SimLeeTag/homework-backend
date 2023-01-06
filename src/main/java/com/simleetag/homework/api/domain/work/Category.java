@@ -48,7 +48,7 @@ public class Category extends DeletableEntity {
     public void addBy(TaskGroup taskGroup) {
         this.taskGroups.add(taskGroup);
         if (taskGroup.getCategory() != this) {
-            taskGroup.setBy(this);
+            taskGroup.setCategoryBy(this);
         }
     }
 

@@ -70,8 +70,8 @@ class UserControllerTest extends TestSupport {
             final CreatedHomeResponse iOS = homeController.createHome(ttozzi.homeworkToken(), new HomeCreateRequest("iOS"));
 
             // 집 입장
-            memberController.joinHome(iOS.homeId(), ttozzi.homeworkToken());
-            memberController.joinHome(iOS.homeId(), ever.homeworkToken());
+            homeController.joinHome(iOS.homeId(), ttozzi.homeworkToken());
+            homeController.joinHome(iOS.homeId(), ever.homeworkToken());
 
             // when
             final findUserWithHomeAndMembersResponse response = userController.findUserByAccessToken(ever.homeworkToken());

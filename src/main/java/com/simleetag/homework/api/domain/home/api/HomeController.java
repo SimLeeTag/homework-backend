@@ -1,6 +1,7 @@
 package com.simleetag.homework.api.domain.home.api;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.common.Login;
@@ -11,6 +12,9 @@ import com.simleetag.homework.api.domain.home.HomeService;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
+import com.simleetag.homework.api.domain.home.member.Member;
+import com.simleetag.homework.api.domain.home.member.MemberService;
+import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/homes")
 public class HomeController {
     private final HomeService homeService;
+
+    private final MemberService memberService;
 
     private final HomeFinder homeFinder;
 
@@ -51,4 +57,16 @@ public class HomeController {
         final Home home = homeFinder.findHomeWithMembers(homeId);
         return ResponseEntity.ok(HomeWithMembersResponse.from(home));
     }
+
+    @Operation(
+            summary = "집 들어가기"
+    )
+    @PostMapping("/{homeId}/members")
+    public ResponseEntity<MemberIdResponse> joinHome(@Login Long userId,
+                                                     @PathVariable @Positive Long homeId) {
+        final Home home = homeFinder.findHomeWithMembers(homeId);
+        final Member member = memberService.join(home, userId);
+        return ResponseEntity.ok(new MemberIdResponse(member.getId()));
+    }
+
 }

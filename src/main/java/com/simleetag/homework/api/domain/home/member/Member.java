@@ -1,6 +1,8 @@
 package com.simleetag.homework.api.domain.home.member;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 import com.simleetag.homework.api.common.DeletableEntity;
@@ -26,8 +28,8 @@ public class Member extends DeletableEntity {
     @Column
     private Integer point;
 
-    @OneToOne(mappedBy = "owner")
-    private TaskGroup taskGroup;
+    @OneToMany(mappedBy = "owner")
+    private final List<TaskGroup> taskGroups = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,6 +41,14 @@ public class Member extends DeletableEntity {
             home.addBy(this);
         }
     }
+
+    public void addBy(TaskGroup taskGroup) {
+        this.taskGroups.add(taskGroup);
+        if (taskGroup.getOwner() != this) {
+            taskGroup.setOwnerBy(this);
+        }
+    }
+
 
     public void expire() {
         this.deletedAt = LocalDateTime.now();

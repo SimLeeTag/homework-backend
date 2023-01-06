@@ -6,12 +6,9 @@ import java.util.List;
 
 import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
-import com.simleetag.homework.api.common.Invitation;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

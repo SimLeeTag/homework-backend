@@ -69,7 +69,7 @@ public class TaskGroup extends DeletableEntity {
         this.modifiedAt = modifiedAt;
     }
 
-    public TaskGroup(Difficulty difficulty, String name,  Long point, TaskGroupType type, Cycle cycle) {
+    public TaskGroup(Difficulty difficulty, String name, Long point, TaskGroupType type, Cycle cycle) {
         this.name = name;
         this.type = type;
         this.difficulty = difficulty;

@@ -1,9 +1,7 @@
 package com.simleetag.homework.api.domain.home.api;
 
 import com.simleetag.homework.api.common.TestSupport;
-import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.EmptyHomeCreateRequest;
-import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;

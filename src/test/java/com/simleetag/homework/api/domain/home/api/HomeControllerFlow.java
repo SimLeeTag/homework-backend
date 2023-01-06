@@ -87,7 +87,7 @@ public class HomeControllerFlow extends FlowSupport {
 
     public MemberIdResponse joinHome(Long homeId, String homeworkToken) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   post("/api/homes/" + homeId + "/members")
+                                                   post("/api/homes/{homeId}/members", homeId)
                                                            .header(IdentifierHeader.USER.getKey(), homeworkToken)
                                            ).andExpect(
                                                    status().isOk()

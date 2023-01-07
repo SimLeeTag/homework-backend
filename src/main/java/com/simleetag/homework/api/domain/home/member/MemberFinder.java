@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberFinder {
 
     private static final String NOT_FOUND_MESSAGE = "MemberID[%d]를 가진 멤버가 존재하지 않습니다.";
+    private static final String NOT_FOUND_GENERAL_MESSAGE = "해당 멤버가 존재하지 않습니다.";
 
     private final MemberRepository memberRepository;
 
@@ -33,5 +34,10 @@ public class MemberFinder {
 
     public List<Member> findAllByHomeId(Long homeId) {
         return memberRepository.findAllByHomeId(homeId);
+    }
+
+    public Member findByHomeIdAndUserId(Long homeId, Long userId) {
+        return memberRepository.findByHomeIdAndUserIdAndDeletedAtIsNull(homeId, userId)
+                                  .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_GENERAL_MESSAGE)));
     }
 }

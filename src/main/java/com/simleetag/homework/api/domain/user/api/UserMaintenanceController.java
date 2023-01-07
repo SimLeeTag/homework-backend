@@ -33,7 +33,7 @@ public class UserMaintenanceController {
 
     @Operation(summary = "생성")
     @PostMapping
-    public ResponseEntity<Long> signUp(UserSignUpRequest request) {
+    public ResponseEntity<Long> signUp(@RequestBody UserSignUpRequest request) {
         return ResponseEntity.ok(userService.add(request).getId());
     }
 

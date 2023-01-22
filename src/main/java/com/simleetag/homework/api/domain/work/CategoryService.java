@@ -1,5 +1,6 @@
 package com.simleetag.homework.api.domain.work;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.simleetag.homework.api.domain.home.Home;
@@ -7,8 +8,10 @@ import com.simleetag.homework.api.domain.home.HomeFinder;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceController;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceResources;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
+import com.simleetag.homework.api.domain.work.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.repository.CategoryDslRepository;
 import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
+import com.simleetag.homework.api.domain.work.task.TaskDslRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
 
@@ -26,6 +29,8 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     private final CategoryDslRepository categoryDslRepository;
+
+    private final TaskDslRepository taskDslRepository;
 
     private final TaskGroupService taskGroupService;
 
@@ -67,5 +72,9 @@ public class CategoryService {
         new CategorySync(categoryRepository, requests, categories).sync(home);
         taskGroupService.sync(requests, categories);
         home.initialize();
+    }
+
+    public List<TaskResponse> findAllTasksByDueDate(Long memberId, LocalDate date) {
+        return TaskResponse.from(taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, date));
     }
 }

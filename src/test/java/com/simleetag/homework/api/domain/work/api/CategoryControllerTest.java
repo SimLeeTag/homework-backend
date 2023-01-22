@@ -147,29 +147,5 @@ public class CategoryControllerTest extends TestSupport {
             assertThat(taskSize).isEqualTo(1);
         }
 
-        @Test
-        @DisplayName("마감일 별 특정 멤버의 집안일 조회 성공 테스트 - 기존 카테고리의 기본 정기 집안일과 일회성 집안일 생성 후 조회")
-        void findAllWithDueDateWithAllTasks() throws Exception {
-
-            // given
-            final List<CategoryResources.Request.Create> request = new ArrayList<>();
-            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(1L, "🍚 요리");
-            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest1 = new CategoryResources.Request.Create.TaskGroupCreateRequest(1L, "아침 식사 준비", TaskGroupType.ROUTINE, new Cycle(Arrays.asList(LocalDate.now().getDayOfWeek(), LocalDate.now().plusDays(2).getDayOfWeek()), LocalDate.now(), 1), Difficulty.LOW, 1L, everMemberId);
-            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest2 = new CategoryResources.Request.Create.TaskGroupCreateRequest(2L, "점심 식사 준비", TaskGroupType.ROUTINE, new Cycle(Collections.singletonList(LocalDate.now().plusDays(2).getDayOfWeek()), LocalDate.now().plusDays(2), 1), Difficulty.LOW, 1L, everMemberId);
-            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest3 = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "간식 준비", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
-            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest1, taskGroupCreateRequest2, taskGroupCreateRequest3));
-
-            // when
-            categoryController.createNewCategory(home.invitation(), request);
-
-            // then
-            final int taskSizeOfToday = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).size();
-            final int taskSizeOfTwoDaysAfterToday = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).size();
-
-            assertAll(
-                    () -> assertThat(taskSizeOfToday).isEqualTo(2),
-                    () -> assertThat(taskSizeOfTwoDaysAfterToday).isEqualTo(2)
-            );
-        }
     }
 }

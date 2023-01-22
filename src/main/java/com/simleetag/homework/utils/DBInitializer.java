@@ -1,15 +1,19 @@
 package com.simleetag.homework.utils;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 import com.simleetag.homework.api.domain.home.api.HomeController;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.member.api.MemberMaintenanceController;
 import com.simleetag.homework.api.domain.user.api.UserMaintenanceController;
 import com.simleetag.homework.api.domain.user.api.UserSignUpRequest;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceController;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceResources;
+import com.simleetag.homework.api.domain.work.task.TaskStatus;
 import com.simleetag.homework.api.domain.work.task.api.TaskCreateRequest;
+import com.simleetag.homework.api.domain.work.task.api.TaskEditRequest;
 import com.simleetag.homework.api.domain.work.task.api.TaskMaintenanceController;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupMaintenanceController;
@@ -30,6 +34,7 @@ public class DBInitializer implements CommandLineRunner {
     // user
     private final UserMaintenanceController userMaintenanceController;
 
+    private final MemberMaintenanceController memberMaintenanceController;
     // home
     private final HomeController homeController;
 
@@ -43,6 +48,8 @@ public class DBInitializer implements CommandLineRunner {
     private Long homeId;
 
     private Long userId;
+
+    private Long memberId;
 
     @Override
     public void run(String... args) {
@@ -58,6 +65,7 @@ public class DBInitializer implements CommandLineRunner {
     }
 
     private void addTemporaryTaskSample() {
+        memberId = memberMaintenanceController.findMemberId(userId, homeId).getBody().memberId();
         final Long temporaryCategoryId =
                 categoryMaintenanceController.add(
                         new CategoryMaintenanceResources.Request.Category(homeId, "일회성 집안일", Category.CategoryType.TEMPORARY)).getBody();
@@ -69,9 +77,9 @@ public class DBInitializer implements CommandLineRunner {
                         null,
                         null,
                         null,
-                        null
+                        memberId
                 )).getBody();
-
-        taskMaintenanceController.add(new TaskCreateRequest(DayOfWeek.MONDAY), temporaryCategoryId, temporaryTaskGroupId);
+        final Long temporaryTaskId = taskMaintenanceController.add(new TaskCreateRequest(DayOfWeek.MONDAY), temporaryCategoryId, temporaryTaskGroupId).getBody();
+        taskMaintenanceController.edit(new TaskEditRequest(TaskStatus.UNFINISHED, LocalDate.now()), temporaryCategoryId, temporaryTaskGroupId, temporaryTaskId);
     }
 }

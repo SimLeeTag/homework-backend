@@ -1,11 +1,13 @@
 package com.simleetag.homework.api.domain.work.api;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.CategoryService;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,5 +79,18 @@ public class CategoryController {
         if (!valid) {
             throw new IllegalArgumentException("주기, 난이도, 담당자는 모두 null이거나 모두 null이 아니어야 합니다.");
         }
+    }
+
+    @Operation(
+            summary = "날짜별, 멤버별 집안일 조회",
+            description = """
+                    해당 멤버의 해당 날짜의 등록된 집안일을 조회합니다.
+                    """
+    )
+    @GetMapping("/tasks")
+    public ResponseEntity<List<TaskResponse>> findAllWithDueDate(@Invitation Long homeId,
+                                                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                                 @RequestParam Long memberId) {
+        return ResponseEntity.ok(categoryService.findAllTasksByDueDate(memberId, date));
     }
 }

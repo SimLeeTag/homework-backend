@@ -123,19 +123,39 @@ public class TaskGroup extends DeletableEntity {
     }
 
     public void syncCycle(Cycle cycle) {
-        for (DayOfWeek dayOfWeekOfRequest : cycle.dayOfWeeks()) {
-            if (!getCycle().dayOfWeeks().contains(dayOfWeekOfRequest)) {
-                final LocalDate dueDate = LocalDate.now().with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
-                addBy(new Task(dueDate));
+        // 없던 싸이클
+        if (getCycle().dayOfWeeks().isEmpty()) {
+            for (DayOfWeek dayOfWeekOfRequest : cycle.dayOfWeeks()) {
+                // 일회성 집안일 - period가 0
+                if (cycle.period() == 0) {
+                    addBy(new Task(cycle.startDate()));
+                    // 정기 집안일
+                } else {
+                    LocalDate startDate = LocalDate.now();
+                    int extraDays = dayOfWeekOfRequest.getValue() - startDate.getDayOfWeek().getValue();
+                    if (extraDays < 0)
+                        extraDays += 7;
+                    startDate = startDate.plusDays(extraDays);
+                    LocalDate endDate = LocalDate.now().plusMonths(2).withDayOfMonth(startDate.lengthOfMonth());
+                    while (startDate.isBefore(endDate)) {
+                        addBy(new Task(startDate));
+                        startDate = startDate.plusWeeks(cycle.period());
+                    }
+                }
             }
-        }
+            setCycle(cycle);
+        // 있던 싸이클
+        } else {
+            final LocalDate dueDate = LocalDate.now().with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
+            addBy(new Task(dueDate));
 
-        for (DayOfWeek dayOfWeekOfThis : getCycle().dayOfWeeks()) {
-            if (!cycle.dayOfWeeks().contains(dayOfWeekOfThis)) {
-                tasks.stream()
-                     .filter(task -> task.getDueDate().getDayOfWeek().equals(dayOfWeekOfThis))
-                     .findAny()
-                     .ifPresent(Task::expire);
+            for (DayOfWeek dayOfWeekOfThis : getCycle().dayOfWeeks()) {
+                if (!cycle.dayOfWeeks().contains(dayOfWeekOfThis)) {
+                    tasks.stream()
+                         .filter(task -> task.getDueDate().getDayOfWeek().equals(dayOfWeekOfThis))
+                         .findAny()
+                         .ifPresent(Task::expire);
+                }
             }
         }
     }

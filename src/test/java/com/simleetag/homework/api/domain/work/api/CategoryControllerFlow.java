@@ -1,6 +1,7 @@
 package com.simleetag.homework.api.domain.work.api;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import com.simleetag.homework.api.common.IdentifierHeader;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,6 +47,23 @@ public class CategoryControllerFlow extends FlowSupport {
                )
                .andReturn()
                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+    }
+
+    public List<TaskResponse> findAllWithDate(String invitation, LocalDate date, Long memberId) throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("date", date.toString());
+        params.add("memberId", memberId.toString());
+        final String responseBody = mockMvc.perform(
+                       get("/api/categories/tasks")
+                               .header(IdentifierHeader.HOME.getKey(), invitation)
+                               .params(params)
+               ).andExpect(
+                       status().isOk()
+               )
+               .andReturn()
+               .getResponse()
+               .getContentAsString(StandardCharsets.UTF_8);
+        return Arrays.asList(objectMapper.readValue(responseBody, TaskResponse[].class));
     }
 
 }

@@ -1,5 +1,8 @@
 package com.simleetag.homework.api.domain.work.task.api;
 
+import java.util.List;
+
+import com.simleetag.homework.api.domain.work.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.task.TaskService;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;
@@ -29,4 +32,30 @@ public class TaskMaintenanceController {
         final TaskGroup taskGroup = taskGroupService.findById(categoryId, taskGroupId);
         return ResponseEntity.ok(taskService.add(taskGroup, request).getId());
     }
+
+    @Operation(summary = "편집")
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> edit(@RequestBody TaskEditRequest request,
+                                             @PathVariable Long categoryId,
+                                             @PathVariable Long taskGroupId,
+                                             @PathVariable Long taskId) {
+        return ResponseEntity.ok(TaskResponse.from(taskService.edit(taskId, request)));
+    }
+
+    @Operation(summary = "단건 조회")
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> searchOne(@PathVariable Long categoryId,
+                                                  @PathVariable Long taskGroupId,
+                                                  @PathVariable Long taskId) {
+        return ResponseEntity.ok(TaskResponse.from(taskService.findById(taskId)));
+    }
+
+    @Operation(summary = "TaskGroup으로 전체 조회")
+    @GetMapping
+    public ResponseEntity<List<TaskResponse>> searchByTaskGroup(@PathVariable Long categoryId,
+                                                     @PathVariable Long taskGroupId) {
+        TaskGroup taskGroup = taskGroupService.findById(taskGroupId);
+        return ResponseEntity.ok(TaskResponse.from(taskService.searchAllByTaskGroup(taskGroup)));
+    }
+
 }

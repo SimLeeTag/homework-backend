@@ -3,6 +3,7 @@ package com.simleetag.homework.api.domain.home.member.api;
 import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.home.member.MemberService;
+import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberModifyRequest;
 import com.simleetag.homework.api.domain.home.member.dto.MemberResponse;
 
@@ -40,4 +41,11 @@ public class MemberMaintenanceController {
         return ResponseEntity.ok(MemberResponse.from(member));
     }
 
+
+    @Operation(summary = "ID 조회")
+    @GetMapping
+    public ResponseEntity<MemberIdResponse> findMemberId(@RequestParam Long userId, @RequestParam Long homeId) {
+        final Member member = memberFinder.findByHomeIdAndUserId(homeId, userId);
+        return ResponseEntity.ok(new MemberIdResponse(member.getId()));
+    }
 }

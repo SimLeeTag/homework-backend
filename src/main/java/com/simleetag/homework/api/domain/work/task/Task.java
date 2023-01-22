@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import com.simleetag.homework.api.common.DeletableEntity;
+import com.simleetag.homework.api.domain.work.task.api.TaskEditRequest;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class Task extends DeletableEntity {
 
     @Column
     @Enumerated(value = EnumType.STRING)
-    private final TaskStatus taskStatus = TaskStatus.UNFINISHED;
+    private TaskStatus taskStatus = TaskStatus.UNFINISHED;
 
     @Column
     private LocalDate dueDate;
@@ -37,7 +38,20 @@ public class Task extends DeletableEntity {
         }
     }
 
+    public void setDueDate(LocalDate date) {
+        this.dueDate = date;
+    }
+
+    public void changeStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
     public void expire() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void edit(TaskEditRequest request) {
+        this.taskStatus = request.taskStatus();
+        this.dueDate = request.dueDate();
     }
 }

@@ -158,14 +158,14 @@ public class CategoryControllerTest extends TestSupport {
             //given
             final List<CategoryResources.Request.Create> request = new ArrayList<>();
             CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
-            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 1), Difficulty.LOW, 1L, everMemberId);
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
             request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
 
             // when
             categoryController.createNewCategory(home.invitation(), request);
 
             // then
-            List<TaskRateResponse> taskRateResponse = categoryController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now().plusDays(10), everMemberId);
+            List<TaskRateResponse> taskRateResponse = categoryController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
             assertThat(taskRateResponse.get(0).rate()).isEqualTo(0);
         }
     }

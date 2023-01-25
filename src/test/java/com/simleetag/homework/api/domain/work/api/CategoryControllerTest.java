@@ -2,7 +2,6 @@ package com.simleetag.homework.api.domain.work.api;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +15,7 @@ import com.simleetag.homework.api.domain.user.oauth.ProviderType;
 import com.simleetag.homework.api.domain.user.oauth.api.OAuthControllerFlow;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
 import com.simleetag.homework.api.domain.work.taskGroup.Cycle;
 import com.simleetag.homework.api.domain.work.taskGroup.Difficulty;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
@@ -23,7 +23,6 @@ import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class CategoryControllerTest extends TestSupport {
 
@@ -147,5 +146,27 @@ public class CategoryControllerTest extends TestSupport {
             assertThat(taskSize).isEqualTo(1);
         }
 
+    }
+
+    @Nested
+    class checkTaskRateTest {
+
+        @Test
+        @DisplayName("TaskStatus - 전체 UNFINISHED일 때 TaskRate 0 확인")
+        void checkTaskRateAllCompleted() throws Exception {
+
+            //given
+            final List<CategoryResources.Request.Create> request = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+
+            // when
+            categoryController.createNewCategory(home.invitation(), request);
+
+            // then
+            List<TaskRateResponse> taskRateResponse = categoryController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
+            assertThat(taskRateResponse.get(0).rate()).isEqualTo(0);
+        }
     }
 }

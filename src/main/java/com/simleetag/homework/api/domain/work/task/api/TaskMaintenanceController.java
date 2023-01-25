@@ -2,7 +2,6 @@ package com.simleetag.homework.api.domain.work.task.api;
 
 import java.util.List;
 
-import com.simleetag.homework.api.domain.work.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.task.TaskService;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;

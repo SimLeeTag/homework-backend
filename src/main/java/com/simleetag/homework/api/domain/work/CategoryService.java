@@ -1,6 +1,8 @@
 package com.simleetag.homework.api.domain.work;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.simleetag.homework.api.domain.home.Home;
@@ -8,7 +10,9 @@ import com.simleetag.homework.api.domain.home.HomeFinder;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceController;
 import com.simleetag.homework.api.domain.work.api.CategoryMaintenanceResources;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
-import com.simleetag.homework.api.domain.work.api.TaskResponse;
+import com.simleetag.homework.api.domain.work.task.TaskStatus;
+import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.repository.CategoryDslRepository;
 import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
 import com.simleetag.homework.api.domain.work.task.TaskDslRepository;
@@ -76,5 +80,21 @@ public class CategoryService {
 
     public List<TaskResponse> findAllTasksByDueDate(Long memberId, LocalDate date) {
         return TaskResponse.from(taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, date));
+    }
+
+    public List<TaskRateResponse> calculateTaskRatesByDueDates(Long memberId, LocalDate startDate, LocalDate endDate) {
+        Period period = Period.between(startDate, endDate);
+        List<TaskRateResponse> list = new ArrayList<>();
+        for (int i = 0; i < period.getDays() + 1; i++) {
+            long allTasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i)).size();
+            long doneTasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i)).stream().filter(task -> task.getTaskStatus().equals(TaskStatus.COMPLETED)).count();
+            long rate = 0;
+            if (allTasks != 0) {
+                rate = doneTasks / allTasks;
+            }
+            TaskRateResponse response = new TaskRateResponse(startDate.plusDays(i), (int) rate);
+            list.add(response);
+        }
+        return list;
     }
 }

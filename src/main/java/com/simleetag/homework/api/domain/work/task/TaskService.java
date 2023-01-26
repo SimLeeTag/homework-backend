@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.simleetag.homework.api.domain.work.task.api.TaskCreateRequest;
 import com.simleetag.homework.api.domain.work.task.api.TaskEditRequest;
+import com.simleetag.homework.api.domain.work.task.api.TaskStatusEditRequest;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 
 import org.springframework.stereotype.Service;
@@ -34,6 +35,12 @@ public class TaskService {
     public Task edit(Long taskId, TaskEditRequest request) {
         Task task = findById(taskId);
         task.edit(request);
+        return task;
+    }
+
+    public Task changeStatus(Long taskId, TaskStatusEditRequest request) {
+        Task task = findById(taskId);
+        task.changeStatus(request.taskStatus());
         return task;
     }
 

@@ -25,6 +25,7 @@ import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TaskControllerTest extends TestSupport {
 
@@ -99,6 +100,138 @@ public class TaskControllerTest extends TestSupport {
             // then
             TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
             assertThat(taskResponse.taskStatus()).isEqualTo(changedTask.taskStatus());
+        }
+    }
+
+    @Nested
+    class changeTaskDueDateTest {
+
+        @Test
+        @DisplayName("집안일 마감일 변경 성공 테스트 - 미완료 오늘 집안일 마감일을 미래로 수정")
+        void changeUnfinishedTaskDueDateNowToFutureSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
+
+            // then
+            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
+            assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
+        }
+
+        @Test
+        @DisplayName("집안일 마감일 변경 성공 테스트 - 미완료 미래 집안일 마감일을 오늘로 수정")
+        void changeUnfinishedTaskDueDateFutureToNowSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().plusDays(1).getDayOfWeek()), LocalDate.now().plusDays(1), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now());
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
+            TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
+
+            // then
+            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
+        }
+
+        @Test
+        @DisplayName("집안일 마감일 변경 성공 테스트 - 미완료 먼 미래 집안일 마감일을 가까운 미래로 수정")
+        void changeUnfinishedTaskDueDateVeryFutureToFutureSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().plusDays(2).getDayOfWeek()), LocalDate.now().plusDays(2), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0).taskId();
+            TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
+
+            // then
+            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
+            assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
+        }
+
+        @Test
+        @DisplayName("집안일 마감일 변경 성공 테스트 - 미완료 가까운 미래 집안일 마감일을 먼 미래로 수정")
+        void changeUnfinishedTaskDueDateFutureToVeryFutureSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().plusDays(1).getDayOfWeek()), LocalDate.now().plusDays(1), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(2));
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
+            TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
+
+            // then
+            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0);
+            assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
+        }
+
+        @Test
+        @DisplayName("집안일 마감일 변경 실패 테스트 - 완료한 집안일의 날짜 변경")
+        void changeCompletedTaskDueDateFailTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+            final String message = "해당 집안일은 수정이 불가능합니다.";
+
+            // when
+            TaskStatusEditRequest taskStatusEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            taskController.changeTaskStatus(home.invitation(), taskId, taskStatusEditRequest);
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
+            final String response = taskController.changeTaskDueDateFail(home.invitation(), taskId, taskEditRequest, status().is5xxServerError());
+
+            // then
+            assertThat(response).isEqualTo(message);
+        }
+
+        @Test
+        @DisplayName("집안일 마감일 변경 실패 테스트 - 미완료 오늘 집안일 마감일을 과거로 수정")
+        void changeTaskWrongDueDateFailTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+            final String message = "해당 집안일은 수정이 불가능합니다.";
+
+            // when
+            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().minusDays(1));
+            final String response = taskController.changeTaskDueDateFail(home.invitation(), taskId, taskEditRequest, status().is5xxServerError());
+
+            // then
+            assertThat(response).isEqualTo(message);
         }
     }
 

@@ -15,6 +15,7 @@ import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
 import com.simleetag.homework.api.domain.work.task.Task;
+import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupEditRequest;
 import com.simleetag.homework.utils.JsonMapper;
 
 import org.springframework.data.annotation.LastModifiedDate;
@@ -158,6 +159,13 @@ public class TaskGroup extends DeletableEntity {
                 }
             }
         }
+    }
+
+    public void editFields(TaskGroupEditRequest taskGroupEditRequest, Member owner) {
+        this.name = taskGroupEditRequest.taskGroupName();
+        this.difficulty = taskGroupEditRequest.difficulty();
+        setOwnerBy(owner);
+        setCycle(taskGroupEditRequest.cycle());
     }
 
     public void expire() {

@@ -1,4 +1,4 @@
-package com.simleetag.homework.api.domain.work.task.api;
+package com.simleetag.homework.api.domain.work.taskGroup.api;
 
 import java.nio.charset.StandardCharsets;
 
@@ -10,18 +10,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TaskControllerFlow extends FlowSupport {
+public class TaskGroupControllerFlow extends FlowSupport {
 
-    public TaskControllerFlow(MockMvc mockMvc) {
+    public TaskGroupControllerFlow(MockMvc mockMvc) {
         super(mockMvc);
     }
 
-    public TaskResponse changeTaskStatus(String invitation, Long taskId, TaskStatusEditRequest request) throws Exception {
+    public TaskGroupResponse editTaskGroup(String invitation, Long taskGroupId, TaskGroupEditRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   patch("/api/tasks/{taskId}/change-status", taskId)
+                                                   put("/api/task-groups/{taskGroupId}", taskGroupId)
                                                            .contentType(MediaType.APPLICATION_JSON)
                                                            .header(IdentifierHeader.HOME.getKey(), invitation)
                                                            .content(objectMapper.writeValueAsString(request))
@@ -32,31 +32,15 @@ public class TaskControllerFlow extends FlowSupport {
                                            .getResponse()
                                            .getContentAsString(StandardCharsets.UTF_8);
 
-        return objectMapper.readValue(responseBody, TaskResponse.class);
+        return objectMapper.readValue(responseBody, TaskGroupResponse.class);
     }
 
-    public TaskResponse changeTaskDueDate(String invitation, Long taskId, TaskDueDateEditRequest request) throws Exception {
+    public String editTaskGroupFail(String invitation, Long taskGroupId, TaskGroupEditRequest request, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   patch("/api/tasks/{taskId}/change-duedate", taskId)
+                                                   put("/api/task-groups/{taskGroupId}", taskGroupId)
                                                            .contentType(MediaType.APPLICATION_JSON)
                                                            .header(IdentifierHeader.HOME.getKey(), invitation)
                                                            .content(objectMapper.writeValueAsString(request))
-                                           ).andExpect(
-                                                   status().isOk()
-                                           )
-                                           .andReturn()
-                                           .getResponse()
-                                           .getContentAsString(StandardCharsets.UTF_8);
-        return objectMapper.readValue(responseBody, TaskResponse.class);
-    }
-
-    public String changeTaskDueDateFail(String invitation, Long taskId, TaskDueDateEditRequest request, ResultMatcher matcher) throws Exception {
-        final String responseBody = mockMvc.perform(
-                                                   patch("/api/tasks/{taskId}/change-duedate", taskId)
-                                                           .contentType(MediaType.APPLICATION_JSON)
-                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
-                                                           .content(objectMapper.writeValueAsString(request))
-
                                            ).andExpect(
                                                    matcher
                                            )

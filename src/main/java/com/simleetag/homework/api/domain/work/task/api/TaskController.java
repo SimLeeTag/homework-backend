@@ -28,11 +28,25 @@ public class TaskController {
                     해당 집안일 수행을 완료하거나 취소합니다.
                     """
     )
-    @PatchMapping("/{taskId}")
+    @PatchMapping("/{taskId}/change-status")
     public ResponseEntity<TaskResponse> changeTaskStatus(@Invitation Long homeId,
                                                          @PathVariable @Positive Long taskId,
                                                          @RequestBody TaskStatusEditRequest request) {
         final Task task = taskService.changeStatus(taskId, request);
+        return ResponseEntity.ok(TaskResponse.from(task));
+    }
+
+    @Operation(
+            summary = "집안일 마감일 변경",
+            description = """
+                    해당 집안일 마감일을 변경합니다.
+                    """
+    )
+    @PatchMapping("/{taskId}/change-duedate")
+    public ResponseEntity<TaskResponse> changeTaskDueDate(@Invitation Long homeId,
+                                                         @PathVariable @Positive Long taskId,
+                                                         @RequestBody TaskDueDateEditRequest request) {
+        final Task task = taskService.changeDueDate(taskId, request);
         return ResponseEntity.ok(TaskResponse.from(task));
     }
 

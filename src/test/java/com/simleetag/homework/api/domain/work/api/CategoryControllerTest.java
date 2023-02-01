@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
@@ -18,6 +19,7 @@ import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
 import com.simleetag.homework.api.domain.work.task.TaskStatus;
 import com.simleetag.homework.api.domain.work.task.api.TaskControllerFlow;
 import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.task.api.TaskStatusEditRequest;
 import com.simleetag.homework.api.domain.work.taskGroup.Cycle;
 import com.simleetag.homework.api.domain.work.taskGroup.Difficulty;
@@ -26,6 +28,8 @@ import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CategoryControllerTest extends TestSupport {
 
@@ -148,7 +152,7 @@ public class CategoryControllerTest extends TestSupport {
             categoryController.createNewCategory(home.invitation(), request);
 
             // then
-            final int taskSize = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).size();
+            final int taskSize = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).size();
             assertThat(taskSize).isEqualTo(1);
         }
 
@@ -188,7 +192,7 @@ public class CategoryControllerTest extends TestSupport {
             // when
             categoryController.createNewCategory(home.invitation(), request);
             TaskStatusEditRequest taskEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             taskController.changeTaskStatus(home.invitation(), taskId, taskEditRequest);
 
             // then
@@ -209,7 +213,7 @@ public class CategoryControllerTest extends TestSupport {
             // when
             categoryController.createNewCategory(home.invitation(), request);
             TaskStatusEditRequest taskStatusEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             taskController.changeTaskStatus(home.invitation(), taskId, taskStatusEditRequest);
 
             // then
@@ -217,5 +221,49 @@ public class CategoryControllerTest extends TestSupport {
             assertThat(taskRateResponse.get(0).rate()).isEqualTo(33);
         }
 
+    }
+
+    @Nested
+    class deleteCategoryTest {
+
+        @Test
+        @DisplayName("카테고리 삭제 성공")
+        void deleteCategorySuccess() throws Exception {
+
+            //given
+            final List<CategoryResources.Request.Create> request = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+
+            // when
+            categoryController.createNewCategory(home.invitation(), request);
+            CategoryResources.Reply.MeWithTaskGroup createdCategory = categoryController.findAllWithTaskGroup(home.invitation()).stream().filter(category -> category.categoryName().equals("새로운 일회성 카테고리")).findFirst().get();
+            categoryController.deleteCategory(home.invitation(), createdCategory.categoryId());
+
+            // then
+            Optional<CategoryResources.Reply.MeWithTaskGroup> deletedCategory = categoryController.findAllWithTaskGroup(home.invitation()).stream().filter(category -> category.categoryId().equals(createdCategory.categoryId())).findAny();
+            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+
+            assertAll(
+                    () -> assertThat(deletedCategory).isEmpty(),
+                    () -> assertThat(tasks.size()).isEqualTo(0)
+            );
+        }
+
+        @Test
+        @DisplayName("카테고리 삭제 실패 - 디폴트 카테고리 삭제 불가")
+        void deleteCategoryFail() throws Exception {
+
+            //given
+            final String message = "해당 카테고리는 삭제가 불가능합니다.";
+
+            // when
+            Long defaultCategoryId = categoryController.findAllWithTaskGroup(home.invitation()).get(0).categoryId();
+
+            // then
+            final String response = categoryController.deleteCategoryFail(home.invitation(), defaultCategoryId, status().is5xxServerError());
+            assertThat(response).isEqualTo(message);
+        }
     }
 }

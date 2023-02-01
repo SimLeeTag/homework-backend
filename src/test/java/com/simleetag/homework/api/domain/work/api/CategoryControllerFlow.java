@@ -12,11 +12,11 @@ import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CategoryControllerFlow extends FlowSupport {
@@ -51,7 +51,7 @@ public class CategoryControllerFlow extends FlowSupport {
                .getResponse().getContentAsString(StandardCharsets.UTF_8);
     }
 
-    public List<TaskResponse> findAllWithDate(String invitation, LocalDate date, Long memberId) throws Exception {
+    public List<TaskResponse> findAllWithDueDate(String invitation, LocalDate date, Long memberId) throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("date", date.toString());
         params.add("memberId", memberId.toString());
@@ -86,4 +86,33 @@ public class CategoryControllerFlow extends FlowSupport {
                                            .getContentAsString(StandardCharsets.UTF_8);
         return Arrays.asList(objectMapper.readValue(responseBody, TaskRateResponse[].class));
     }
+
+    public CategoryResources.Reply.MeWithTaskGroup deleteCategory(String invitation, Long categoryId) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   delete("/api/categories/{categoryId}", categoryId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, CategoryResources.Reply.MeWithTaskGroup.class);
+    }
+
+    public String deleteCategoryFail(String invitation, Long categoryId, ResultMatcher matcher) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   delete("/api/categories/{categoryId}", categoryId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                           ).andExpect(
+                                                   matcher
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, Error.class).getMessage();
+    }
+
 }

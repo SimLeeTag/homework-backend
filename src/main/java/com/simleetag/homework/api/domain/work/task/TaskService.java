@@ -3,7 +3,7 @@ package com.simleetag.homework.api.domain.work.task;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.simleetag.homework.api.common.exception.TaskEditException;
+import com.simleetag.homework.api.common.exception.HomeControlException;
 import com.simleetag.homework.api.domain.work.task.api.TaskCreateRequest;
 import com.simleetag.homework.api.domain.work.task.api.TaskDueDateEditRequest;
 import com.simleetag.homework.api.domain.work.task.api.TaskEditRequest;
@@ -33,24 +33,24 @@ public class TaskService {
     }
 
     public Task findById(Long id) {
-        return taskRepository.findById(id)
+        return taskRepository.findByIdAndDeletedAtIsNull(id)
                              .orElseThrow(() -> new IllegalArgumentException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
     }
 
     public Task edit(Long taskId, TaskEditRequest request) {
-        Task task = findById(taskId);
+        final Task task = findById(taskId);
         task.edit(request);
         return task;
     }
 
     public Task changeStatus(Long taskId, TaskStatusEditRequest request) {
-        Task task = findById(taskId);
+         final Task task = findById(taskId);
         task.changeStatus(request.taskStatus());
         return task;
     }
 
     public Task changeDueDate(Long taskId, TaskDueDateEditRequest request) {
-        Task task = findById(taskId);
+        final Task task = findById(taskId);
         validateEditable(task, request);
         task.setDueDate(request.dueDate());
         return task;
@@ -62,15 +62,21 @@ public class TaskService {
             valid = false;
         }
         if (!valid) {
-            throw new TaskEditException(CANNOT_EDIT_EXCEPTION);
+            throw new HomeControlException(CANNOT_EDIT_EXCEPTION);
         }
     }
 
     public List<Task> searchAllByTaskGroup(TaskGroup taskGroup) {
-        return taskRepository.findByTaskGroup(taskGroup);
+        return taskRepository.findByTaskGroupAndDeletedAtIsNull(taskGroup);
     }
 
     public List<Task> searchAll() {
         return taskRepository.findAll();
+    }
+
+    public Task delete(Long taskId) {
+        final Task task = findById(taskId);
+        task.expire();
+        return task;
     }
 }

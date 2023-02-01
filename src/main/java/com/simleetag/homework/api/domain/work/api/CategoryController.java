@@ -34,8 +34,7 @@ public class CategoryController {
     )
     @GetMapping
     public ResponseEntity<List<CategoryResources.Reply.MeWithTaskGroup>> findAllWithTaskGroup(@Invitation Long homeId) {
-        final List<Category> categories = categoryService.findAllWithTaskGroupByHomeId(homeId);
-        return ResponseEntity.ok(CategoryResources.Reply.MeWithTaskGroup.from(categories));
+        return ResponseEntity.ok(categoryService.findAllWithTaskGroupByHomeId(homeId));
     }
 
     @Operation(
@@ -104,9 +103,21 @@ public class CategoryController {
     )
     @GetMapping("/tasks/rate")
     public ResponseEntity<List<TaskRateResponse>> checkRatesWithDueDate(@Invitation Long homeId,
-                                                                          @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                                          @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                                          @RequestParam Long memberId) {
+                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                                        @RequestParam Long memberId) {
         return ResponseEntity.ok(categoryService.calculateTaskRatesByDueDates(memberId, startDate, endDate));
     }
+
+    @Operation(
+            summary = "카테고리 삭제",
+            description = """
+                    해당 카테고리를 삭제합니다. 디폴트 카테고리는 삭제할 수 없습니다.
+                    """
+    )
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<CategoryResources.Reply.MeWithTaskGroup> deleteCategory(@Invitation Long homeId, @PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.deleteCategory(categoryId));
+    }
+
 }

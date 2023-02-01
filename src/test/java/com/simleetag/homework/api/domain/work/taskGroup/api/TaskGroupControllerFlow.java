@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,4 +51,33 @@ public class TaskGroupControllerFlow extends FlowSupport {
 
         return objectMapper.readValue(responseBody, Error.class).message();
     }
+
+    public TaskGroupResponse deleteTaskGroup(String invitation, Long taskGroupIdId) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   delete("/api/task-groups/{taskGroupId}", taskGroupIdId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, TaskGroupResponse.class);
+    }
+
+    public String deleteTaskGroupFail(String invitation, Long taskGroupId, ResultMatcher matcher) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   delete("/api/task-groups/{taskGroupId}", taskGroupId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                           ).andExpect(
+                                                   matcher
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, Error.class).message();
+    }
+
 }

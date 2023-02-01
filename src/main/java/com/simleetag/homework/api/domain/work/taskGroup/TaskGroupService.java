@@ -3,7 +3,7 @@ package com.simleetag.homework.api.domain.work.taskGroup;
 
 import java.util.List;
 
-import com.simleetag.homework.api.common.exception.TaskEditException;
+import com.simleetag.homework.api.common.exception.HomeControlException;
 import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.work.Category;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class TaskGroupService {
-    private static final String ENTITY_NOT_FOUND_EXCEPTION = "[%d] ID 에 해당하는 집안일 꾸러미가 존재하지 않습니다.";
+    private static final String ENTITY_NOT_FOUND_EXCEPTION = "[%d] ID에 해당하는 집안일 꾸러미가 존재하지 않습니다.";
 
     private static final String CANNOT_EDIT_EXCEPTION = "해당 집안일 꾸러미는 수정이 불가능합니다.";
 
@@ -38,7 +38,7 @@ public class TaskGroupService {
     }
 
     public TaskGroup findById(Long id) {
-        return taskGroupRepository.findById(id)
+        return taskGroupRepository.findByIdAndDeletedAtIsNull(id)
                                   .orElseThrow(() -> new IllegalArgumentException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
     }
 
@@ -73,8 +73,14 @@ public class TaskGroupService {
         Member originOwner = taskGroup.getOwner();
         if (taskGroup.getType().equals(TaskGroupType.TEMPORARY)) {
             if (originOwner != null && !originOwner.equals(newOwner)) {
-                throw new TaskEditException(CANNOT_EDIT_EXCEPTION);
+                throw new HomeControlException(CANNOT_EDIT_EXCEPTION);
             }
         }
+    }
+
+    public TaskGroup delete(Long taskGroupId) {
+        TaskGroup taskGroup = findById(taskGroupId);
+        taskGroup.expire();
+        return taskGroup;
     }
 }

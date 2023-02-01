@@ -54,6 +54,7 @@ public class Category extends DeletableEntity {
 
     public void expire() {
         this.deletedAt = LocalDateTime.now();
+        this.taskGroups.forEach(TaskGroup::expire);
     }
 
     public void sync(CategoryResources.Request.Create.CategoryCreateRequest categoryRequest) {

@@ -25,6 +25,7 @@ import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TaskControllerTest extends TestSupport {
@@ -94,11 +95,11 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskStatusEditRequest taskEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             TaskResponse taskResponse = taskController.changeTaskStatus(home.invitation(), taskId, taskEditRequest);
 
             // then
-            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            TaskResponse changedTask = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
             assertThat(taskResponse.taskStatus()).isEqualTo(changedTask.taskStatus());
         }
     }
@@ -119,11 +120,11 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
 
             // then
-            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
+            TaskResponse changedTask = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
             assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
         }
 
@@ -140,11 +141,11 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now());
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
             TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
 
             // then
-            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            TaskResponse changedTask = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
             assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
         }
 
@@ -161,11 +162,11 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0).taskId();
             TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
 
             // then
-            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
+            TaskResponse changedTask = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0);
             assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
         }
 
@@ -182,11 +183,11 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(2));
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(1), everMemberId).get(0).taskId();
             TaskResponse taskResponse = taskController.changeTaskDueDate(home.invitation(), taskId, taskEditRequest);
 
             // then
-            TaskResponse changedTask = categoryController.findAllWithDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0);
+            TaskResponse changedTask = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now().plusDays(2), everMemberId).get(0);
             assertThat(taskResponse.dueDate()).isEqualTo(changedTask.dueDate());
         }
 
@@ -204,7 +205,7 @@ public class TaskControllerTest extends TestSupport {
 
             // when
             TaskStatusEditRequest taskStatusEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             taskController.changeTaskStatus(home.invitation(), taskId, taskStatusEditRequest);
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().plusDays(1));
             final String response = taskController.changeTaskDueDateFail(home.invitation(), taskId, taskEditRequest, status().is5xxServerError());
@@ -226,12 +227,60 @@ public class TaskControllerTest extends TestSupport {
             final String message = "해당 집안일은 수정이 불가능합니다.";
 
             // when
-            Long taskId = categoryController.findAllWithDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             TaskDueDateEditRequest taskEditRequest = new TaskDueDateEditRequest(LocalDate.now().minusDays(1));
             final String response = taskController.changeTaskDueDateFail(home.invitation(), taskId, taskEditRequest, status().is5xxServerError());
 
             // then
             assertThat(response).isEqualTo(message);
+        }
+    }
+
+    @Nested
+    class deleteTaskTest {
+
+        @Test
+        @DisplayName("집안일 삭제 성공 테스트")
+        void deleteTaskSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskResponse task = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            TaskResponse taskResponse = taskController.deleteTask(home.invitation(), task.taskId());
+            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+
+            // then
+            assertAll(
+                    () -> assertThat(taskResponse.taskId()).isEqualTo(task.taskId()),
+                    () -> assertThat(tasks.size()).isEqualTo(0)
+            );
+        }
+
+        @Test
+        @DisplayName("집안일 삭제 실패 테스트 - 이미 삭제된 집안일")
+        void deleteTaskFailTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+            final String message = "[%d] ID에 해당하는 집안일이 존재하지 않습니다.";
+
+            // when
+            TaskResponse task = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            taskController.deleteTask(home.invitation(), task.taskId());
+            final String response = taskController.deleteTaskFail(home.invitation(), task.taskId(), status().is4xxClientError());
+
+            // then
+            assertThat(response).isEqualTo(String.format(message, task.taskId()));
         }
     }
 

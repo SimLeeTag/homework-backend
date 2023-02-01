@@ -44,10 +44,22 @@ public class TaskController {
     )
     @PatchMapping("/{taskId}/change-duedate")
     public ResponseEntity<TaskResponse> changeTaskDueDate(@Invitation Long homeId,
-                                                         @PathVariable @Positive Long taskId,
-                                                         @RequestBody TaskDueDateEditRequest request) {
+                                                          @PathVariable @Positive Long taskId,
+                                                          @RequestBody TaskDueDateEditRequest request) {
         final Task task = taskService.changeDueDate(taskId, request);
         return ResponseEntity.ok(TaskResponse.from(task));
+    }
+
+    @Operation(
+            summary = "집안일 삭제",
+            description = """
+                    해당 집안일을 삭제합니다.
+                    """
+    )
+    @DeleteMapping("{taskId}")
+    public ResponseEntity<TaskResponse> deleteTask(@Invitation Long homeId,
+                                                   @PathVariable @Positive Long taskId) {
+        return ResponseEntity.ok(TaskResponse.from(taskService.delete(taskId)));
     }
 
 }

@@ -284,4 +284,55 @@ public class TaskControllerTest extends TestSupport {
         }
     }
 
+    @Nested
+    class findOneTest {
+
+        @Test
+        @DisplayName("집안일 조회 성공 테스트")
+        void findTaskSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskResponse task = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            TaskResponse foundTask = taskController.findOne(home.invitation(), task.taskId());
+
+            // then
+            assertAll(
+                    () -> assertThat(foundTask.taskName()).isEqualTo("일회성 집안일"),
+                    () -> assertThat(foundTask.taskType()).isEqualTo(TaskGroupType.TEMPORARY),
+                    () -> assertThat(foundTask.taskStatus()).isEqualTo(TaskStatus.UNFINISHED),
+                    () -> assertThat(foundTask.dueDate()).isEqualTo(LocalDate.now()),
+                    () -> assertThat(foundTask.difficulty()).isEqualTo(Difficulty.LOW),
+                    () -> assertThat(foundTask.point()).isEqualTo(1L)
+            );
+        }
+
+        @Test
+        @DisplayName("집안일 조회 실패 테스트")
+        void findTaskFailTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+            final String message = "[%d] ID에 해당하는 집안일이 존재하지 않습니다.";
+
+            // when
+            TaskResponse task = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0);
+            taskController.deleteTask(home.invitation(), task.taskId());
+            final String response = taskController.findOneFail(home.invitation(), task.taskId(), status().is4xxClientError());
+
+            // then
+            assertThat(response).isEqualTo(String.format(message, task.taskId()));
+        }
+    }
+
 }

@@ -17,6 +17,7 @@ import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
 import com.simleetag.homework.api.domain.work.api.CategoryControllerFlow;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.taskGroup.Cycle;
 import com.simleetag.homework.api.domain.work.taskGroup.Difficulty;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
@@ -116,6 +117,7 @@ public class TaskGroupControllerTest extends TestSupport {
 
             // then
             TaskGroupResponse changedTaskGroup = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().get(0);
+
             assertAll(
                     () -> assertThat(response.taskGroupName()).isEqualTo(changedTaskGroup.taskGroupName()),
                     () -> assertThat(response.cycle()).isEqualTo(changedTaskGroup.cycle()),
@@ -142,6 +144,64 @@ public class TaskGroupControllerTest extends TestSupport {
 
             // then
             assertThat(response).isEqualTo(message);
+        }
+    }
+
+    @Nested
+    class deleteTaskGroupTest {
+
+        @Test
+        @DisplayName("집안일 꾸러미 삭제 성공 테스트")
+        void deleteTaskGroupSuccessTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+
+            // when
+            TaskGroupResponse taskGroupResponse = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().get(0);
+            int taskGroupsSizeBeforeDeleted = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().size();
+
+            // then
+            TaskGroupResponse deletedTaskGroupResponse = taskGroupController.deleteTaskGroup(home.invitation(), taskGroupResponse.taskGroupId());
+            int taskGroupsSizeAfterDeleted = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().size();
+            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+
+            assertAll(
+                    () -> assertThat(taskGroupResponse.taskGroupId()).isEqualTo(deletedTaskGroupResponse.taskGroupId()),
+                    () -> assertThat(taskGroupsSizeBeforeDeleted - 1).isEqualTo(taskGroupsSizeAfterDeleted),
+                    () -> assertThat(tasks.size()).isEqualTo(0)
+            );
+        }
+
+        @Test
+        @DisplayName("집안일 꾸러미 삭제 실패 테스트 - 이미 삭제된 집안일")
+        void deleteTaskFailTest() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> createRequest = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            createRequest.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+            categoryController.createNewCategory(home.invitation(), createRequest);
+            final String message = "[%d] ID에 해당하는 집안일 꾸러미가 존재하지 않습니다.";
+
+            // when
+            TaskGroupResponse taskGroupResponse = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().get(0);
+            taskGroupController.deleteTaskGroup(home.invitation(), taskGroupResponse.taskGroupId());
+            final String response = taskGroupController.deleteTaskGroupFail(home.invitation(), taskGroupResponse.taskGroupId(), status().is4xxClientError());
+            List<TaskGroupResponse> taskGroups = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups();
+            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+
+            // then
+            assertAll(
+                    () -> assertThat(response).isEqualTo(String.format(message, taskGroupResponse.taskGroupId())),
+                    () -> assertThat(taskGroups.size()).isEqualTo(0),
+                    () -> assertThat(tasks.size()).isEqualTo(0)
+            );
         }
     }
 

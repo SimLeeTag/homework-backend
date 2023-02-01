@@ -36,4 +36,15 @@ public class TaskGroupController {
 
         return ResponseEntity.ok(TaskGroupResponse.from(taskGroup));
     }
+
+    @Operation(
+            summary = "집안일 꾸러미 삭제",
+            description = """
+                    집안일 설정 화면에서 집안일 꾸러미 삭제 시 해당 요청으로 전송합니다.
+                    """
+    )
+    @DeleteMapping("/{taskGroupId}")
+    public ResponseEntity<TaskGroupResponse> deleteTaskGroup(@Invitation Long homeId, @PathVariable @Positive Long taskGroupId) {
+        return ResponseEntity.ok(TaskGroupResponse.from(taskGroupService.delete(taskGroupId)));
+    }
 }

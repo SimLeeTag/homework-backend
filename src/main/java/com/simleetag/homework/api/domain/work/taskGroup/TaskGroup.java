@@ -170,5 +170,6 @@ public class TaskGroup extends DeletableEntity {
 
     public void expire() {
         this.deletedAt = LocalDateTime.now();
+        this.tasks.forEach(Task::expire);
     }
 }

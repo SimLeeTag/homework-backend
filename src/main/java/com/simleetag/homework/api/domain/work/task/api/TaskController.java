@@ -62,4 +62,17 @@ public class TaskController {
         return ResponseEntity.ok(TaskResponse.from(taskService.delete(taskId)));
     }
 
+    @Operation(
+            summary = "집안일 상세 조회",
+            description = """
+                    해당 집안일을 조회합니다.
+                    """
+    )
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> findOne(@Invitation Long homeId,
+                                                @PathVariable @Positive Long taskId) {
+        final Task task = taskService.findById(taskId);
+        return ResponseEntity.ok(TaskResponse.from(task));
+    }
+
 }

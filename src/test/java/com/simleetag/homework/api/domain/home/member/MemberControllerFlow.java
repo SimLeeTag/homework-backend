@@ -1,12 +1,18 @@
 package com.simleetag.homework.api.domain.home.member;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
 
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +33,23 @@ public class MemberControllerFlow extends FlowSupport {
                                            .getResponse()
                                            .getContentAsString(StandardCharsets.UTF_8);
         return objectMapper.readValue(responseBody, MemberIdResponse.class);
+    }
+
+    public List<TaskRateResponse> checkRatesWithDueDate(String invitation, LocalDate startDate, LocalDate endDate, Long memberId) throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startDate", startDate.toString());
+        params.add("endDate", endDate.toString());
+        final String responseBody = mockMvc.perform(
+                                                   get("/api/members/{memberId}/tasks/rate", memberId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                                           .params(params)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+        return Arrays.asList(objectMapper.readValue(responseBody, TaskRateResponse[].class));
     }
 
 

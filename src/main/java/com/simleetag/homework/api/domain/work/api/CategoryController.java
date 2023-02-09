@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.simleetag.homework.api.common.Invitation;
-import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.CategoryService;
 import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
 import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
@@ -95,19 +94,6 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findAllTasksByDueDate(memberId, date));
     }
 
-    @Operation(
-            summary = "날짜별, 멤버별 집안일 완료율 조회",
-            description = """
-                    해당 멤버의 해당 날짜의 집안일 완료율을 조회합니다.
-                    """
-    )
-    @GetMapping("/tasks/rate")
-    public ResponseEntity<List<TaskRateResponse>> checkRatesWithDueDate(@Invitation Long homeId,
-                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                                        @RequestParam Long memberId) {
-        return ResponseEntity.ok(categoryService.calculateTaskRatesByDueDates(memberId, startDate, endDate));
-    }
 
     @Operation(
             summary = "카테고리 삭제",

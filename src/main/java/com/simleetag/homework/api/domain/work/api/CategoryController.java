@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.domain.work.CategoryService;
-import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
 import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -64,7 +63,7 @@ public class CategoryController {
     private void taskGroupValidate(List<CategoryResources.Request.Create> requests) {
         boolean valid = false;
         for (CategoryResources.Request.Create request : requests) {
-            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest : request.taskGroup()) {
+            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest : request.taskGroups()) {
                 if (taskGroupCreateRequest.cycle() == null && taskGroupCreateRequest.difficulty() == null && taskGroupCreateRequest.ownerId() == null) {
                     valid = true;
                     continue;

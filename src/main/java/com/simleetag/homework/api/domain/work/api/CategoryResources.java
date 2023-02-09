@@ -16,7 +16,7 @@ public record CategoryResources(
     public static class Request {
         public record Create(
                 CategoryCreateRequest category,
-                TaskGroupCreateRequest... taskGroup
+                TaskGroupCreateRequest... taskGroups
         ) {
             public record CategoryCreateRequest(
                     Long categoryId,

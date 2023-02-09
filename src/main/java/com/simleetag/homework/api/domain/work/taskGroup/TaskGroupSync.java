@@ -31,7 +31,7 @@ public class TaskGroupSync {
         var modifiedAt = LocalDateTime.now();
         for (CategoryResources.Request.Create request : requests) {
             final var categoryId = request.category().categoryId();
-            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest : request.taskGroup()) {
+            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest : request.taskGroups()) {
                 final var taskGroupId = taskGroupRequest.taskGroupId();
                 Member owner = taskGroupRequest.ownerId() == null ? null : memberFinder.findByIdOrElseThrow(taskGroupRequest.ownerId());
                 TaskGroup taskGroup = new TaskGroup();

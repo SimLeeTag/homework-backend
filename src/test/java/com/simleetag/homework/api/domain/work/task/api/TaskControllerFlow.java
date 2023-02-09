@@ -21,7 +21,7 @@ public class TaskControllerFlow extends FlowSupport {
 
     public TaskResponse changeTaskStatus(String invitation, Long taskId, TaskStatusEditRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   patch("/api/tasks/{taskId}/change-status", taskId)
+                                                   patch("/api/tasks/{taskId}/status", taskId)
                                                            .contentType(MediaType.APPLICATION_JSON)
                                                            .header(IdentifierHeader.HOME.getKey(), invitation)
                                                            .content(objectMapper.writeValueAsString(request))

@@ -28,7 +28,7 @@ public class TaskController {
                     해당 집안일 수행을 완료하거나 취소합니다.
                     """
     )
-    @PatchMapping("/{taskId}/change-status")
+    @PatchMapping("/{taskId}/status")
     public ResponseEntity<TaskResponse> changeTaskStatus(@Invitation Long homeId,
                                                          @PathVariable @Positive Long taskId,
                                                          @RequestBody TaskStatusEditRequest request) {

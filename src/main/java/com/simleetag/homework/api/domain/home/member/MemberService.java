@@ -14,6 +14,7 @@ import com.simleetag.homework.api.domain.user.UserService;
 import com.simleetag.homework.api.domain.work.task.TaskDslRepository;
 import com.simleetag.homework.api.domain.work.task.TaskStatus;
 import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,5 +79,10 @@ public class MemberService {
         }
         return list;
     }
+
+    public List<TaskResponse> findAllTasksByDueDate(Long memberId, LocalDate date) {
+        return TaskResponse.from(taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, date));
+    }
+
 
 }

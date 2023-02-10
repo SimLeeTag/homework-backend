@@ -9,6 +9,7 @@ import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -51,6 +52,24 @@ public class MemberControllerFlow extends FlowSupport {
                                            .getContentAsString(StandardCharsets.UTF_8);
         return Arrays.asList(objectMapper.readValue(responseBody, TaskRateResponse[].class));
     }
+
+    public List<TaskResponse> findAllWithDueDate(String invitation, LocalDate date, Long memberId) throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("date", date.toString());
+        params.add("memberId", memberId.toString());
+        final String responseBody = mockMvc.perform(
+                                                   get("/api/members/{memberId}/tasks", memberId)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                                           .params(params)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+        return Arrays.asList(objectMapper.readValue(responseBody, TaskResponse[].class));
+    }
+
 
 
 }

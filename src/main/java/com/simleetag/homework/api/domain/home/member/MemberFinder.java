@@ -38,6 +38,6 @@ public class MemberFinder {
 
     public Member findByHomeIdAndUserId(Long homeId, Long userId) {
         return memberRepository.findByHomeIdAndUserIdAndDeletedAtIsNull(homeId, userId)
-                                  .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_GENERAL_MESSAGE)));
+                               .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_GENERAL_MESSAGE)));
     }
 }

@@ -10,6 +10,7 @@ import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.home.member.MemberService;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.work.task.api.TaskRateResponse;
+import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -57,4 +58,16 @@ public class MemberController {
         return ResponseEntity.ok(memberService.calculateTaskRatesByDueDates(memberId, startDate, endDate));
     }
 
+    @Operation(
+            summary = "날짜별, 멤버별 집안일 조회",
+            description = """
+                    해당 멤버의 해당 날짜의 등록된 집안일을 조회합니다.
+                    """
+    )
+    @GetMapping("/{memberId}/tasks")
+    public ResponseEntity<List<TaskResponse>> findAllWithDueDate(@Invitation Long homeId,
+                                                                 @PathVariable Long memberId,
+                                                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        return ResponseEntity.ok(memberService.findAllTasksByDueDate(memberId, date));
+    }
 }

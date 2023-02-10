@@ -50,24 +50,6 @@ public class CategoryControllerFlow extends FlowSupport {
                .getResponse().getContentAsString(StandardCharsets.UTF_8);
     }
 
-    public List<TaskResponse> findAllWithDueDate(String invitation, LocalDate date, Long memberId) throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("date", date.toString());
-        params.add("memberId", memberId.toString());
-        final String responseBody = mockMvc.perform(
-                                                   get("/api/categories/tasks")
-                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
-                                                           .params(params)
-                                           ).andExpect(
-                                                   status().isOk()
-                                           )
-                                           .andReturn()
-                                           .getResponse()
-                                           .getContentAsString(StandardCharsets.UTF_8);
-        return Arrays.asList(objectMapper.readValue(responseBody, TaskResponse[].class));
-    }
-
-
     public CategoryResources.Reply.MeWithTaskGroup deleteCategory(String invitation, Long categoryId) throws Exception {
         final String responseBody = mockMvc.perform(
                                                    delete("/api/categories/{categoryId}", categoryId)

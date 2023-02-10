@@ -86,10 +86,6 @@ public class CategoryService {
         home.initialize();
     }
 
-    public List<TaskResponse> findAllTasksByDueDate(Long memberId, LocalDate date) {
-        return TaskResponse.from(taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, date));
-    }
-
     public CategoryResources.Reply.MeWithTaskGroup deleteCategory(Long categoryId) {
         Category category = findById(categoryId);
         if (category.getType() == Category.CategoryType.DEFAULT) {

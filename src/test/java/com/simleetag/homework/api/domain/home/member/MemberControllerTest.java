@@ -138,7 +138,7 @@ public class MemberControllerTest extends TestSupport {
             // when
             categoryController.createNewCategory(home.invitation(), request);
             TaskStatusEditRequest taskEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             taskController.changeTaskStatus(home.invitation(), taskId, taskEditRequest);
 
             // then
@@ -159,12 +159,35 @@ public class MemberControllerTest extends TestSupport {
             // when
             categoryController.createNewCategory(home.invitation(), request);
             TaskStatusEditRequest taskStatusEditRequest = new TaskStatusEditRequest(TaskStatus.COMPLETED);
-            Long taskId = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
+            Long taskId = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).get(0).taskId();
             taskController.changeTaskStatus(home.invitation(), taskId, taskStatusEditRequest);
 
             // then
             List<TaskRateResponse> taskRateResponse = memberController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
             Assertions.assertThat(taskRateResponse.get(0).rate()).isEqualTo(33);
+        }
+
+    }
+
+    @Nested
+    class findAllTaskTest {
+
+        @Test
+        @DisplayName("마감일 별 특정 멤버의 집안일 조회 성공 테스트 - 새로 생성한 일회성 집안일 생성 후 조회")
+        void findAllWithDueDateWithTempTasks() throws Exception {
+
+            // given
+            final List<CategoryResources.Request.Create> request = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
+            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
+
+            // when
+            categoryController.createNewCategory(home.invitation(), request);
+
+            // then
+            final int taskSize = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).size();
+            Assertions.assertThat(taskSize).isEqualTo(1);
         }
 
     }

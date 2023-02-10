@@ -10,6 +10,7 @@ import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
@@ -31,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CategoryControllerTest extends TestSupport {
 
     private CategoryControllerFlow categoryController;
+
+    private MemberControllerFlow memberController;
 
     private TaskControllerFlow taskController;
 
@@ -56,6 +59,7 @@ public class CategoryControllerTest extends TestSupport {
         categoryController = new CategoryControllerFlow(mockMvc);
         homeController = new HomeControllerFlow(mockMvc);
         taskController = new TaskControllerFlow(mockMvc);
+        memberController = new MemberControllerFlow(mockMvc);
     }
 
     @BeforeEach
@@ -132,28 +136,6 @@ public class CategoryControllerTest extends TestSupport {
         }
     }
 
-    @Nested
-    class findAllTaskTest {
-
-        @Test
-        @DisplayName("마감일 별 특정 멤버의 집안일 조회 성공 테스트 - 새로 생성한 일회성 집안일 생성 후 조회")
-        void findAllWithDueDateWithTempTasks() throws Exception {
-
-            // given
-            final List<CategoryResources.Request.Create> request = new ArrayList<>();
-            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
-            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek()), LocalDate.now(), 0), Difficulty.LOW, 1L, everMemberId);
-            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest));
-
-            // when
-            categoryController.createNewCategory(home.invitation(), request);
-
-            // then
-            final int taskSize = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId).size();
-            assertThat(taskSize).isEqualTo(1);
-        }
-
-    }
 
     @Nested
     class deleteCategoryTest {
@@ -175,7 +157,7 @@ public class CategoryControllerTest extends TestSupport {
 
             // then
             Optional<CategoryResources.Reply.MeWithTaskGroup> deletedCategory = categoryController.findAllWithTaskGroup(home.invitation()).stream().filter(category -> category.categoryId().equals(createdCategory.categoryId())).findAny();
-            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+            List<TaskResponse> tasks = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
 
             assertAll(
                     () -> assertThat(deletedCategory).isEmpty(),

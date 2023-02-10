@@ -9,6 +9,8 @@ import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
+import com.simleetag.homework.api.domain.home.member.api.MemberController;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
@@ -40,6 +42,8 @@ public class TaskGroupControllerTest extends TestSupport {
 
     private UserControllerFlow userController;
 
+    private MemberControllerFlow memberController;
+
     private Long everUserId;
 
     private Long everMemberId;
@@ -60,6 +64,7 @@ public class TaskGroupControllerTest extends TestSupport {
         homeController = new HomeControllerFlow(mockMvc);
         oauthController = new OAuthControllerFlow(mockMvc);
         userController = new UserControllerFlow(mockMvc);
+        memberController = new MemberControllerFlow(mockMvc);
     }
 
     @BeforeEach
@@ -168,7 +173,7 @@ public class TaskGroupControllerTest extends TestSupport {
             // then
             TaskGroupResponse deletedTaskGroupResponse = taskGroupController.deleteTaskGroup(home.invitation(), taskGroupResponse.taskGroupId());
             int taskGroupsSizeAfterDeleted = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups().size();
-            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+            List<TaskResponse> tasks = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
 
             assertAll(
                     () -> assertThat(taskGroupResponse.taskGroupId()).isEqualTo(deletedTaskGroupResponse.taskGroupId()),
@@ -194,7 +199,7 @@ public class TaskGroupControllerTest extends TestSupport {
             taskGroupController.deleteTaskGroup(home.invitation(), taskGroupResponse.taskGroupId());
             final String response = taskGroupController.deleteTaskGroupFail(home.invitation(), taskGroupResponse.taskGroupId(), status().is4xxClientError());
             List<TaskGroupResponse> taskGroups = categoryController.findAllWithTaskGroup(home.invitation()).get(0).taskGroups();
-            List<TaskResponse> tasks = categoryController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
+            List<TaskResponse> tasks = memberController.findAllWithDueDate(home.invitation(), LocalDate.now(), everMemberId);
 
             // then
             assertAll(

@@ -27,14 +27,14 @@ public class MemberMaintenanceController {
 
     @Operation(summary = "조회")
     @GetMapping("{memberId}")
-    public ResponseEntity<MemberResponse> findOne(@PathVariable Long homeId, @PathVariable Long memberId) {
+    public ResponseEntity<MemberResponse> findOne(@RequestParam Long homeId, @PathVariable Long memberId) {
         final Member member = memberFinder.findMemberByIdAndHomeId(homeId, memberId);
         return ResponseEntity.ok(MemberResponse.from(member));
     }
 
     @Operation(summary = "수정")
     @PutMapping("{memberId}")
-    public ResponseEntity<MemberResponse> modify(@PathVariable Long homeId,
+    public ResponseEntity<MemberResponse> modify(@RequestParam Long homeId,
                                                  @PathVariable Long memberId,
                                                  @RequestBody MemberModifyRequest request) {
         final Member member = memberService.modify(homeId, memberId, request);

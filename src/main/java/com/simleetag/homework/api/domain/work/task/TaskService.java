@@ -44,7 +44,7 @@ public class TaskService {
     }
 
     public Task changeStatus(Long taskId, TaskStatusEditRequest request) {
-         final Task task = findById(taskId);
+        final Task task = findById(taskId);
         task.changeStatus(request.taskStatus());
         return task;
     }

@@ -52,7 +52,7 @@ public class TaskMaintenanceController {
     @Operation(summary = "TaskGroup으로 전체 조회")
     @GetMapping
     public ResponseEntity<List<TaskResponse>> searchByTaskGroup(@PathVariable Long categoryId,
-                                                     @PathVariable Long taskGroupId) {
+                                                                @PathVariable Long taskGroupId) {
         TaskGroup taskGroup = taskGroupService.findById(taskGroupId);
         return ResponseEntity.ok(TaskResponse.from(taskService.searchAllByTaskGroup(taskGroup)));
     }

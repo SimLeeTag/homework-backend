@@ -145,7 +145,7 @@ public class TaskGroup extends DeletableEntity {
                 }
             }
             setCycle(cycle);
-        // 있던 싸이클
+            // 있던 싸이클
         } else {
             final LocalDate dueDate = LocalDate.now().with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
             addBy(new Task(dueDate));

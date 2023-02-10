@@ -1,6 +1,5 @@
 package com.simleetag.homework.api.domain.work;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import com.simleetag.homework.api.domain.work.api.CategoryResources;
 import com.simleetag.homework.api.domain.work.repository.CategoryDslRepository;
 import com.simleetag.homework.api.domain.work.repository.CategoryRepository;
 import com.simleetag.homework.api.domain.work.task.TaskDslRepository;
-import com.simleetag.homework.api.domain.work.task.api.TaskResponse;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupRepository;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupService;

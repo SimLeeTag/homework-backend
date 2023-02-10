@@ -66,8 +66,8 @@ public class TaskService {
         }
     }
 
-    public List<Task> searchAllByTaskGroup(TaskGroup taskGroup) {
-        return taskRepository.findByTaskGroupAndDeletedAtIsNull(taskGroup);
+    public List<Task> searchAllByTaskGroup(Long taskGroupId) {
+        return taskRepository.findByTaskGroupIdAndDeletedAtIsNull(taskGroupId);
     }
 
     public List<Task> searchAll() {

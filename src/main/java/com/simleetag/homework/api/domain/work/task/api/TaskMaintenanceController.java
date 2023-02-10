@@ -53,8 +53,7 @@ public class TaskMaintenanceController {
     @GetMapping
     public ResponseEntity<List<TaskResponse>> searchByTaskGroup(@PathVariable Long categoryId,
                                                                 @PathVariable Long taskGroupId) {
-        TaskGroup taskGroup = taskGroupService.findById(taskGroupId);
-        return ResponseEntity.ok(TaskResponse.from(taskService.searchAllByTaskGroup(taskGroup)));
+        return ResponseEntity.ok(TaskResponse.from(taskService.searchAllByTaskGroup(taskGroupId)));
     }
 
 }

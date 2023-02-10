@@ -66,8 +66,9 @@ public class MemberService {
         Period period = Period.between(startDate, endDate);
         List<TaskRateResponse> list = new ArrayList<>();
         for (int i = 0; i < period.getDays() + 1; i++) {
-            double allTasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i)).size();
-            double doneTasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i)).stream().filter(task -> task.getTaskStatus().equals(TaskStatus.COMPLETED)).count();
+            var tasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i));
+            double allTasks = tasks.size();
+            double doneTasks = tasks.stream().filter(task -> task.getTaskStatus().equals(TaskStatus.COMPLETED)).count();
             double rate = 0;
             if (allTasks != 0) {
                 rate = doneTasks / allTasks * 100.0;

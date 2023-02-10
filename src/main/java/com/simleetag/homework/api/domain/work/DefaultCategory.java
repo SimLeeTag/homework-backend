@@ -46,5 +46,18 @@ public class DefaultCategory {
         cleanTaskGroups.forEach(cleanCategory::addBy);
         taskGroupRepository.saveAll(cleanTaskGroups);
         categoryRepository.save(cleanCategory);
+
+        final List<TaskGroup> laundryTaskGroups = Arrays.asList(
+                new TaskGroup("빨랫감 수거", TaskGroupType.ROUTINE),
+                new TaskGroup("빨래 돌리기", TaskGroupType.ROUTINE),
+                new TaskGroup("빨래 널기", TaskGroupType.ROUTINE),
+                new TaskGroup("건조대 널기", TaskGroupType.ROUTINE),
+                new TaskGroup("빨래 개기", TaskGroupType.ROUTINE)
+        );
+
+        final Category laundryCategory = new Category("👔 빨래", Category.CategoryType.DEFAULT, home);
+        laundryTaskGroups.forEach(laundryCategory::addBy);
+        taskGroupRepository.saveAll(laundryTaskGroups);
+        categoryRepository.save(laundryCategory);
     }
 }

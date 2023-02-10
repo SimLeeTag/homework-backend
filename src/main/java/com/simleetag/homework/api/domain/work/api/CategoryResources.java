@@ -5,6 +5,7 @@ import java.util.List;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.taskGroup.Cycle;
 import com.simleetag.homework.api.domain.work.taskGroup.Difficulty;
+import com.simleetag.homework.api.domain.work.taskGroup.TaskGroup;
 import com.simleetag.homework.api.domain.work.taskGroup.TaskGroupType;
 import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupResponse;
 
@@ -15,7 +16,7 @@ public record CategoryResources(
     public static class Request {
         public record Create(
                 CategoryCreateRequest category,
-                TaskGroupCreateRequest... taskGroup
+                TaskGroupCreateRequest... taskGroups
         ) {
             public record CategoryCreateRequest(
                     Long categoryId,
@@ -38,6 +39,7 @@ public record CategoryResources(
         public record MeWithTaskGroup(
                 Long categoryId,
                 String categoryName,
+                Category.CategoryType categoryType,
                 List<TaskGroupResponse> taskGroups
         ) {
             public static List<MeWithTaskGroup> from(List<Category> categories) {
@@ -45,9 +47,19 @@ public record CategoryResources(
                                  .map(category -> new MeWithTaskGroup(
                                          category.getId(),
                                          category.getName(),
+                                         category.getType(),
                                          TaskGroupResponse.from(category.getTaskGroups())))
                                  .toList();
             }
+
+            public static MeWithTaskGroup from(Category category, List<TaskGroup> taskGroups) {
+                return new MeWithTaskGroup(category.getId(), category.getName(), category.getType(), TaskGroupResponse.from(taskGroups));
+            }
+
+            public static MeWithTaskGroup from(Category category) {
+                return new MeWithTaskGroup(category.getId(), category.getName(), category.getType(), TaskGroupResponse.from(category.getTaskGroups()));
+            }
+
         }
     }
 }

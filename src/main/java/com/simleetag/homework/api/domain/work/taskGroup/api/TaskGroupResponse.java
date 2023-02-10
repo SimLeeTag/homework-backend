@@ -29,4 +29,16 @@ public record TaskGroupResponse(
                                  taskGroup.getOwner() == null ? null : taskGroup.getOwner().getId()))
                          .toList();
     }
+
+    public static TaskGroupResponse from(TaskGroup taskGroup) {
+        return new TaskGroupResponse(
+                taskGroup.getId(),
+                taskGroup.getName(),
+                taskGroup.getType(),
+                taskGroup.getCycle(),
+                taskGroup.getDifficulty(),
+                taskGroup.getPoint(),
+                taskGroup.getOwner() == null ? null : taskGroup.getOwner().getId()
+        );
+    }
 }

@@ -26,7 +26,6 @@ public class CategoryDslRepository extends QuerydslRepositorySupport {
                 .where(
                         category.home.id.eq(homeId)
                                         .and(category.deletedAt.isNull())
-                                        .and(taskGroup.deletedAt.isNull())
                 ).fetch();
     }
 }

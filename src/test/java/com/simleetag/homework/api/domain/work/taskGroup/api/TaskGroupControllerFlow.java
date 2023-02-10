@@ -1,33 +1,30 @@
-package com.simleetag.homework.api.domain.home.api;
+package com.simleetag.homework.api.domain.work.taskGroup.api;
 
 import java.nio.charset.StandardCharsets;
 
 import com.simleetag.homework.api.common.FlowSupport;
 import com.simleetag.homework.api.common.IdentifierHeader;
 import com.simleetag.homework.api.common.exception.Error;
-import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
-import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
-import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class HomeControllerFlow extends FlowSupport {
-    public HomeControllerFlow(MockMvc mockMvc) {
+public class TaskGroupControllerFlow extends FlowSupport {
+
+    public TaskGroupControllerFlow(MockMvc mockMvc) {
         super(mockMvc);
     }
 
-    public CreatedHomeResponse createHome(String homeworkToken, HomeCreateRequest request) throws Exception {
+    public TaskGroupResponse editTaskGroup(String invitation, Long taskGroupId, TaskGroupEditRequest request) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   post("/api/homes")
+                                                   put("/api/task-groups/{taskGroupId}", taskGroupId)
                                                            .contentType(MediaType.APPLICATION_JSON)
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
                                                            .content(objectMapper.writeValueAsString(request))
                                            ).andExpect(
                                                    status().isOk()
@@ -36,14 +33,14 @@ public class HomeControllerFlow extends FlowSupport {
                                            .getResponse()
                                            .getContentAsString(StandardCharsets.UTF_8);
 
-        return objectMapper.readValue(responseBody, CreatedHomeResponse.class);
+        return objectMapper.readValue(responseBody, TaskGroupResponse.class);
     }
 
-    public String createHomeFail(String homeworkToken, HomeCreateRequest request, ResultMatcher matcher) throws Exception {
+    public String editTaskGroupFail(String invitation, Long taskGroupId, TaskGroupEditRequest request, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   post("/api/homes")
+                                                   put("/api/task-groups/{taskGroupId}", taskGroupId)
                                                            .contentType(MediaType.APPLICATION_JSON)
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
                                                            .content(objectMapper.writeValueAsString(request))
                                            ).andExpect(
                                                    matcher
@@ -55,10 +52,9 @@ public class HomeControllerFlow extends FlowSupport {
         return objectMapper.readValue(responseBody, Error.class).message();
     }
 
-    public HomeWithMembersResponse findMembersByToken(String homeworkToken, String invitation) throws Exception {
+    public TaskGroupResponse deleteTaskGroup(String invitation, Long taskGroupIdId) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   get("/api/homes")
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                                   delete("/api/task-groups/{taskGroupId}", taskGroupIdId)
                                                            .header(IdentifierHeader.HOME.getKey(), invitation)
                                            ).andExpect(
                                                    status().isOk()
@@ -67,13 +63,12 @@ public class HomeControllerFlow extends FlowSupport {
                                            .getResponse()
                                            .getContentAsString(StandardCharsets.UTF_8);
 
-        return objectMapper.readValue(responseBody, HomeWithMembersResponse.class);
+        return objectMapper.readValue(responseBody, TaskGroupResponse.class);
     }
 
-    public String findMembersByTokenFail(String homeworkToken, String invitation, ResultMatcher matcher) throws Exception {
+    public String deleteTaskGroupFail(String invitation, Long taskGroupId, ResultMatcher matcher) throws Exception {
         final String responseBody = mockMvc.perform(
-                                                   get("/api/homes")
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                                   delete("/api/task-groups/{taskGroupId}", taskGroupId)
                                                            .header(IdentifierHeader.HOME.getKey(), invitation)
                                            ).andExpect(
                                                    matcher
@@ -83,20 +78,6 @@ public class HomeControllerFlow extends FlowSupport {
                                            .getContentAsString(StandardCharsets.UTF_8);
 
         return objectMapper.readValue(responseBody, Error.class).message();
-    }
-
-    public MemberIdResponse joinHome(Long homeId, String homeworkToken) throws Exception {
-        final String responseBody = mockMvc.perform(
-                                                   post("/api/homes/{homeId}/members", homeId)
-                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
-                                           ).andExpect(
-                                                   status().isOk()
-                                           )
-                                           .andReturn()
-                                           .getResponse()
-                                           .getContentAsString(StandardCharsets.UTF_8);
-
-        return objectMapper.readValue(responseBody, MemberIdResponse.class);
     }
 
 }

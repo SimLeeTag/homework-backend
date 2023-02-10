@@ -3,7 +3,6 @@ package com.simleetag.homework.api.domain.work.api;
 import java.util.List;
 
 import com.simleetag.homework.api.common.Invitation;
-import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.CategoryService;
 
 import org.springframework.http.ResponseEntity;
@@ -30,8 +29,7 @@ public class CategoryController {
     )
     @GetMapping
     public ResponseEntity<List<CategoryResources.Reply.MeWithTaskGroup>> findAllWithTaskGroup(@Invitation Long homeId) {
-        final List<Category> categories = categoryService.findAllWithTaskGroupByHomeId(homeId);
-        return ResponseEntity.ok(CategoryResources.Reply.MeWithTaskGroup.from(categories));
+        return ResponseEntity.ok(categoryService.findAllWithTaskGroupByHomeId(homeId));
     }
 
     @Operation(
@@ -62,7 +60,7 @@ public class CategoryController {
     private void taskGroupValidate(List<CategoryResources.Request.Create> requests) {
         boolean valid = false;
         for (CategoryResources.Request.Create request : requests) {
-            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest : request.taskGroup()) {
+            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest : request.taskGroups()) {
                 if (taskGroupCreateRequest.cycle() == null && taskGroupCreateRequest.difficulty() == null && taskGroupCreateRequest.ownerId() == null) {
                     valid = true;
                     continue;
@@ -78,4 +76,16 @@ public class CategoryController {
             throw new IllegalArgumentException("주기, 난이도, 담당자는 모두 null이거나 모두 null이 아니어야 합니다.");
         }
     }
+
+    @Operation(
+            summary = "카테고리 삭제",
+            description = """
+                    해당 카테고리를 삭제합니다. 디폴트 카테고리는 삭제할 수 없습니다.
+                    """
+    )
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<CategoryResources.Reply.MeWithTaskGroup> deleteCategory(@Invitation Long homeId, @PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.deleteCategory(categoryId));
+    }
+
 }

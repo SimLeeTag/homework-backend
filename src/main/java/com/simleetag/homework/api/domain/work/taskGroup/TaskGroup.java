@@ -15,6 +15,7 @@ import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.work.Category;
 import com.simleetag.homework.api.domain.work.api.CategoryResources;
 import com.simleetag.homework.api.domain.work.task.Task;
+import com.simleetag.homework.api.domain.work.taskGroup.api.TaskGroupEditRequest;
 import com.simleetag.homework.utils.JsonMapper;
 
 import org.springframework.data.annotation.LastModifiedDate;
@@ -46,7 +47,7 @@ public class TaskGroup extends DeletableEntity {
     @Column
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     private Member owner;
 
@@ -65,23 +66,29 @@ public class TaskGroup extends DeletableEntity {
     }
 
     public TaskGroup(String name, TaskGroupType type, LocalDateTime modifiedAt) {
-        this(null, name, null, null, type, null);
+        this(null, name, null, type, null);
         this.modifiedAt = modifiedAt;
     }
 
-    public TaskGroup(Difficulty difficulty, String name, Member owner, Long point, TaskGroupType type, Cycle cycle) {
+    public TaskGroup(Difficulty difficulty, String name, Long point, TaskGroupType type, Cycle cycle) {
         this.name = name;
         this.type = type;
         this.difficulty = difficulty;
-        this.owner = owner;
         this.point = point;
         setCycle(cycle);
     }
 
-    public void setBy(Category category) {
+    public void setCategoryBy(Category category) {
         this.category = category;
         if (!category.getTaskGroups().contains(this)) {
             category.addBy(this);
+        }
+    }
+
+    public void setOwnerBy(Member owner) {
+        this.owner = owner;
+        if (!owner.getTaskGroups().contains(this)) {
+            owner.addBy(this);
         }
     }
 
@@ -107,35 +114,62 @@ public class TaskGroup extends DeletableEntity {
         this.textOfCycle = JsonMapper.writeValueAsString(cycle);
     }
 
-    public void sync(CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest, Member owner) {
+    public void sync(CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest) {
         this.name = taskGroupRequest.taskGroupName();
         this.difficulty = taskGroupRequest.difficulty();
         this.point = taskGroupRequest.point();
-        this.owner = owner;
         this.type = taskGroupRequest.taskGroupType();
         this.modifiedAt = LocalDateTime.now();
         syncCycle(taskGroupRequest.cycle());
     }
 
     public void syncCycle(Cycle cycle) {
-        for (DayOfWeek dayOfWeekOfRequest : cycle.dayOfWeeks()) {
-            if (!getCycle().dayOfWeeks().contains(dayOfWeekOfRequest)) {
-                final LocalDate dueDate = LocalDate.now().with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
-                addBy(new Task(dueDate));
+        // 없던 싸이클
+        if (getCycle().dayOfWeeks().isEmpty()) {
+            for (DayOfWeek dayOfWeekOfRequest : cycle.dayOfWeeks()) {
+                // 일회성 집안일 - period가 0
+                if (cycle.period() == 0) {
+                    addBy(new Task(cycle.startDate()));
+                    // 정기 집안일
+                } else {
+                    LocalDate startDate = LocalDate.now();
+                    int extraDays = dayOfWeekOfRequest.getValue() - startDate.getDayOfWeek().getValue();
+                    if (extraDays < 0)
+                        extraDays += 7;
+                    startDate = startDate.plusDays(extraDays);
+                    LocalDate endDate = LocalDate.now().plusMonths(2).withDayOfMonth(startDate.lengthOfMonth());
+                    while (startDate.isBefore(endDate)) {
+                        addBy(new Task(startDate));
+                        startDate = startDate.plusWeeks(cycle.period());
+                    }
+                }
             }
-        }
+            setCycle(cycle);
+            // 있던 싸이클
+        } else {
+            final LocalDate dueDate = LocalDate.now().with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
+            addBy(new Task(dueDate));
 
-        for (DayOfWeek dayOfWeekOfThis : getCycle().dayOfWeeks()) {
-            if (!cycle.dayOfWeeks().contains(dayOfWeekOfThis)) {
-                tasks.stream()
-                     .filter(task -> task.getDueDate().getDayOfWeek().equals(dayOfWeekOfThis))
-                     .findAny()
-                     .ifPresent(Task::expire);
+            for (DayOfWeek dayOfWeekOfThis : getCycle().dayOfWeeks()) {
+                if (!cycle.dayOfWeeks().contains(dayOfWeekOfThis)) {
+                    tasks.stream()
+                         .filter(task -> task.getDueDate().getDayOfWeek().equals(dayOfWeekOfThis))
+                         .findAny()
+                         .ifPresent(Task::expire);
+                }
             }
         }
     }
 
+    public void editFields(TaskGroupEditRequest taskGroupEditRequest, Member owner) {
+        this.name = taskGroupEditRequest.taskGroupName();
+        this.difficulty = taskGroupEditRequest.difficulty();
+        setOwnerBy(owner);
+        setCycle(taskGroupEditRequest.cycle());
+    }
+
     public void expire() {
         this.deletedAt = LocalDateTime.now();
+        this.tasks.forEach(Task::expire);
     }
 }

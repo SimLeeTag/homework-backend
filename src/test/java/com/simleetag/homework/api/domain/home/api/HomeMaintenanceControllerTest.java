@@ -1,9 +1,8 @@
-package com.simleetag.homework.api.domain.home.member;
+package com.simleetag.homework.api.domain.home.api;
 
 import com.simleetag.homework.api.common.TestSupport;
-import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
-import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
-import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.api.dto.EmptyHomeCreateRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
@@ -19,13 +18,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberMaintenanceControllerTest extends TestSupport {
+public class HomeMaintenanceControllerTest extends TestSupport {
 
-    private CreatedHomeResponse home;
+    private HomeResponse home;
 
-    private HomeControllerFlow homeController;
-
-    private MemberMaintenanceControllerFlow memberMaintenanceController;
+    private HomeMaintenanceControllerFlow homeMaintenanceController;
 
     private OAuthControllerFlow oauthController;
 
@@ -37,8 +34,7 @@ public class MemberMaintenanceControllerTest extends TestSupport {
     public void init() {
         oauthController = new OAuthControllerFlow(mockMvc);
         userController = new UserControllerFlow(mockMvc);
-        homeController = new HomeControllerFlow(mockMvc);
-        memberMaintenanceController = new MemberMaintenanceControllerFlow(mockMvc);
+        homeMaintenanceController = new HomeMaintenanceControllerFlow(mockMvc);
     }
 
     @BeforeEach
@@ -52,12 +48,12 @@ public class MemberMaintenanceControllerTest extends TestSupport {
 
         // 에버 정보 수정
         final UserProfileRequest everProfile = new UserProfileRequest("에버", "https://image.com");
-        userController.editProfile(ever.homeworkToken(), everProfile);
+        userController.editProfile(homeworkToken, everProfile);
 
         // 집 생성
         final String homeName = "백엔드집";
-        final HomeCreateRequest request = new HomeCreateRequest(homeName);
-        home = homeController.createHome(homeworkToken, request);
+        final EmptyHomeCreateRequest request = new EmptyHomeCreateRequest(homeName);
+        home = homeMaintenanceController.create(request);
     }
 
 
@@ -66,20 +62,10 @@ public class MemberMaintenanceControllerTest extends TestSupport {
     void join() throws Exception {
 
         // when
-        final MemberResponse response = memberMaintenanceController.join(home.homeId(), userId);
+        final MemberResponse response = homeMaintenanceController.join(home.homeId(), userId);
 
         // then
         assertThat(response.userId()).isEqualTo(userId);
     }
 
-    @Test
-    @DisplayName("집 나가기(멤버 삭제) 테스트")
-    void leave() throws Exception {
-
-        // when
-        final MemberResponse response = memberMaintenanceController.join(home.homeId(), userId);
-
-        // then
-        assertThat(response.userId()).isEqualTo(userId);
-    }
 }

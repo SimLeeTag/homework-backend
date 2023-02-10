@@ -31,7 +31,7 @@ public class TaskGroupSync {
         var modifiedAt = LocalDateTime.now();
         for (CategoryResources.Request.Create request : requests) {
             final var categoryId = request.category().categoryId();
-            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest : request.taskGroup()) {
+            for (CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupRequest : request.taskGroups()) {
                 final var taskGroupId = taskGroupRequest.taskGroupId();
                 Member owner = taskGroupRequest.ownerId() == null ? null : memberFinder.findByIdOrElseThrow(taskGroupRequest.ownerId());
                 TaskGroup taskGroup = new TaskGroup();
@@ -52,8 +52,11 @@ public class TaskGroupSync {
                         }
                     }
 
-                    taskGroup.sync(taskGroupRequest, owner);
-                    taskGroup.setBy(foundCategory);
+                    taskGroup.sync(taskGroupRequest);
+                    taskGroup.setCategoryBy(foundCategory);
+                    if (owner != null) {
+                        taskGroup.setOwnerBy(owner);
+                    }
                     taskGroupRepository.save(taskGroup);
                     continue;
                 }
@@ -63,8 +66,11 @@ public class TaskGroupSync {
                     if (!StringUtils.isBlank(taskGroupRequest.taskGroupName())) {
                         final Category foundCategory = findCategoryByNameOrElseThrow(request);
 
-                        taskGroup.sync(taskGroupRequest, owner);
-                        taskGroup.setBy(foundCategory);
+                        taskGroup.sync(taskGroupRequest);
+                        taskGroup.setCategoryBy(foundCategory);
+                        if (owner != null) {
+                            taskGroup.setOwnerBy(owner);
+                        }
                         taskGroupRepository.save(taskGroup);
                     }
                 }

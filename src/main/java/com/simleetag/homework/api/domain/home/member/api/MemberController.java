@@ -48,7 +48,10 @@ public class MemberController {
     }
 
     @Operation(
-            summary = "집 들어가기"
+            summary = "집 들어가기",
+            description = """
+                    집에 들어간 유저는 해당 집의 멤버로 생성됩니다.
+                    """
     )
     @PostMapping
     public ResponseEntity<MemberIdResponse> joinHome(@Login Long userId,

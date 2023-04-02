@@ -34,7 +34,7 @@ public class UserController {
 
     @Operation(
             summary = "유저 프로필 수정",
-            description = "Homework 토큰으로 사용자 정보를 조회합니다."
+            description = "Homework 토큰으로 사용자 정보를 수정합니다."
     )
     @PatchMapping("/me")
     public ResponseEntity<UserProfileResponse> editProfile(@Login Long userId, @RequestBody UserProfileRequest request) {

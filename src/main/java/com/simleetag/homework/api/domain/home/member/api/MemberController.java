@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.simleetag.homework.api.common.Invitation;
 import com.simleetag.homework.api.common.Login;
+import com.simleetag.homework.api.domain.home.Home;
+import com.simleetag.homework.api.domain.home.HomeFinder;
 import com.simleetag.homework.api.domain.home.member.Member;
 import com.simleetag.homework.api.domain.home.member.MemberFinder;
 import com.simleetag.homework.api.domain.home.member.MemberService;
@@ -31,6 +33,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final HomeFinder homeFinder;
+
     @Operation(
             summary = "유저의 멤버 id 조회",
             description = """
@@ -43,6 +47,16 @@ public class MemberController {
         return ResponseEntity.ok(new MemberIdResponse(member.getId()));
     }
 
+    @Operation(
+            summary = "집 들어가기"
+    )
+    @PostMapping
+    public ResponseEntity<MemberIdResponse> joinHome(@Login Long userId,
+                                                     @Invitation Long homeId) {
+        final Home home = homeFinder.findHomeWithMembers(homeId);
+        final Member member = memberService.join(home, userId);
+        return ResponseEntity.ok(new MemberIdResponse(member.getId()));
+    }
 
     @Operation(
             summary = "날짜별, 멤버별 집안일 완료율 조회",

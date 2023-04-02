@@ -81,7 +81,7 @@ public class CategoryControllerTest extends TestSupport {
         home = homeController.createHome(everHomeworkToken, request);
 
         // 에버 집 들어가기
-        everMemberId = homeController.joinHome(home.homeId(), everHomeworkToken).memberId();
+        everMemberId = memberController.joinHome(everHomeworkToken, home.invitation()).memberId();
     }
 
     @Nested
@@ -103,7 +103,7 @@ public class CategoryControllerTest extends TestSupport {
             // when
             // 푸글 집 들어가기
             String poogleHomeworkToken = poogle.homeworkToken();
-            homeController.joinHome(home.homeId(), poogleHomeworkToken);
+            memberController.joinHome(poogleHomeworkToken, home.invitation());
 
             // then
             final int defaultCategorySize = categoryController.findAllWithTaskGroup(home.invitation()).size();

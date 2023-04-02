@@ -9,6 +9,7 @@ import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
@@ -86,7 +87,35 @@ public class MemberControllerTest extends TestSupport {
         homeId = home.homeId();
 
         // 에버 집 들어가기
-        everMemberId = homeController.joinHome(home.homeId(), everHomeworkToken).memberId();
+        everMemberId = memberController.joinHome(everHomeworkToken, home.invitation()).memberId();
+    }
+
+
+    @Nested
+    class joinHomeTest {
+
+        @Test
+        @DisplayName("집 들어가기 성공 테스트")
+        void joinHome() throws Exception {
+
+            // given
+            // 집 생성
+            final String homeName = "백엔드집";
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
+            final CreatedHomeResponse home = homeController.createHome(everHomeworkToken, request);
+
+            // when
+            memberController.joinHome(everHomeworkToken, home.invitation());
+
+            // then
+            final HomeWithMembersResponse joinedHome = homeController.findMembersByToken(everHomeworkToken, home.invitation());
+            final boolean joined = joinedHome.members()
+                                             .stream()
+                                             .anyMatch(member -> member.userId().equals(everUserId));
+
+            Assertions.assertThat(joined).isTrue();
+        }
+
     }
 
     @Test
@@ -95,7 +124,7 @@ public class MemberControllerTest extends TestSupport {
 
         // given
         // 집 들어가기(멤버 추가)
-        MemberIdResponse memberIdResponse = homeController.joinHome(homeId, everHomeworkToken);
+        MemberIdResponse memberIdResponse = memberController.joinHome(everHomeworkToken, home.invitation());
 
         // when
         MemberIdResponse findMemberId = memberController.findMemberId(everHomeworkToken, homeId);

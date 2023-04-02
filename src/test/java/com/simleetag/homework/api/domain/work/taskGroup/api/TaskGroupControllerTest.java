@@ -85,7 +85,7 @@ public class TaskGroupControllerTest extends TestSupport {
         home = homeController.createHome(everHomeworkToken, request);
 
         // 에버 집 들어가기
-        everMemberId = homeController.joinHome(home.homeId(), everHomeworkToken).memberId();
+        everMemberId = memberController.joinHome(everHomeworkToken, home.invitation()).memberId();
 
         // 푸글 유저 생성
         final TokenResponse poogle = oauthController.login(loginRequest);
@@ -96,7 +96,7 @@ public class TaskGroupControllerTest extends TestSupport {
         userController.editProfile(poogleHomeworkToken, poogleProfile);
 
         // 푸글 집 들어가기
-        poogleMemberId = homeController.joinHome(home.homeId(), poogleHomeworkToken).memberId();
+        poogleMemberId = memberController.joinHome(poogleHomeworkToken, home.invitation()).memberId();
 
     }
 

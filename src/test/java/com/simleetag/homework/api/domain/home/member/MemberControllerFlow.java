@@ -16,6 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class MemberControllerFlow extends FlowSupport {
@@ -71,4 +72,18 @@ public class MemberControllerFlow extends FlowSupport {
     }
 
 
+    public MemberIdResponse joinHome(String homeworkToken, String invitation) throws Exception {
+        final String responseBody = mockMvc.perform(
+                                                   post("/api/members")
+                                                           .header(IdentifierHeader.USER.getKey(), homeworkToken)
+                                                           .header(IdentifierHeader.HOME.getKey(), invitation)
+                                           ).andExpect(
+                                                   status().isOk()
+                                           )
+                                           .andReturn()
+                                           .getResponse()
+                                           .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readValue(responseBody, MemberIdResponse.class);
+    }
 }

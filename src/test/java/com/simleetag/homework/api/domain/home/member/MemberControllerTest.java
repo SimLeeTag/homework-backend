@@ -196,6 +196,24 @@ public class MemberControllerTest extends TestSupport {
             Assertions.assertThat(taskRateResponse.get(0).rate()).isEqualTo(33);
         }
 
+        @Test
+        @DisplayName("TaskStatus - 집안일 존재하지 않을 때 TaskRate -1 확인")
+        void checkTaskRateNotExisted() throws Exception {
+
+            //given
+            final List<CategoryResources.Request.Create> request = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek().minus(1)), LocalDate.now().minusDays(1), 0), Difficulty.LOW, 1L, everMemberId);
+            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest, taskGroupCreateRequest, taskGroupCreateRequest));
+
+            // when
+            categoryController.createNewCategory(home.invitation(), request);
+
+            // then
+            List<TaskRateResponse> taskRateResponse = memberController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
+            Assertions.assertThat(taskRateResponse.get(0).rate()).isEqualTo(-1);
+        }
+
     }
 
     @Nested

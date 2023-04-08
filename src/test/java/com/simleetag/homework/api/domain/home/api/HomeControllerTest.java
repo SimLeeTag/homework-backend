@@ -5,6 +5,7 @@ import com.simleetag.homework.api.domain.home.HomeJwt;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
+import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
@@ -34,11 +35,14 @@ public class HomeControllerTest extends TestSupport {
 
     private UserControllerFlow userController;
 
+    private MemberControllerFlow memberController;
+
     @BeforeAll
     public void init() {
         oauthController = new OAuthControllerFlow(mockMvc);
         userController = new UserControllerFlow(mockMvc);
         homeController = new HomeControllerFlow(mockMvc);
+        memberController = new MemberControllerFlow(mockMvc);
     }
 
     @BeforeEach
@@ -104,33 +108,6 @@ public class HomeControllerTest extends TestSupport {
     }
 
     @Nested
-    class joinHomeTest {
-
-        @Test
-        @DisplayName("집 들어가기 성공 테스트")
-        void joinHome() throws Exception {
-
-            // given
-            // 집 생성
-            final String homeName = "백엔드집";
-            final HomeCreateRequest request = new HomeCreateRequest(homeName);
-            final CreatedHomeResponse home = homeController.createHome(homeworkToken, request);
-
-            // when
-            homeController.joinHome(home.homeId(), homeworkToken);
-
-            // then
-            final HomeWithMembersResponse joinedHome = homeController.findMembersByToken(homeworkToken, home.invitation());
-            final boolean joined = joinedHome.members()
-                                             .stream()
-                                             .anyMatch(member -> member.userId().equals(userId));
-
-            assertThat(joined).isTrue();
-        }
-
-    }
-
-    @Nested
     class getHomeInformationTest {
 
         @Test
@@ -144,7 +121,7 @@ public class HomeControllerTest extends TestSupport {
             final CreatedHomeResponse home = homeController.createHome(homeworkToken, request);
 
             // 멤버 추가
-            homeController.joinHome(home.homeId(), homeworkToken);
+            memberController.joinHome(homeworkToken, home.invitation());
 
             //when
             final HomeWithMembersResponse response =
@@ -159,7 +136,7 @@ public class HomeControllerTest extends TestSupport {
         void findHomeByHomeIdNotExist() throws Exception {
 
             // given
-            final Long homeId = 10L;
+            final Long homeId = 999L;
             final String invalidInvitationToken = homeJwt.createHomeworkToken(homeId);
             final String message = String.format("HomeID[%d]에 해당하는 집이 존재하지 않습니다.", homeId);
 

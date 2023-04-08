@@ -9,6 +9,7 @@ import com.simleetag.homework.api.common.TestSupport;
 import com.simleetag.homework.api.domain.home.api.HomeControllerFlow;
 import com.simleetag.homework.api.domain.home.api.dto.CreatedHomeResponse;
 import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
+import com.simleetag.homework.api.domain.home.api.dto.HomeWithMembersResponse;
 import com.simleetag.homework.api.domain.home.member.dto.MemberIdResponse;
 import com.simleetag.homework.api.domain.user.api.UserControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
@@ -86,7 +87,35 @@ public class MemberControllerTest extends TestSupport {
         homeId = home.homeId();
 
         // 에버 집 들어가기
-        everMemberId = homeController.joinHome(home.homeId(), everHomeworkToken).memberId();
+        everMemberId = memberController.joinHome(everHomeworkToken, home.invitation()).memberId();
+    }
+
+
+    @Nested
+    class joinHomeTest {
+
+        @Test
+        @DisplayName("집 들어가기 성공 테스트")
+        void joinHome() throws Exception {
+
+            // given
+            // 집 생성
+            final String homeName = "백엔드집";
+            final HomeCreateRequest request = new HomeCreateRequest(homeName);
+            final CreatedHomeResponse home = homeController.createHome(everHomeworkToken, request);
+
+            // when
+            memberController.joinHome(everHomeworkToken, home.invitation());
+
+            // then
+            final HomeWithMembersResponse joinedHome = homeController.findMembersByToken(everHomeworkToken, home.invitation());
+            final boolean joined = joinedHome.members()
+                                             .stream()
+                                             .anyMatch(member -> member.userId().equals(everUserId));
+
+            Assertions.assertThat(joined).isTrue();
+        }
+
     }
 
     @Test
@@ -95,7 +124,7 @@ public class MemberControllerTest extends TestSupport {
 
         // given
         // 집 들어가기(멤버 추가)
-        MemberIdResponse memberIdResponse = homeController.joinHome(homeId, everHomeworkToken);
+        MemberIdResponse memberIdResponse = memberController.joinHome(everHomeworkToken, home.invitation());
 
         // when
         MemberIdResponse findMemberId = memberController.findMemberId(everHomeworkToken, homeId);
@@ -165,6 +194,24 @@ public class MemberControllerTest extends TestSupport {
             // then
             List<TaskRateResponse> taskRateResponse = memberController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
             Assertions.assertThat(taskRateResponse.get(0).rate()).isEqualTo(33);
+        }
+
+        @Test
+        @DisplayName("TaskStatus - 집안일 존재하지 않을 때 TaskRate -1 확인")
+        void checkTaskRateNotExisted() throws Exception {
+
+            //given
+            final List<CategoryResources.Request.Create> request = new ArrayList<>();
+            CategoryResources.Request.Create.CategoryCreateRequest categoryCreateRequest = new CategoryResources.Request.Create.CategoryCreateRequest(null, "새로운 일회성 카테고리");
+            CategoryResources.Request.Create.TaskGroupCreateRequest taskGroupCreateRequest = new CategoryResources.Request.Create.TaskGroupCreateRequest(null, "일회성 집안일", TaskGroupType.TEMPORARY, new Cycle(Collections.singletonList(LocalDate.now().getDayOfWeek().minus(1)), LocalDate.now().minusDays(1), 0), Difficulty.LOW, 1L, everMemberId);
+            request.add(new CategoryResources.Request.Create(categoryCreateRequest, taskGroupCreateRequest, taskGroupCreateRequest, taskGroupCreateRequest));
+
+            // when
+            categoryController.createNewCategory(home.invitation(), request);
+
+            // then
+            List<TaskRateResponse> taskRateResponse = memberController.checkRatesWithDueDate(home.invitation(), LocalDate.now(), LocalDate.now(), everMemberId);
+            Assertions.assertThat(taskRateResponse.get(0).rate()).isEqualTo(-1);
         }
 
     }

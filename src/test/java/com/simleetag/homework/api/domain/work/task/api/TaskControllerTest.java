@@ -80,7 +80,7 @@ public class TaskControllerTest extends TestSupport {
         home = homeController.createHome(everHomeworkToken, request);
 
         // 에버 집 들어가기
-        everMemberId = homeController.joinHome(home.homeId(), everHomeworkToken).memberId();
+        everMemberId = memberController.joinHome(everHomeworkToken, home.invitation()).memberId();
     }
 
     @Nested

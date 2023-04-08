@@ -70,7 +70,7 @@ public class MemberService {
             var tasks = taskDslRepository.findAllWithTaskGroupByHomeIdAndOwnerAndDueDate(memberId, startDate.plusDays(i));
             double allTasks = tasks.size();
             double doneTasks = tasks.stream().filter(task -> task.getTaskStatus().equals(TaskStatus.COMPLETED)).count();
-            double rate = 0;
+            double rate = -1;
             if (allTasks != 0) {
                 rate = doneTasks / allTasks * 100.0;
             }

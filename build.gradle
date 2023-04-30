@@ -18,9 +18,13 @@ repositories {
 }
 
 ext {
-    snippetsDir = file("$buildDir/generated-snippets")
-    javadocJsonDir = file("$buildDir/generated-javadoc-json")
     queryDslVersion = "5.0.0"
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 dependencies {
@@ -43,6 +47,7 @@ dependencies {
 
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
     annotationProcessor(
             "javax.persistence:javax.persistence-api",
             "javax.annotation:javax.annotation-api",
@@ -87,7 +92,7 @@ test {
     useJUnitPlatform()
 }
 
-task testCoverage(type: Test) {
+tasks.register('testCoverage', Test) {
     group 'verification'
     description 'Runs the unit tests with coverage'
 
@@ -105,15 +110,11 @@ jar {
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-        }
-    }
+    main.java.srcDirs += ["$projectDir/build/generated"]
 }
 
-tasks.withType(JavaCompile) {
-    options.annotationProcessorGeneratedSourcesDirectory = file("$projectDir/build/generated")
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file("$projectDir/build/generated"))
 }
 
 jacoco {

@@ -1,5 +1,6 @@
 package com.simleetag.homework.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,9 +9,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class JsonMapper {
     private static final ObjectMapper MAPPER =
             new ObjectMapper().enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                              .registerModule(new JavaTimeModule());
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .registerModule(new JavaTimeModule());
 
-    private JsonMapper() {}
+    private JsonMapper() {
+    }
 
     public static ObjectMapper getJsonMapper() {
         return MAPPER;

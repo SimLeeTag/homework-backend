@@ -18,8 +18,6 @@ repositories {
 }
 
 ext {
-    snippetsDir = file("$buildDir/generated-snippets")
-    javadocJsonDir = file("$buildDir/generated-javadoc-json")
     queryDslVersion = "5.0.0"
 }
 
@@ -87,7 +85,7 @@ test {
     useJUnitPlatform()
 }
 
-task testCoverage(type: Test) {
+tasks.register('testCoverage', Test) {
     group 'verification'
     description 'Runs the unit tests with coverage'
 
@@ -105,11 +103,7 @@ jar {
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-        }
-    }
+    main.java.srcDirs += ["$projectDir/build/generated"]
 }
 
 tasks.withType(JavaCompile) {

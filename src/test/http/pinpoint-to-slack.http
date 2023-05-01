@@ -1,0 +1,37 @@
+### send infra emergency
+POST {{host}}/api/webhook/from/pinpoint/to/slack
+content-type: application/json
+
+{
+  "pinpointUrl": "http://pinpoint.com",
+  "batchEnv": "release",
+  "applicationId": "DEV-WAS",
+  "serviceType": "TOMCAT",
+  "userGroup": {
+    "userGroupId": "Group-1",
+    "userGroupMembers": [
+      {
+        "id": "msk1111",
+        "name": "minsookim",
+        "email": "pinpoint@naver.com",
+        "department": "Platform",
+        "phoneNumber": "01012345678",
+        "phoneCountryCode": 82
+      }
+    ]
+  },
+  "checker": {
+    "name": "HEAP USAGE RATE",
+    "type": "LongValueAgentChecker",
+    "detectedValue": [
+      {
+        "agentId": "test-agent",
+        "agentValue": 8
+      }
+    ]
+  },
+  "unit": "%",
+  "threshold": 5,
+  "notes": "Note Example",
+  "sequenceCount": 4
+}

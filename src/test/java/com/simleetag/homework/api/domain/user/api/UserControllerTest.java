@@ -7,19 +7,17 @@ import com.simleetag.homework.api.domain.home.api.dto.HomeCreateRequest;
 import com.simleetag.homework.api.domain.home.member.MemberControllerFlow;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileRequest;
 import com.simleetag.homework.api.domain.user.api.dto.UserProfileResponse;
-import com.simleetag.homework.api.domain.user.api.dto.findUserWithHomeAndMembersResponse;
+import com.simleetag.homework.api.domain.user.api.dto.UserWithHomeAndMembersResponse;
 import com.simleetag.homework.api.domain.user.oauth.OAuthJwt;
 import com.simleetag.homework.api.domain.user.oauth.ProviderType;
 import com.simleetag.homework.api.domain.user.oauth.api.OAuthControllerFlow;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenRequest;
 import com.simleetag.homework.api.domain.user.oauth.api.dto.TokenResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +72,7 @@ class UserControllerTest extends TestSupport {
             memberController.joinHome(ever.homeworkToken(), iOS.invitation());
 
             // when
-            final findUserWithHomeAndMembersResponse response = userController.findUserByAccessToken(ever.homeworkToken());
+            final UserWithHomeAndMembersResponse response = userController.findUserByAccessToken(ever.homeworkToken());
 
             // then
             assertThat(response.homes().size()).isEqualTo(2);

@@ -1,8 +1,6 @@
 package com.simleetag.homework.api.domain.work.api;
 
-public record CategoryMaintenanceResources(
-        Request request
-) {
+public class CategoryMaintenanceResources {
     public static class Request {
         public record Category(
                 Long homeId,

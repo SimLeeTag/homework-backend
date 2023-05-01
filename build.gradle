@@ -41,7 +41,6 @@ dependencies {
 
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
     annotationProcessor(
             "javax.persistence:javax.persistence-api",
             "javax.annotation:javax.annotation-api",
@@ -107,7 +106,7 @@ sourceSets {
     main.java.srcDirs += ["$projectDir/build/generated"]
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
     options.annotationProcessorGeneratedSourcesDirectory = file("$projectDir/build/generated")
 }
 

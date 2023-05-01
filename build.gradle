@@ -21,12 +21,6 @@ ext {
     queryDslVersion = "5.0.0"
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -114,7 +108,7 @@ sourceSets {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.getGeneratedSourceOutputDirectory().set(file("$projectDir/build/generated"))
+    options.annotationProcessorGeneratedSourcesDirectory = file("$projectDir/build/generated")
 }
 
 jacoco {
